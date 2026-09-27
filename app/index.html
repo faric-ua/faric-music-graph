@@ -2,29 +2,68 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
   <title>FARIC Music Graph</title>
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
   <header>
-    <div><strong>FARIC Music Graph</strong><span>v0.1.0 prototype</span></div>
-    <button id="reset">Скинути</button>
+    <div class="brand">
+      <strong>FARIC Music Graph</strong>
+      <span>v0.1.1 mobile prototype</span>
+    </div>
+    <div class="header-actions">
+      <button id="filterToggle" type="button">Фільтри</button>
+      <button id="reset" type="button">Скинути</button>
+    </div>
   </header>
-  <aside>
-    <label>Пошук<input id="search" placeholder="трек, альбом, виконавець"></label>
-    <label>Виконавець<select id="artist"><option value="all">Усі</option></select></label>
-    <label>Режим<select id="mode">
-      <option value="artist">Виконавець → реліз → трек</option>
-      <option value="year">Рік → жанр → виконавець</option>
-    </select></label>
+
+  <aside id="filters">
+    <label>Пошук
+      <input id="search" placeholder="трек, альбом, виконавець">
+    </label>
+
+    <label>Виконавець
+      <select id="artist"><option value="all">Усі</option></select>
+    </label>
+
+    <label>Вид графа
+      <select id="view">
+        <option value="map">2D Map</option>
+        <option value="sphere">Sphere 3D</option>
+      </select>
+    </label>
+
+    <label>Структура
+      <select id="structure">
+        <option value="artist">Виконавець → реліз → трек</option>
+        <option value="year">Рік → жанр → виконавець</option>
+      </select>
+    </label>
+
     <div id="stats"></div>
-    <p class="note">UI-прототип. Повний Prodigy + Linkin Park seed буде імпортований окремою перевіреною міграцією.</p>
+    <p class="note">
+      1 палець: панорама / обертання · 2 пальці: масштаб · tap: деталі
+    </p>
   </aside>
+
   <main>
-    <canvas id="graph"></canvas>
-    <section id="inspector"><button id="close">×</button><div id="details"></div></section>
+    <canvas id="graph" aria-label="Music graph"></canvas>
+
+    <div id="viewBadge">2D Map</div>
+
+    <div id="graphControls" aria-label="Graph controls">
+      <button id="zoomIn" type="button" aria-label="Збільшити">+</button>
+      <button id="zoomOut" type="button" aria-label="Зменшити">−</button>
+      <button id="fit" type="button">Fit</button>
+    </div>
+
+    <section id="inspector" aria-live="polite">
+      <button id="close" type="button" aria-label="Закрити">×</button>
+      <div id="details"></div>
+    </section>
   </main>
+
   <script src="sample-data.js"></script>
   <script src="app.js"></script>
 </body>
