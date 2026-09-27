@@ -1,7 +1,7 @@
 # v0.1.1 Regression Checklist
 
-- [ ] repository validation PASS;
-- [ ] JavaScript syntax validation PASS;
+- [x] repository validation PASS;
+- [x] JavaScript syntax validation PASS;
 - [ ] app opens through Termux local server;
 - [ ] 2D one-finger pan;
 - [ ] 2D pinch zoom;

@@ -30,3 +30,14 @@ Both views use the same filters and graph data.
 
 Research basis:
 `docs/research/GRAPH_MOBILE_3D_RESEARCH.md`.
+
+
+## Implementation checkpoint
+
+Prototype source:
+`742161cd614d02c72a5c1ff85d3e597c611dc7f2`
+
+CI Validate:
+`36358246425` — PASS.
+
+Phone comparison remains mandatory before accepting either view.
