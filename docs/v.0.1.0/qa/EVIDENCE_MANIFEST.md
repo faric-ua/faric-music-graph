@@ -16,10 +16,28 @@ Proves:
 - executable `Music Graph` Widget shortcut exists;
 - `Phone Diagnostics`, `Renault`, and `YTM Importer` shortcut files remain present.
 
-Does not yet prove:
-- that the Android Widget UI has been refreshed;
-- that tapping `Music Graph` opens the menu;
-- graph/browser behavior.
-
 Privacy:
 - no account token, secret, channel credential, or private API key was included in the evidence.
+
+## 2026-09-28 — Termux:Widget smoke
+
+Source under test:
+
+`2cc968cc0fece74de6f07872bbd7f0bf9975d90c`
+
+Evidence type: user confirmation.
+
+User result:
+
+`Widget +, menu +`
+
+Proves:
+- Android Termux:Widget refresh exposed `Music Graph`;
+- tapping the shortcut opened the FARIC Music Graph project menu;
+- the installed shortcut points to a working project menu path.
+
+Does not prove:
+- graph local server behavior;
+- browser rendering/interactions;
+- portrait/landscape behavior;
+- YouTube integration.
