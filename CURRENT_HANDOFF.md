@@ -19,7 +19,8 @@ Default branch: `main`
 - `$HOME/.shortcuts/Music Graph` exists and is executable;
 - existing `Renault`, `YTM Importer`, and `Phone Diagnostics` shortcuts remain present;
 - Termux:Widget UI smoke PASS: `Music Graph` is visible after Refresh and opens the project menu;
-- graph/browser smoke is still pending;
+- first phone graph feedback received: current Canvas controls are poor on mobile and no usable pinch zoom is available; mobile graph acceptance is FAIL/PENDING REDESIGN;
+- spherical/3D graph mode is now an explicit prototype/research track;
 - initial known catalog scope: The Prodigy + Linkin Park;
 - prepared source catalog: 88 release/list entities and 863 normalized track-title entities;
 - channel target: `https://music.youtube.com/@faric_ua`;
@@ -31,10 +32,8 @@ Default branch: `main`
 
 ## Next exact work
 
-1. pull latest `main` on phone;
-2. run first phone/browser graph smoke from Music Graph menu;
-3. verify portrait/landscape, zoom/pan/select and refresh behavior;
-4. import the full prepared seed through the canonical data contract;
-5. inventory `@faric_ua` read-only.
+Use `ACTIVE_PLAN.md` as the ordered execution source.
+
+Immediate next step: implement a mobile-first graph interaction prototype with real pinch zoom and compare it with a spherical/3D prototype before accepting the graph engine.
 
 Do not add YouTube write actions before read-only audit has browser/phone PASS.

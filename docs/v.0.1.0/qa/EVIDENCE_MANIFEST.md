@@ -41,3 +41,21 @@ Does not prove:
 - browser rendering/interactions;
 - portrait/landscape behavior;
 - YouTube integration.
+
+
+## 2026-09-28 — Mobile graph interaction finding
+
+Evidence type: direct user phone feedback.
+
+Reported:
+- current graph control on phone is poor;
+- no usable zoom is available.
+
+Proves:
+- current mobile interaction is not accepted;
+- graph UX requires another prototype/QA cycle.
+
+Does not prove:
+- performance of the future full catalog;
+- suitability of spherical/3D layout;
+- final graph engine choice.
