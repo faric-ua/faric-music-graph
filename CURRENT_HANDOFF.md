@@ -18,7 +18,8 @@ Default branch: `main`
 - Git status verified clean and aligned: `## main...origin/main`;
 - `$HOME/.shortcuts/Music Graph` exists and is executable;
 - existing `Renault`, `YTM Importer`, and `Phone Diagnostics` shortcuts remain present;
-- Termux:Widget UI refresh/tap smoke is still pending user confirmation;
+- Termux:Widget UI smoke PASS: `Music Graph` is visible after Refresh and opens the project menu;
+- graph/browser smoke is still pending;
 - initial known catalog scope: The Prodigy + Linkin Park;
 - prepared source catalog: 88 release/list entities and 863 normalized track-title entities;
 - channel target: `https://music.youtube.com/@faric_ua`;
@@ -30,9 +31,9 @@ Default branch: `main`
 
 ## Next exact work
 
-1. refresh Termux:Widget and confirm `Music Graph` is visible;
-2. tap `Music Graph` and confirm project menu opens;
-3. run first phone/browser graph smoke;
+1. pull latest `main` on phone;
+2. run first phone/browser graph smoke from Music Graph menu;
+3. verify portrait/landscape, zoom/pan/select and refresh behavior;
 4. import the full prepared seed through the canonical data contract;
 5. inventory `@faric_ua` read-only.
 

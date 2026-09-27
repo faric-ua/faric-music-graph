@@ -16,13 +16,16 @@ Confirmed:
 - `$HOME/.shortcuts/Music Graph` exists and is executable;
 - existing `Phone Diagnostics`, `Renault`, and `YTM Importer` shortcuts remain present.
 
-## B. Termux:Widget UI — PENDING
+## B. Termux:Widget UI — PASS
 
-Still to confirm:
-1. press Refresh in Termux:Widget;
-2. verify `Music Graph` is visible;
-3. tap `Music Graph`;
-4. verify `scripts/termux-menu.sh` opens the Music Graph menu.
+Verified on 2026-09-28.
+
+Confirmed by user:
+1. Termux:Widget refreshed successfully;
+2. `Music Graph` is visible;
+3. tapping `Music Graph` opens the FARIC Music Graph menu.
+
+This proves the Android Widget → shortcut → `scripts/termux-menu.sh` launch path.
 
 ## C. Graph browser smoke — NOT RUN
 

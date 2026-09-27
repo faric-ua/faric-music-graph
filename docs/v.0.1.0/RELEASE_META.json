@@ -6,7 +6,7 @@
   "testedSourceSha": null,
   "ciRun": null,
   "browserQaStatus": "PENDING",
-  "phoneQaStatus": "PENDING",
+  "phoneQaStatus": "PARTIAL",
   "channelReadAuditStatus": "PENDING",
   "channelWriteAuditStatus": "NOT_ENABLED"
 }
