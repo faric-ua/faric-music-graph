@@ -44,19 +44,29 @@ Android package розглядається після прийняття web/PWA
 
 ## Termux
 
+Music Graph — **окремий** від Renault/YTM repository.
+
 Live checkout:
 
 `$HOME/faric-music-graph`
 
+Shared data:
+
+`/storage/emulated/0/Documents/FARIC-Music-Graph/`
+
 Після clone:
 
 ```bash
+cd "$HOME/faric-music-graph"
 bash tools/install_termux_aliases.sh
+bash tools/install_termux_widget.sh
 source ~/.bashrc 2>/dev/null || true
 music-menu
 ```
 
-Меню вміє безпечно update/serve/open/validate/status/stop. Воно навмисно **не робить автоматичний git add -A / commit / push**.
+Termux:Widget shortcut називається **Music Graph**. Після installer натиснути Refresh у Widget.
+
+Повна інструкція: `docs/ua/TERMUX_SETUP.md`.
 
 ## Документація
 
@@ -67,7 +77,8 @@ music-menu
 - `docs/assistant-kit/` — стабільні contracts;
 - `docs/v.*` — release/QA history;
 - `docs/catalog/` — knowledge notes по виконавцях;
-- `docs/WORKFLOW_LESSONS.md` — уроки, які не можна втрачати.
+- `docs/WORKFLOW_LESSONS.md` — уроки, які не можна втрачати;
+- `docs/ua/TERMUX_SETUP.md` — setup/menu/widget.
 
 ## Поточний milestone
 
