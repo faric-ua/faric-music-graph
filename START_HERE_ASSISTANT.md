@@ -15,18 +15,19 @@ The product must support relationships, not only folders:
 ## Mandatory reading order
 
 1. `CURRENT_HANDOFF.md`
-2. `MUSIC_GRAPH_ASSISTANT_WORKFLOW.md`
-3. `PROJECT_STATUS.md`
-4. `BACKLOG.md`
-5. `OPEN_FINDINGS.md`
-6. `docs/assistant-kit/ASSISTANT_TOOL_MAP.md`
-7. `docs/assistant-kit/SYSTEM_BEHAVIOR_CONTRACT.md`
-8. `docs/assistant-kit/UI_CONTRACT.md`
-9. `docs/assistant-kit/DATA_CONTRACT.md`
-10. `docs/assistant-kit/YOUTUBE_CHANNEL_CONTRACT.md`
-11. `TERMUX_COMMANDS.md`
-12. `docs/architecture.md`
-13. current release folder under `docs/v.*`.
+2. `ACTIVE_PLAN.md` — live checkbox plan; first unchecked item is the default resume point.
+3. `MUSIC_GRAPH_ASSISTANT_WORKFLOW.md`
+4. `PROJECT_STATUS.md`
+5. `BACKLOG.md`
+6. `OPEN_FINDINGS.md`
+7. `docs/assistant-kit/ASSISTANT_TOOL_MAP.md`
+8. `docs/assistant-kit/SYSTEM_BEHAVIOR_CONTRACT.md`
+9. `docs/assistant-kit/UI_CONTRACT.md`
+10. `docs/assistant-kit/DATA_CONTRACT.md`
+11. `docs/assistant-kit/YOUTUBE_CHANNEL_CONTRACT.md`
+12. `TERMUX_COMMANDS.md`
+13. `docs/architecture.md`
+14. current release folder under `docs/v.*`.
 
 ## Sources of truth
 

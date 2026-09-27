@@ -37,3 +37,18 @@ Planned:
 5. isolate artist/release;
 6. refresh/reopen state smoke;
 7. verify no YouTube write controls exist.
+
+
+## D. Mobile graph interaction — FAIL / REDESIGN REQUIRED
+
+Real-phone feedback on 2026-09-28:
+- controlling the current graph on the phone is poor;
+- there is no usable phone zoom gesture.
+
+This is enough to reject the current Canvas interaction as the accepted mobile graph UX.
+
+Not yet tested/accepted:
+- corrected pinch zoom;
+- final pan/select behavior;
+- spherical/3D mode;
+- full-seed performance.
