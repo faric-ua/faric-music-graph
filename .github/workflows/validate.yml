@@ -14,5 +14,12 @@ jobs:
           python-version: "3.12"
       - name: Validate repository
         run: python -B scripts/validate_repo.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript syntax
+        run: |
+          node --check app/app.js
+          node --check app/sample-data.js
       - name: Git whitespace check
         run: git diff --check HEAD^ HEAD || git diff --check

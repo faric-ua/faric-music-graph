@@ -11,8 +11,8 @@ Purpose: live crash-recovery checklist. After a chat loss, read this after `CURR
 - [x] Termux:Widget `Music Graph` shortcut and project menu phone smoke PASS.
 - [x] First mobile graph feedback recorded: current Canvas control is poor and usable pinch zoom is missing.
 - [x] Research real 3D/spherical graph approaches and keep reference links/decision rationale in the project discussion.
-- [ ] Implement mobile-first 2D interaction prototype: pinch zoom, one-finger pan, tap/select, fit/reset.
-- [ ] Implement a separate spherical/3D prototype using the same canonical sample data.
+- [x] Implement mobile-first 2D interaction prototype: pinch zoom, one-finger pan, tap/select, fit/reset.
+- [x] Implement a separate spherical/3D prototype using the same canonical sample data.
 - [ ] Phone-compare improved 2D vs spherical/3D: portrait, landscape, orbit/pan, pinch, select/focus, isolate/reset.
 - [ ] Choose default graph mode and secondary mode from phone evidence; update architecture decision.
 - [ ] Import the full prepared The Prodigy + Linkin Park seed through the canonical data contract.
