@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "platform": "youtube_music",
+  "handle": "@faric_ua",
+  "url": "https://music.youtube.com/@faric_ua",
+  "resolvedChannelId": null,
+  "inventoryStatus": "PENDING_LIVE_READ_ONLY_AUDIT",
+  "lastSnapshotId": null,
+  "writeEnabled": false
+}

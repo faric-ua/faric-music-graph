@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "status": "SUMMARY_ONLY_PENDING_FULL_IMPORT",
+  "artists": [
+    {
+      "id": "artist:the-prodigy",
+      "name": "The Prodigy",
+      "genres": ["Electronic", "Big Beat", "Breakbeat", "Rave"],
+      "preparedReleaseEntityCount": 31,
+      "preparedTrackTitleEntityCount": 330
+    },
+    {
+      "id": "artist:linkin-park",
+      "name": "Linkin Park",
+      "genres": ["Alternative Rock", "Nu Metal", "Electronic Rock"],
+      "preparedReleaseEntityCount": 57,
+      "preparedTrackTitleEntityCount": 533
+    }
+  ],
+  "preparedTotalReleaseEntityCount": 88,
+  "preparedTotalTrackTitleEntityCount": 863
+}
