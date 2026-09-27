@@ -22,6 +22,16 @@ Long-term facts that must survive chat/session loss.
 - provenance is retained;
 - YouTube read and write adapters are separate.
 
+## Termux baseline
+
+- live Git checkout: `$HOME/faric-music-graph`;
+- shared data root: `/storage/emulated/0/Documents/FARIC-Music-Graph/`;
+- Music Graph is isolated from Renault/YTM;
+- aliases use `music-*`;
+- Termux:Widget owns one top-level `Music Graph` shortcut;
+- Widget shortcut opens `scripts/termux-menu.sh`;
+- Music Graph widget installer must not delete or overwrite Renault/YTM shortcuts.
+
 ## Workflow baseline
 
 - repository/live Git wins over old chat memory;

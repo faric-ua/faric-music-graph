@@ -1,5 +1,7 @@
 # Termux Workflow
 
+Canonical full setup: `docs/ua/TERMUX_SETUP.md`.
+
 ## Repository
 
 Live Git checkout:
@@ -10,33 +12,56 @@ Shared exports/snapshots/builds:
 
 `/storage/emulated/0/Documents/FARIC-Music-Graph/`
 
-## Clone
+Music Graph is isolated from Renault and YTM: separate repository, aliases, menu, server state and shared-data root.
+
+## First setup
 
 ```bash
-git clone --branch main --single-branch git@github.com:faric-ua/faric-music-graph.git "$HOME/faric-music-graph"
+git clone --branch main --single-branch   git@github.com:faric-ua/faric-music-graph.git   "$HOME/faric-music-graph"
+
 cd "$HOME/faric-music-graph"
-```
 
-## Install menu aliases
+mkdir -p   /storage/emulated/0/Documents/FARIC-Music-Graph/{data,snapshots,exports,artifacts,backups}
 
-```bash
 bash tools/install_termux_aliases.sh
-source ~/.bashrc 2>/dev/null || true
-source ~/.zshrc 2>/dev/null || true
+bash tools/install_termux_widget.sh
+
+source "$HOME/.bashrc" 2>/dev/null || true
+source "$HOME/.zshrc" 2>/dev/null || true
+
+python -B scripts/validate_repo.py
+git status --short --branch
 ```
 
-Aliases:
-- `music-code`
-- `music-menu`
-- `music-graph`
-- `music-status`
-- `music-stop`
+## Commands
+
+- `music-code` — repository;
+- `music-menu` — project menu;
+- `music-graph` — local graph server;
+- `music-status` — Git/server status;
+- `music-stop` — stop local graph server.
+
+## Termux:Widget
+
+Aliases and Widget shortcuts are different things.
+
+`tools/install_termux_aliases.sh` configures shell commands.
+
+`tools/install_termux_widget.sh` creates:
+
+`$HOME/.shortcuts/Music Graph`
+
+which opens `scripts/termux-menu.sh`.
+
+After installing/updating the shortcut, press **Refresh** in Termux:Widget.
+
+The Music Graph installer does not modify Renault/YTM shortcuts.
 
 ## Safe update
 
-The project menu refuses automatic pull when the tree is dirty.
+The menu refuses automatic pull if the working tree is dirty.
 
-Manual:
+Manual equivalent:
 
 ```bash
 music-code
