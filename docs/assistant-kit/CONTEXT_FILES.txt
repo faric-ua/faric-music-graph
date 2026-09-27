@@ -5,6 +5,9 @@ OPEN_FINDINGS.md
 MUSIC_GRAPH_ASSISTANT_WORKFLOW.md
 TERMUX_COMMANDS.md
 docs/architecture.md
+docs/WORKFLOW_LESSONS.md
+docs/DECISIONS.md
+docs/assistant-kit/PROJECT_LEDGER.md
 docs/assistant-kit/ASSISTANT_TOOL_MAP.md
 docs/assistant-kit/SYSTEM_BEHAVIOR_CONTRACT.md
 docs/assistant-kit/UI_CONTRACT.md
@@ -12,3 +15,4 @@ docs/assistant-kit/DATA_CONTRACT.md
 docs/assistant-kit/YOUTUBE_CHANNEL_CONTRACT.md
 docs/assistant-kit/RELEASE_DOCUMENTATION_CONTRACT.md
 docs/assistant-kit/TEST_DIAGRAM_STANDARD.md
+docs/ua/PHONE_WORKFLOW.md
