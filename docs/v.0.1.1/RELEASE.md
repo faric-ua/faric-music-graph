@@ -41,3 +41,14 @@ CI Validate:
 `36358246425` — PASS.
 
 Phone comparison remains mandatory before accepting either view.
+
+
+## Main merge checkpoint
+
+Merged source:
+`02da06832a3990d0557d0c3a45cdbaf8d615e7e4`
+
+Merged-main CI:
+`36358360607` — PASS.
+
+Next gate: real-phone comparison of 2D Map vs Sphere 3D.

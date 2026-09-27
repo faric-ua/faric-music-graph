@@ -25,3 +25,15 @@ Proves:
 - `app/sample-data.js` syntax passed `node --check`.
 
 Does not prove phone touch UX or browser rendering.
+
+
+## Merge / main validation
+
+Merged main source:
+`02da06832a3990d0557d0c3a45cdbaf8d615e7e4`
+
+GitHub Actions Validate:
+`36358360607` — PASS.
+
+This confirms the merged tree retains repository validation and JavaScript syntax PASS.
+Phone/browser interaction remains unverified.
