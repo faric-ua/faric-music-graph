@@ -11,8 +11,14 @@ Default branch: `main`
 - project is isolated from YTM/Renault;
 - canonical workflow/contracts/release skeleton exist;
 - Termux aliases/menu/server tooling exists;
-- Termux:Widget installer exists and creates one top-level `Music Graph` shortcut without changing Renault/YTM shortcuts;
 - canonical phone setup is `docs/ua/TERMUX_SETUP.md`;
+- phone setup completed on source `2cc968cc0fece74de6f07872bbd7f0bf9975d90c`;
+- local checkout path verified: `$HOME/faric-music-graph`;
+- shared root verified: `/storage/emulated/0/Documents/FARIC-Music-Graph`;
+- Git status verified clean and aligned: `## main...origin/main`;
+- `$HOME/.shortcuts/Music Graph` exists and is executable;
+- existing `Renault`, `YTM Importer`, and `Phone Diagnostics` shortcuts remain present;
+- Termux:Widget UI refresh/tap smoke is still pending user confirmation;
 - initial known catalog scope: The Prodigy + Linkin Park;
 - prepared source catalog: 88 release/list entities and 863 normalized track-title entities;
 - channel target: `https://music.youtube.com/@faric_ua`;
@@ -24,11 +30,10 @@ Default branch: `main`
 
 ## Next exact work
 
-1. clone/pull main into `$HOME/faric-music-graph`;
-2. install aliases + Termux:Widget shortcut;
-3. run repository validation;
-4. run first phone/browser graph smoke;
-5. import the full prepared seed through the canonical data contract;
-6. inventory `@faric_ua` read-only.
+1. refresh Termux:Widget and confirm `Music Graph` is visible;
+2. tap `Music Graph` and confirm project menu opens;
+3. run first phone/browser graph smoke;
+4. import the full prepared seed through the canonical data contract;
+5. inventory `@faric_ua` read-only.
 
 Do not add YouTube write actions before read-only audit has browser/phone PASS.
