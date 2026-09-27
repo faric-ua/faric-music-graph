@@ -1,23 +1,76 @@
 # FARIC Music Graph
 
-Music knowledge graph and future YouTube/YouTube Music channel workspace for **@faric_ua**.
+Єдиний репозиторій для музичного каталогу, дослідження виконавців, візуального графа та майбутнього керування YouTube/YouTube Music каналом **@faric_ua**.
 
-Canonical assistant entry point: [START_HERE_ASSISTANT.md](START_HERE_ASSISTANT.md).
+**Нова assistant-сесія починає з [START_HERE_ASSISTANT.md](START_HERE_ASSISTANT.md).**
 
-This repository is being initialized from the proven workflow patterns used in `faric-ua/YTM` and `faric-ua/renault-docs-android`, adapted for a music catalog / graph product rather than copied blindly.
+## Початковий каталог
 
-Initial catalog scope:
 - The Prodigy
 - Linkin Park
 
-Primary product direction:
-- one normalized music graph;
-- year / genre / artist / release / track views;
-- remix → original relationships;
-- Best Of / Exclusive / Live / Demo / Remix facets;
-- YouTube / YouTube Music inventory for `@faric_ua`;
-- read-only channel audit first;
-- channel mutations only after preview + explicit confirmation;
-- web/PWA first, Android shell only when it adds real value.
+Підготовлений seed: **88 release/list entities** та **863 normalized track-title entities**. Повний seed буде перенесений окремою перевіреною data migration у межах v0.1.0.
 
-See `docs/architecture.md`, `PROJECT_STATUS.md`, and `BACKLOG.md`.
+## Головна ідея
+
+```text
+Рік → Жанр → Виконавець → Реліз → Трек
+                              ↘ Remix / Live / Demo / Edit
+                               ↘ YouTube / YTM item
+```
+
+Це **не жорстка файлова ієрархія**. Рік, жанр, виконавець, реліз, тип версії та стан каналу — фасети одного графа.
+
+## Канал
+
+Target: `https://music.youtube.com/@faric_ua`
+
+Перший етап інтеграції — **read-only audit**. Будь-які майбутні зміни каналу тільки через:
+
+`preview → explicit confirmation → write → read-after-write verification → audit`.
+
+## Технологічний напрям
+
+Спочатку web/PWA:
+- TypeScript;
+- React + Vite;
+- Graphology + Sigma.js;
+- IndexedDB;
+- Playwright + Vitest.
+
+Версії залежностей перевіряються перед scaffold, а не копіюються зі старих проєктів.
+
+Android package розглядається після прийняття web/PWA; перший кандидат — Capacitor. Kotlin/Compose — лише якщо з'явиться конкретна native-only вимога.
+
+## Termux
+
+Live checkout:
+
+`$HOME/faric-music-graph`
+
+Після clone:
+
+```bash
+bash tools/install_termux_aliases.sh
+source ~/.bashrc 2>/dev/null || true
+music-menu
+```
+
+Меню вміє безпечно update/serve/open/validate/status/stop. Воно навмисно **не робить автоматичний git add -A / commit / push**.
+
+## Документація
+
+- `CURRENT_HANDOFF.md` — точка продовження;
+- `PROJECT_STATUS.md` — поточний стан;
+- `BACKLOG.md` — roadmap;
+- `OPEN_FINDINGS.md` — відкриті findings;
+- `docs/assistant-kit/` — стабільні contracts;
+- `docs/v.*` — release/QA history;
+- `docs/catalog/` — knowledge notes по виконавцях;
+- `docs/WORKFLOW_LESSONS.md` — уроки, які не можна втрачати.
+
+## Поточний milestone
+
+**v0.1.0 — repository/contracts/graph foundation.**
+
+No remote YouTube write belongs to v0.1.0.
