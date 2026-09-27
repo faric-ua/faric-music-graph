@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>FARIC Music Graph</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header>
+    <div><strong>FARIC Music Graph</strong><span>v0.1.0 prototype</span></div>
+    <button id="reset">Скинути</button>
+  </header>
+  <aside>
+    <label>Пошук<input id="search" placeholder="трек, альбом, виконавець"></label>
+    <label>Виконавець<select id="artist"><option value="all">Усі</option></select></label>
+    <label>Режим<select id="mode">
+      <option value="artist">Виконавець → реліз → трек</option>
+      <option value="year">Рік → жанр → виконавець</option>
+    </select></label>
+    <div id="stats"></div>
+    <p class="note">UI-прототип. Повний Prodigy + Linkin Park seed буде імпортований окремою перевіреною міграцією.</p>
+  </aside>
+  <main>
+    <canvas id="graph"></canvas>
+    <section id="inspector"><button id="close">×</button><div id="details"></div></section>
+  </main>
+  <script src="sample-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
