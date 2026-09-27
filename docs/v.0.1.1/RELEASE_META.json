@@ -1,0 +1,12 @@
+{
+  "versionName": "0.1.1",
+  "phase": "development",
+  "feature": "mobile 2D interaction and Sphere 3D prototype",
+  "branch": "feat/v0.1.1-mobile-graph",
+  "testedSourceSha": null,
+  "ciRun": null,
+  "browserQaStatus": "PENDING",
+  "phoneQaStatus": "PENDING",
+  "channelReadAuditStatus": "PENDING",
+  "channelWriteAuditStatus": "NOT_ENABLED"
+}
