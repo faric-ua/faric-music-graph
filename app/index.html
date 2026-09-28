@@ -90,7 +90,7 @@
 
       <div id="stats"></div>
       <p class="note">
-        Tap: зайти всередину · свайп вправо від лівого краю: рівень назад · Track: деталі · tap по пустому: закрити деталі · long press: вибрати вузол · 2 пальці: масштаб · у 3D HOLD + drag: обертання
+        Tap: зайти всередину · tap по батьківській ghost-ноді / свайп вправо від лівого краю: рівень назад · Track: деталі · tap по пустому: закрити деталі/меню · long press: вибрати вузол · 2 пальці: масштаб · у 3D HOLD + drag: обертання
       </p>
     </div>
 
@@ -135,6 +135,8 @@
         aria-label="Показати керування вузлами"
       >⋮</button>
     </div>
+
+    <div id="nodeHint" class="node-hint" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <button
       id="orbitHold"

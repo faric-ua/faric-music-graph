@@ -172,3 +172,44 @@ Raw JSON is a debug view only, not the normal product UI.
 Renderer-local Fit should not stretch the graph to the full physical viewport.
 
 For the phone prototype, 2D Fit targets approximately 80% of the available canvas span so nodes and labels keep visible space from the screen boundaries. This is a presentation rule only; it does not change graph topology, scope or filters.
+
+## Spatial drill feedback
+
+Normal nested navigation should preserve a sense of place.
+
+On short-tap drill:
+1. show a brief node-kind hint near the tap;
+2. the tapped node becomes the focus of the next world;
+3. the next world expands outward from that focus over a short transition;
+4. the animation never becomes the source of semantic state.
+
+Example hint copy:
+- `Акаунт · FARIC UA`;
+- `Рік · 1994`;
+- `Жанр · Big Beat`;
+- `Виконавець · The Prodigy`;
+- `Реліз · Music for the Jilted Generation`;
+- `Трек · Voodoo People`.
+
+Hints fade automatically and never require dismissal.
+
+## Sphere spatial hierarchy
+
+Sphere 3D should communicate both the current world and the path that led to it.
+
+Prototype rule:
+- current scope = center focus node;
+- current children/visible neighbors = distributed around a sphere;
+- previous scopes = low-opacity depth-trail ghosts behind the current focus;
+- parent ghost tap = semantic jump back to that ancestor;
+- HOLD/ORBIT rotates the current sphere and its links together.
+
+The depth trail is contextual background, not a second source of graph truth.
+
+## Empty-space dismissal
+
+On phone, a short tap on empty graph space dismisses transient overlays in this order-independent sense:
+- Track details close if open;
+- the `⋮` advanced node-control palette closes if open.
+
+The explicit × / menu controls remain available.
