@@ -91,7 +91,7 @@ Adjustment:
 
 
 ## UX-005 — Tap-first nested drill
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Real-phone feedback: ordinary browsing should feel like opening nested music worlds, not selecting a node and then hunting for a separate Enter command.
 
@@ -103,7 +103,7 @@ Implemented interaction:
 - movement threshold prevents normal drag from being interpreted as tap.
 
 ## UX-006 — Track detail readability
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Real-phone screenshots confirmed the card/skin direction is acceptable, but the default Track surface exposed too much developer terminology.
 
@@ -113,7 +113,7 @@ Adjustment:
 - no data is removed or invented.
 
 ## UX-007 — Sphere 3D HOLD / ORBIT gesture
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Requested mobile gesture model:
 - normal 3D drag pans/moves the sphere on screen;
@@ -121,3 +121,10 @@ Requested mobile gesture model:
 - release returns drag to pan immediately;
 - pinch remains zoom;
 - the gesture modifier is renderer-local and does not mutate semantic graph state.
+
+
+Merged UX revision evidence:
+- PR #23;
+- runtime/code baseline `4b89444c795e2a17e34984087ea24065f7abc111`;
+- PR validation `36444841889` — PASS;
+- post-merge main validation `36444887504` — PASS.
