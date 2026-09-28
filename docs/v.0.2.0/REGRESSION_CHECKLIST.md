@@ -162,3 +162,12 @@
 - [x] confirmed expansion reaches the predicted scoped visible-node count;
 - [x] Collapse All uses the same scoped bulk IDs;
 - [x] missing browser control/navigation runtime definitions are now CI-asserted.
+
+
+## Final automated validation gate
+- [x] repository/static validation PASS;
+- [x] JavaScript syntax PASS;
+- [x] all v0.2.0 semantic/unit suites PASS in one CI run;
+- [x] canonical Account fixture conforms to JSON Schema;
+- [x] schema negative controls cover required/type/const/additionalProperties;
+- [x] Git whitespace check PASS.

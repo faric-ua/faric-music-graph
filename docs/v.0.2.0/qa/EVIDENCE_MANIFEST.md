@@ -338,3 +338,36 @@ Boundary:
 - the immediate-expansion threshold remains intentionally unmeasured until real target-phone performance QA;
 - confirmation-dialog rotation restoration is not claimed; losing this pre-action dialog is Cancel-equivalent and cannot execute expansion;
 - no remote action is involved.
+
+
+## Final static/unit/schema validation gate — 2026-09-28
+
+Tested source:
+`acb642f40bb9bf6f3567dd15aa4050e0e9c7a713`
+
+CI:
+`36376536482` — PASS.
+
+One run verified:
+- repository foundation/static validation;
+- JavaScript syntax across app/test modules;
+- GraphSessionState semantics;
+- nested projection semantics;
+- Account model and no-secret contract;
+- adaptive filter draft/apply contract;
+- node-control command surface;
+- breadcrumb/shared navigation;
+- canonical Account → Year → Genre → Artist → Release → Track drill;
+- structured terminal Track details;
+- semantic session restore/no-replay behavior;
+- Expand All predicted-size guard and Cancel=no-op;
+- JSON Schema conformance for `data/accounts.fixture.json` against `data/schemas/account.schema.json`;
+- Git whitespace cleanliness.
+
+Schema gate negative controls prove enforcement of:
+- required fields;
+- const values;
+- union types;
+- `additionalProperties=false`.
+
+This closes automated/static validation only. Browser/phone QA remains explicitly NOT RUN.
