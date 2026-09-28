@@ -203,3 +203,46 @@ Not yet proven:
 - Android/WebView behavior.
 
 These remain explicit later QA gates.
+
+
+## Canonical Nested 3D drill projection — 2026-09-28
+
+Implementation source:
+`802d652d2cfc57b95ab0cd02685c1c99f3465b04`
+
+CI:
+`36369595825` — PASS.
+
+Automated evidence:
+- repository validation PASS;
+- JavaScript syntax PASS;
+- all prior state/projection/account/filter/node-control/breadcrumb suites remain PASS;
+- canonical nested-drill suite PASS;
+- Git whitespace check PASS.
+
+Verified semantic path:
+`Universe → FARIC UA → 1994 → Big Beat → The Prodigy → Music for the Jilted Generation → Voodoo People`.
+
+Verified:
+- Universe has two Account nodes from the account fixture;
+- Account → Year → Genre → Artist → Release → Track sequence is enforced by the projection engine;
+- Track scope is terminal;
+- canonical IDs survive contextual projection;
+- one canonical release can produce multiple contextual IDs under different genre paths;
+- contextual IDs are unique;
+- non-navigation Account relationship remains visible when both Accounts are visible;
+- ancestor search enrichment can keep the 2003 path visible for query `Numb`;
+- browser Account fixture is semantically identical to `data/accounts.fixture.json`;
+- prototype assignments are rejected unless explicitly marked `PROTOTYPE_ONLY_NOT_ACCOUNT_INVENTORY`.
+
+Truth boundary:
+- the browser sample contains only 7 releases;
+- `@faric_ua` account assignment in this prototype is not a live account inventory claim;
+- prepared 88 release / 863 track migration remains pending;
+- no YouTube read/write mutation occurred.
+
+Not yet proven:
+- actual browser visual correctness;
+- touch/gesture usability;
+- phone performance;
+- Android/WebView behavior.

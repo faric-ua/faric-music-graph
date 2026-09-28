@@ -107,3 +107,19 @@
 - [x] header and floating Home share one handler;
 - [x] ancestor breadcrumb jump dispatches `JUMP_TO_DEPTH`;
 - [x] breadcrumb container is horizontally scrollable.
+
+
+## Automated canonical nested-drill contract
+- [x] Universe projects both Account fixtures;
+- [x] FARIC UA Account projects Year worlds from the sample assignment;
+- [x] 1994 projects contextual Genre worlds;
+- [x] Big Beat projects The Prodigy;
+- [x] The Prodigy projects Music for the Jilted Generation;
+- [x] the Release projects its Track children;
+- [x] entering Voodoo People produces terminal Track scope;
+- [x] deep breadcrumb contains all seven hierarchy levels;
+- [x] contextual IDs remain unique;
+- [x] repeated contextual releases preserve one canonical release ID;
+- [x] browser Account fixture matches canonical account JSON;
+- [x] sample assignments cannot load unless explicitly marked non-inventory;
+- [x] descendant-search enrichment preserves paths to matching content.
