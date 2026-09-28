@@ -42,3 +42,34 @@ Status: OPEN MEASUREMENT / SAFE GUARD IMPLEMENTED.
 
 Until real target-phone measurement establishes a safe immediate node budget, non-trivial Expand All requires explicit confirmation. No production threshold is guessed in code or docs.
 
+## BUG-002 — Non-Track tap opened raw debug JSON and left Enter stale
+Status: FIX IMPLEMENTED / PHONE RETEST PENDING.
+
+Found during real-phone v0.2.0 QA on 2026-09-28.
+
+Observed:
+- tapping `FARIC UA` selected the Account but immediately opened a raw JSON debug inspector;
+- the inspector obscured the graph/control palette on mobile;
+- `canEnter` was still taken from the pre-selection projected world, so the visible Enter/→ control could remain disabled until another rebuild.
+
+Fix:
+- Account/Year/Genre/Artist/Release tap now performs selection only;
+- automatic inspector opening is restricted to terminal Track nodes;
+- selection triggers a projection rebuild so Enter/expand capabilities reflect the new selection immediately;
+- legacy non-Track debug inspector rendering is removed from the normal product path.
+
+Phone recheck:
+- select `FARIC UA`;
+- verify no JSON inspector opens;
+- verify →/Enter becomes enabled immediately;
+- enter Account and continue canonical drill.
+
+## UX-004 — Compact mobile graph controls
+Status: IMPLEMENTED / PHONE RETEST PENDING.
+
+Real-phone feedback: persistent right-side node controls plus bottom-right zoom controls consume too much graph space.
+
+Adjustment:
+- mobile zoom `− / +` moved into one compact top-right graph row;
+- node controls are hidden by default on mobile and opened from a compact `⋮` button in the same row;
+- desktop floating palette behavior remains unchanged.
