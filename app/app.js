@@ -11,10 +11,11 @@ const F=window.FilterModel;
 const N=window.NodeControls;
 const NAV=window.NavigationUi;
 const W=window.NestedWorldModel;
+const T=window.TrackDetails;
 const X=window.MUSIC_PROTOTYPE_FIXTURES;
 
-if(!G||!P||!F||!N||!NAV||!W||!X){
-  throw new Error("Music Graph: nested world dependencies are required");
+if(!G||!P||!F||!N||!NAV||!W||!T||!X){
+  throw new Error("Music Graph: nested world and Track detail dependencies are required");
 }
 
 const canonicalPrototype=P.createProjectionGraph(
@@ -185,8 +186,15 @@ function applyDraftFilters(){
   });
   syncDraftControls();
   renderFilterState();
+  graphSession=G.reducer(graphSession,{
+    type:G.COMMANDS.SELECT_NODE,
+    node:null
+  });
+  graphSession=G.reducer(graphSession,{
+    type:G.COMMANDS.CLOSE_INSPECTOR
+  });
   state.selectedId=null;
-  $("#inspector").classList.remove("open");
+  $("#inspector").classList.remove("open","track-inspector");
   rebuild();
   fitView();
 }
@@ -293,8 +301,11 @@ function rebuild(){
       type:G.COMMANDS.SELECT_NODE,
       node:null
     });
+    graphSession=G.reducer(graphSession,{
+      type:G.COMMANDS.CLOSE_INSPECTOR
+    });
     state.selectedId=null;
-    $("#inspector").classList.remove("open");
+    $("#inspector").classList.remove("open","track-inspector");
   }else{
     state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
   }
@@ -436,15 +447,180 @@ function draw(){
   }
 }
 
-function showNode(n){
-  state.selectedId=n.id;
-  setGraphSession(G.reducer(graphSession,{
-    type:G.COMMANDS.SELECT_NODE,
-    node:{id:n.id,kind:n.kind,label:n.label}
-  }));
-  const details=$("#details");
-  details.textContent="";
+function detailText(value){
+  return value==null||value===""?"Невідомо":String(value);
+}
 
+function appendDetailRows(parent,title,rows){
+  const section=document.createElement("section");
+  section.className="track-detail-group";
+
+  const heading=document.createElement("h3");
+  heading.textContent=title;
+  section.append(heading);
+
+  const list=document.createElement("dl");
+  list.className="track-detail-kv";
+
+  for(const row of rows){
+    const term=document.createElement("dt");
+    term.textContent=row.label;
+    const value=document.createElement("dd");
+    value.textContent=detailText(row.value);
+    if(row.mono)value.className="track-detail-code";
+    list.append(term,value);
+  }
+
+  section.append(list);
+  parent.append(section);
+}
+
+function appendDetailItems(parent,title,items,emptyText){
+  const section=document.createElement("section");
+  section.className="track-detail-group";
+
+  const heading=document.createElement("h3");
+  heading.textContent=title;
+  section.append(heading);
+
+  if(!items.length){
+    const empty=document.createElement("p");
+    empty.className="track-detail-empty";
+    empty.textContent=emptyText||"Невідомо";
+    section.append(empty);
+  }else{
+    const list=document.createElement("ul");
+    list.className="track-detail-list";
+    for(const text of items){
+      const item=document.createElement("li");
+      item.textContent=text;
+      list.append(item);
+    }
+    section.append(list);
+  }
+
+  parent.append(section);
+}
+
+function renderTrackDetails(container,model){
+  const article=document.createElement("article");
+  article.className="track-detail";
+
+  const header=document.createElement("header");
+  header.className="track-detail-header";
+
+  const pill=document.createElement("span");
+  pill.className="pill";
+  pill.textContent="Track";
+
+  const title=document.createElement("h2");
+  title.textContent=model.identity.title;
+
+  const terminal=document.createElement("span");
+  terminal.className="track-detail-terminal";
+  terminal.textContent="Термінальний вузол";
+
+  header.append(pill,title,terminal);
+  article.append(header);
+
+  appendDetailRows(article,"Ідентичність треку",[
+    {label:"Canonical ID",value:model.identity.canonicalId,mono:true},
+    {label:"Projection ID",value:model.identity.projectionId,mono:true},
+    {label:"Позиція в релізі",value:model.identity.position}
+  ]);
+
+  appendDetailRows(article,"Поточний контекст",[
+    {label:"Акаунт",value:model.currentContext.account&&model.currentContext.account.label},
+    {label:"Рік",value:model.currentContext.year&&model.currentContext.year.label},
+    {label:"Жанр",value:model.currentContext.genre&&model.currentContext.genre.label},
+    {label:"Виконавець",value:model.currentContext.artist&&model.currentContext.artist.name},
+    {label:"Реліз",value:model.currentContext.release&&model.currentContext.release.title}
+  ]);
+
+  appendDetailRows(article,"Версія / зв’язки",[
+    {label:"TrackVersion",value:model.version.state==="unmodeled"?"Ще не змодельовано":model.version.state},
+    {label:"Version relationships",value:model.version.relationships.length||"Невідомо"},
+    {label:"Verification",value:model.version.verification}
+  ]);
+
+  appendDetailItems(
+    article,
+    "Виконавці + релізи",
+    [
+      ...model.appearances.artists.map(item=>"Виконавець: "+item.name+" · "+item.canonicalId),
+      ...model.appearances.releases.map(item=>
+        "Реліз: "+item.title+
+        (item.year==null?"":" · "+item.year)+
+        (item.type?" · "+item.type:"")+
+        " · "+item.canonicalId
+      )
+    ],
+    "Немає структурованих даних."
+  );
+
+  appendDetailItems(
+    article,
+    "Акаунти + плейлисти",
+    [
+      ...model.appearances.accounts.map(item=>
+        item.label+
+        (item.handle?" · "+item.handle:"")+
+        " · "+item.catalogAssignmentStatus
+      ),
+      "Плейлисти: "+(model.playlists.state==="unknown"?"Невідомо":model.playlists.state)
+    ],
+    "Невідомо"
+  );
+
+  appendDetailRows(article,"YouTube / YouTube Music",[
+    {label:"YouTube videoId",value:model.externalMedia.youtube.videoId,mono:true},
+    {label:"YouTube URL",value:model.externalMedia.youtube.url,mono:true},
+    {label:"YTM itemId",value:model.externalMedia.youtubeMusic.itemId,mono:true},
+    {label:"YTM URL",value:model.externalMedia.youtubeMusic.url,mono:true}
+  ]);
+
+  appendDetailRows(article,"Доступність / тривалість",[
+    {label:"Availability",value:model.availability.state},
+    {
+      label:"Duration",
+      value:model.availability.durationSeconds==null
+        ?"Невідомо"
+        :model.availability.durationSeconds+" s"
+    }
+  ]);
+
+  appendDetailRows(article,"Походження / перевірка",[
+    {label:"Prototype only",value:model.provenance.prototypeOnly?"Так":"Ні"},
+    {label:"Assignment status",value:model.provenance.assignmentStatus,mono:true},
+    {
+      label:"Live account inventory",
+      value:model.provenance.liveAccountInventoryVerified?"Перевірено":"Не перевірено"
+    },
+    {label:"Duplicate/mismatch review",value:model.review.status}
+  ]);
+
+  const warningSection=document.createElement("section");
+  warningSection.className="track-detail-group";
+  const warningHeading=document.createElement("h3");
+  warningHeading.textContent="Попередження";
+  warningSection.append(warningHeading);
+
+  const warnings=document.createElement("ul");
+  warnings.className="track-detail-list track-detail-warnings";
+  for(const warning of model.warnings){
+    const item=document.createElement("li");
+    item.className="track-detail-warning";
+    item.dataset.code=warning.code;
+    item.textContent=warning.message;
+    warnings.append(item);
+  }
+  warningSection.append(warnings);
+  article.append(warningSection);
+
+  container.append(article);
+}
+
+function renderDebugNodeDetails(container,n){
   const pill=document.createElement("span");
   pill.className="pill";
   pill.textContent=n.kind;
@@ -464,8 +640,37 @@ function showNode(n){
     projection:n.projection||null
   },null,2);
 
-  details.append(pill,h,pre);
-  $("#inspector").classList.add("open");
+  container.append(pill,h,pre);
+}
+
+function showNode(n){
+  state.selectedId=n.id;
+  let next=G.reducer(graphSession,{
+    type:G.COMMANDS.SELECT_NODE,
+    node:{id:n.id,kind:n.kind,label:n.label}
+  });
+  next=G.reducer(next,{
+    type:G.COMMANDS.OPEN_INSPECTOR,
+    nodeId:n.id,
+    mode:n.kind==="track"?"track-terminal":"node-debug"
+  });
+  setGraphSession(next);
+
+  const details=$("#details");
+  const inspector=$("#inspector");
+  details.textContent="";
+  inspector.classList.toggle("track-inspector",n.kind==="track");
+
+  if(n.kind==="track"){
+    const model=T.buildTrackDetails(canonicalPrototype,n.id,{
+      assignmentStatus:X.assignments.status
+    });
+    renderTrackDetails(details,model);
+  }else{
+    renderDebugNodeDetails(details,n);
+  }
+
+  inspector.classList.add("open");
   draw();
 }
 
@@ -731,12 +936,16 @@ navUi.back.onclick=goBackScope;
 navUi.home.onclick=goHomeScope;
 
 $("#close").onclick=()=>{
-  $("#inspector").classList.remove("open");
+  $("#inspector").classList.remove("open","track-inspector");
   state.selectedId=null;
-  dispatchGraph({
+  let next=G.reducer(graphSession,{
     type:G.COMMANDS.SELECT_NODE,
     node:null
   });
+  next=G.reducer(next,{
+    type:G.COMMANDS.CLOSE_INSPECTOR
+  });
+  setGraphSession(next);
   draw();
 };
 

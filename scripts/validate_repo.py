@@ -26,6 +26,8 @@ required = [
     "app/prototype-fixtures.js",
     "app/nested-world-model.js",
     "scripts/test_nested_world.js",
+    "app/track-details.js",
+    "scripts/test_track_details.js",
 ]
 
 errors = []
