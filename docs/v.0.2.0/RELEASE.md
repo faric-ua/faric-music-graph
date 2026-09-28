@@ -128,3 +128,32 @@ Evidence level:
 automated/static only. Browser portrait/landscape and real-phone gesture/filter acceptance remain pending.
 
 Next unit: floating node-control palette and command wiring.
+
+
+## Implementation checkpoint — Floating node controls
+
+Added:
+- persistent floating node-control palette;
+- approximately 50%-transparent palette surface;
+- minimum 48px touch targets;
+- Expand All / Collapse All;
+- Expand selected / Collapse selected;
+- Enter / Back / Home / Fit;
+- capability-driven enabled/disabled states;
+- selection wiring into `GraphSessionState`;
+- temporary prototype visibility adapter so expand/collapse and scope navigation are visible on the existing Canvas prototype;
+- separate zoom controls retained outside the semantic node palette.
+
+Tested source:
+`c22d538e80b70632ef54520e422bdb6ca05c5c2f`
+
+CI:
+`36368864096` — PASS.
+
+Evidence level:
+automated/static only. Browser and real-phone ergonomics are still pending.
+
+Important:
+the temporary Canvas visibility adapter is not the final nested-world projection. The canonical Account → Year → Genre → Artist → Release → Track renderer projection remains a later checklist item.
+
+Next unit: breadcrumb + Enter/Back/Home navigation surface.

@@ -100,10 +100,25 @@
 
     <div id="viewBadge">2D Map</div>
 
-    <div id="graphControls" aria-label="Graph controls">
+    <div id="nodeControls" class="node-controls" aria-label="Керування вузлами">
+      <div class="node-control-group" aria-label="Видимість">
+        <button id="expandAll" type="button" aria-label="Розгорнути всі вузли">+ all</button>
+        <button id="collapseAll" type="button" aria-label="Згорнути всі вузли">− all</button>
+        <button id="expandNode" type="button" aria-label="Розгорнути вибраний вузол">+ node</button>
+        <button id="collapseNode" type="button" aria-label="Згорнути вибраний вузол">− node</button>
+      </div>
+      <div class="node-control-group" aria-label="Навігація">
+        <button id="backScope" type="button" aria-label="Назад">←</button>
+        <button id="enterNode" type="button" aria-label="Увійти у вибраний вузол">→</button>
+        <button id="homeScope" type="button" aria-label="До Universe">Home</button>
+        <button id="fit" type="button" aria-label="Вмістити граф">Fit</button>
+      </div>
+      <div id="nodeControlStatus" class="node-control-status">Universe</div>
+    </div>
+
+    <div id="zoomControls" class="zoom-controls" aria-label="Масштаб">
       <button id="zoomIn" type="button" aria-label="Збільшити">+</button>
       <button id="zoomOut" type="button" aria-label="Зменшити">−</button>
-      <button id="fit" type="button">Fit</button>
     </div>
 
     <section id="inspector" aria-live="polite">
@@ -115,6 +130,7 @@
   <script src="sample-data.js"></script>
   <script src="graph-state.js"></script>
   <script src="filter-model.js"></script>
+  <script src="node-controls.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

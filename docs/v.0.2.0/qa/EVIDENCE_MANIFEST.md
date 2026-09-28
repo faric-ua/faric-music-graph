@@ -132,3 +132,41 @@ Not proven by this checkpoint:
 - Android/WebView behavior.
 
 Those remain later QA gates.
+
+
+## Floating node-control palette — 2026-09-28
+
+Implementation source:
+`c22d538e80b70632ef54520e422bdb6ca05c5c2f`
+
+CI:
+`36368864096` — PASS.
+
+Automated evidence:
+- repository validation PASS;
+- JavaScript syntax PASS;
+- prior semantic/projection/account/filter suites remain PASS;
+- new node-control palette model/wiring tests PASS;
+- Git whitespace check PASS.
+
+Implemented behavior:
+- floating palette includes Expand All / Collapse All;
+- floating palette includes Expand selected / Collapse selected;
+- floating palette includes Back / Enter / Home / Fit;
+- palette uses a roughly 50%-transparent container;
+- node buttons keep minimum 48px touch targets;
+- availability is computed from selected node, drill path, current scope, expanded IDs and graph child relationships;
+- selecting a node updates `GraphSessionState`;
+- Enter pushes semantic scope/history;
+- Back/Home use reducer navigation;
+- expand/collapse membership affects visible descendants in the current Canvas prototype;
+- Fit remains a renderer-local camera action.
+
+Boundary:
+the current Canvas visibility adapter exists only to exercise command wiring. It does not prove or replace the future canonical nested 3D projection through Account → Year → Genre → Artist → Release → Track.
+
+Not yet proven:
+- browser layout/occlusion behavior;
+- portrait/landscape touch comfort;
+- phone usability;
+- final renderer behavior.

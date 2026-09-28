@@ -19,6 +19,8 @@ required = [
     "data/schemas/account.schema.json",
     "app/filter-model.js",
     "scripts/test_filter_panel.js",
+    "app/node-controls.js",
+    "scripts/test_node_controls.js",
 ]
 
 errors = []
