@@ -216,6 +216,40 @@
     return total;
   }
 
+  function collectBulkExpandNodeIds(graph,nodeId,filters){
+    const visited=new Set();
+    const expandable=new Set();
+
+    function visit(parentId){
+      if(visited.has(parentId))return;
+      visited.add(parentId);
+
+      const parent=graph.byId.get(parentId);
+      if(!parent)return;
+
+      const children=directChildren(
+        graph,
+        parentId,
+        nextKind(parent.kind),
+        filters||{}
+      );
+
+      for(const child of children){
+        const childKind=nextKind(child.kind);
+        const grandChildren=childKind
+          ?directChildren(graph,child.id,childKind,filters||{})
+          :[];
+        if(grandChildren.length>0){
+          expandable.add(child.id);
+        }
+        visit(child.id);
+      }
+    }
+
+    visit(nodeId);
+    return [...expandable];
+  }
+
   function projectionNode(entry,state,graph){
     const n=entry.node;
     const childKind=nextKind(n.kind);
@@ -290,6 +324,8 @@
     }));
 
     const expandableNodeIds=nodes.filter(n=>n.projection.expandable).map(n=>n.id);
+    const bulkExpandNodeIds=collectBulkExpandNodeIds(graph,scope.id,filters);
+    const bulkExpandSet=new Set(bulkExpandNodeIds);
     const selected=state.selectedNode&&graph.byId.get(state.selectedNode.id);
 
     return {
@@ -303,14 +339,15 @@
       filters:clone(filters),
       selectedNode:selected?clone(selected):null,
       expandableNodeIds,
+      bulkExpandNodeIds,
       actions:{
         canBack:(state.drillPath||[]).length>1,
         canHome:scope.kind!=="universe",
         canEnter:Boolean(selected)&&nextKind(selected.kind)!=null,
         canExpandSelected:Boolean(selected)&&expandableNodeIds.includes(selected.id),
         canCollapseSelected:Boolean(selected)&&(state.expandedNodeIds||[]).includes(selected.id),
-        canExpandAll:expandableNodeIds.some(id=>!(state.expandedNodeIds||[]).includes(id)),
-        canCollapseAll:(state.expandedNodeIds||[]).some(id=>visibleIds.has(id)),
+        canExpandAll:bulkExpandNodeIds.some(id=>!(state.expandedNodeIds||[]).includes(id)),
+        canCollapseAll:(state.expandedNodeIds||[]).some(id=>bulkExpandSet.has(id)),
         canFit:nodes.length>0
       },
       metrics:{
@@ -332,6 +369,7 @@
     nextKind,
     matchesFilters,
     countReachable,
+    collectBulkExpandNodeIds,
     projectWorld
   });
 });

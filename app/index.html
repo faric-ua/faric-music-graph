@@ -132,6 +132,25 @@
     </section>
   </main>
 
+  <div id="expandGuard" class="expand-guard" hidden>
+    <section class="expand-guard-dialog" role="dialog" aria-modal="true" aria-labelledby="expandGuardTitle">
+      <h2 id="expandGuardTitle">Розгорнути всі вузли?</h2>
+      <p id="expandGuardSummary"></p>
+      <dl class="expand-guard-metrics">
+        <dt>Зараз видно</dt>
+        <dd id="expandGuardVisible">0</dd>
+        <dt>Після full expand</dt>
+        <dd id="expandGuardPredicted">0</dd>
+        <dt>Перевірений auto-limit</dt>
+        <dd id="expandGuardBudget">Ще не виміряно</dd>
+      </dl>
+      <div class="expand-guard-actions">
+        <button id="expandGuardCancel" type="button">Скасувати</button>
+        <button id="expandGuardConfirm" class="primary-action" type="button">Розгорнути</button>
+      </div>
+    </section>
+  </div>
+
   <script src="sample-data.js"></script>
   <script src="prototype-fixtures.js"></script>
   <script src="graph-state.js"></script>
@@ -143,6 +162,7 @@
   <script src="nested-world-model.js"></script>
   <script src="track-details.js"></script>
   <script src="session-persistence.js"></script>
+  <script src="expand-all-guard.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

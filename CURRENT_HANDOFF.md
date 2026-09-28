@@ -173,7 +173,25 @@ Semantic session-restoration checkpoint:
 - CI run `36375948517` — PASS;
 - camera/orbit persistence remains optional/later and phone/WebView lifecycle acceptance remains pending.
 
+Expand All performance-guard checkpoint:
+- implementation branch: `feat/v0.2.0-expand-all-guard`;
+- source: `f3e1db37a0ed620f5e1c51c9b05937e6ea373a87`;
+- projection now exposes scope-limited `bulkExpandNodeIds`, so bulk commands no longer write expandable IDs from unrelated worlds into the session;
+- predicted fully-expanded node count is used as the guard input;
+- no permanent node threshold was guessed: `EXPAND_ALL_TESTED_IMMEDIATE_NODE_LIMIT=null` until measured on the real target phone;
+- with an unmeasured budget, non-trivial Expand All requires explicit confirmation;
+- Cancel returns the exact unchanged semantic session object;
+- a future measured limit can allow immediate application below the tested budget and confirmation above it;
+- confirmation UI shows current visible count, predicted count/additional nodes and whether a tested budget exists;
+- Collapse All now uses the same scope-limited bulk ID set;
+- CI run `36376362499` — PASS.
+
+Runtime wiring correction discovered during this step:
+- `currentControlCapabilities()`, `renderNavigationState()` and `renderNodeControls()` had been accidentally lost from `app.js` during earlier canonical-projection work while call sites remained;
+- prior CI did not execute the browser entrypoint, so syntax/unit checks did not catch the missing runtime functions;
+- the functions were restored and a static runtime-wiring assertion was added to prevent recurrence.
+
 First unchecked step:
-**add the performance guard for Expand All using the projection engine’s predicted expansion size, preserving Cancel as a no-op.**
+**complete the final static/unit/schema validation gate; JSON Schema conformance is the remaining gap before that checkbox can be evidence-backed.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
