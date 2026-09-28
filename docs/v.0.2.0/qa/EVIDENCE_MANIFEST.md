@@ -170,3 +170,36 @@ Not yet proven:
 - portrait/landscape touch comfort;
 - phone usability;
 - final renderer behavior.
+
+
+## Breadcrumb + shared navigation surface — 2026-09-28
+
+Implementation source:
+`c0f95baef1d1110ef2f3ec228605d996fe8eb006`
+
+CI:
+`36369197076` — PASS.
+
+Automated evidence:
+- repository validation PASS;
+- JavaScript syntax PASS;
+- all previous state/projection/account/filter/node-control suites remain PASS;
+- new breadcrumb/navigation contract tests PASS;
+- Git whitespace check PASS.
+
+Implemented behavior:
+- breadcrumb is generated from semantic `drillPath`;
+- current scope is marked as current/non-clickable;
+- ancestors dispatch direct `JUMP_TO_DEPTH`;
+- breadcrumb is horizontally scrollable for deep paths;
+- header exposes compact Back/Home/Enter navigation;
+- header and floating palette call the same Enter/Back/Home functions;
+- capability state prevents invalid Enter and disables Back/Home at Universe.
+
+Not yet proven:
+- header crowding on real narrow devices;
+- breadcrumb touch ergonomics;
+- portrait/landscape visual fit;
+- Android/WebView behavior.
+
+These remain explicit later QA gates.

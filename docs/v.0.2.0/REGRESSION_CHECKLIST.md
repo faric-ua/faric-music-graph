@@ -93,3 +93,17 @@
 - [x] terminal node cannot Enter;
 - [x] Back/Home capability follows drill scope;
 - [x] expanded selected node switches from Expand to Collapse capability.
+
+
+## Automated breadcrumb/navigation contract
+- [x] Universe breadcrumb is the initial current crumb;
+- [x] deep drill path emits ordered breadcrumb items;
+- [x] only ancestor crumbs are clickable;
+- [x] current crumb is non-clickable/current;
+- [x] Back/Home capability follows drill depth/scope;
+- [x] header Enter capability is supplied by the same semantic node capability as the floating palette;
+- [x] header and floating Enter share one handler;
+- [x] header and floating Back share one handler;
+- [x] header and floating Home share one handler;
+- [x] ancestor breadcrumb jump dispatches `JUMP_TO_DEPTH`;
+- [x] breadcrumb container is horizontally scrollable.
