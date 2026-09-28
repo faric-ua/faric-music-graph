@@ -381,8 +381,10 @@ Merge sequence:
 - PR #18 — Expand All performance guard;
 - PR #19 — final validation gate before phone QA.
 
-Exact merged phone-QA candidate:
+Validated runtime/code baseline:
 `f25cb380fe7b95a76abc56426bbdc8174ef04e27`
+
+A later docs-only handoff merge may advance `main` without changing app/runtime code; the real-phone record must therefore include the actual tested HEAD.
 
 Fresh validation:
 - PR #19 run `36435030701` — PASS;
