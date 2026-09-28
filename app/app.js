@@ -6,10 +6,11 @@ const $=s=>document.querySelector(s);
 const canvas=$("#graph");
 const ctx=canvas.getContext("2d");
 const G=window.GraphState;
+const NC=window.NodeControls;
 const F=window.FilterModel;
 
-if(!G||!F){
-  throw new Error("Music Graph: GraphState and FilterModel are required");
+if(!G||!NC||!F){
+  throw new Error("Music Graph: GraphState, NodeControls and FilterModel are required");
 }
 
 let graphSession=G.createInitialState({
@@ -62,9 +63,24 @@ const filterUi={
   apply:$("#applyFilters")
 };
 
+const nodeControlUi={
+  scope:$("#nodeControlScope"),
+  selection:$("#nodeControlSelection"),
+  expandAll:$("#expandAll"),
+  collapseAll:$("#collapseAll"),
+  expandNode:$("#expandNode"),
+  collapseNode:$("#collapseNode"),
+  back:$("#backScope"),
+  enter:$("#enterNode"),
+  home:$("#homeScope"),
+  fit:$("#fitView")
+};
+
 function setGraphSession(next){
   graphSession=next;
+  state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
   renderFilterState();
+  renderNodeControlState();
 }
 
 function dispatchGraph(action){
@@ -126,6 +142,63 @@ function renderFilterState(){
   filterUi.apply.disabled=!pending;
 }
 
+function currentNodeControlContext(){
+  const visibleNodeIds=state.nodes.map(n=>n.id);
+  const expandableNodeIds=[...new Set(state.edges.map(edge=>edge[0]))]
+    .filter(id=>visibleNodeIds.includes(id));
+
+  return {
+    visibleNodeIds,
+    expandableNodeIds,
+    // The legacy prototype does not expose the canonical Universe→Account drill
+    // hierarchy yet. Enter stays disabled until a projection marks a node enterable.
+    enterableNodeIds:[]
+  };
+}
+
+function renderNodeControlState(){
+  if(!nodeControlUi.scope)return;
+  const controls=NC.deriveControlState(graphSession,currentNodeControlContext());
+
+  nodeControlUi.scope.textContent="Scope: "+controls.scopeLabel;
+  nodeControlUi.selection.textContent=controls.selectedLabel
+    ?"Вибрано: "+controls.selectedLabel
+    :"Нічого не вибрано";
+
+  nodeControlUi.expandAll.disabled=!controls.canExpandAll;
+  nodeControlUi.collapseAll.disabled=!controls.canCollapseAll;
+  nodeControlUi.expandNode.disabled=!controls.canExpandSelected;
+  nodeControlUi.collapseNode.disabled=!controls.canCollapseSelected;
+  nodeControlUi.back.disabled=!controls.canBack;
+  nodeControlUi.enter.disabled=!controls.canEnter;
+  nodeControlUi.home.disabled=!controls.canHome;
+  nodeControlUi.fit.disabled=!controls.canFit;
+}
+
+function runNodeControl(command){
+  const next=NC.executeCommand({
+    graphState:G,
+    state:graphSession,
+    context:currentNodeControlContext(),
+    defaultFilters:F.defaultFilters,
+    fitView
+  },command);
+
+  if(next!==graphSession){
+    setGraphSession(next);
+  }else{
+    renderNodeControlState();
+  }
+
+  if(command===G.COMMANDS.ENTER_NODE||
+     command===G.COMMANDS.BACK_SCOPE||
+     command===G.COMMANDS.HOME_SCOPE){
+    $("#inspector").classList.remove("open");
+  }
+
+  draw();
+}
+
 function resetDraftFilters(){
   graphSession=G.reducer(graphSession,{
     type:G.COMMANDS.RESET_DRAFT_FILTERS,
@@ -146,7 +219,7 @@ function applyDraftFilters(){
   });
   syncDraftControls();
   renderFilterState();
-  state.selectedId=null;
+  dispatchGraph({type:G.COMMANDS.SELECT_NODE,node:null});
   $("#inspector").classList.remove("open");
   rebuild();
   fitView();
@@ -274,6 +347,7 @@ function rebuild(){
   const activeFilters=F.activeFilterCount(graphSession.appliedFilters);
   $("#stats").innerHTML="<b>"+releases.length+"</b> релізів у view<br><b>"+nodes.length+"</b> вузлів<br><b>"+activeFilters+"</b> активних фільтрів<br><b>"+(state.view==="map"?"2D Map":"Sphere 3D")+"</b>";
   $("#viewBadge").textContent=state.view==="map"?"2D Map":"Sphere 3D";
+  renderNodeControlState();
   draw();
 }
 
@@ -399,7 +473,10 @@ function draw(){
 }
 
 function showNode(n){
-  state.selectedId=n.id;
+  dispatchGraph({
+    type:G.COMMANDS.SELECT_NODE,
+    node:{id:n.id,kind:n.kind,label:n.label}
+  });
   const details=$("#details");
   details.textContent="";
 
@@ -582,13 +659,18 @@ canvas.addEventListener("wheel",e=>{
   zoomBy(e.deltaY<0?1.12:.89,pointFromEvent(e));
 },{passive:false});
 
-$("#zoomIn").onclick=()=>zoomBy(1.22);
-$("#zoomOut").onclick=()=>zoomBy(.82);
-$("#fit").onclick=fitView;
+nodeControlUi.expandAll.onclick=()=>runNodeControl(G.COMMANDS.EXPAND_ALL);
+nodeControlUi.collapseAll.onclick=()=>runNodeControl(G.COMMANDS.COLLAPSE_ALL);
+nodeControlUi.expandNode.onclick=()=>runNodeControl(G.COMMANDS.EXPAND_NODE);
+nodeControlUi.collapseNode.onclick=()=>runNodeControl(G.COMMANDS.COLLAPSE_NODE);
+nodeControlUi.back.onclick=()=>runNodeControl(G.COMMANDS.BACK_SCOPE);
+nodeControlUi.enter.onclick=()=>runNodeControl(G.COMMANDS.ENTER_NODE);
+nodeControlUi.home.onclick=()=>runNodeControl(G.COMMANDS.HOME_SCOPE);
+nodeControlUi.fit.onclick=()=>runNodeControl(G.COMMANDS.FIT_VIEW);
 
 $("#close").onclick=()=>{
   $("#inspector").classList.remove("open");
-  state.selectedId=null;
+  dispatchGraph({type:G.COMMANDS.SELECT_NODE,node:null});
   draw();
 };
 

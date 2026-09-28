@@ -16,6 +16,7 @@
     ENTER_NODE:"ENTER_NODE",
     BACK_SCOPE:"BACK_SCOPE",
     HOME_SCOPE:"HOME_SCOPE",
+    FIT_VIEW:"FIT_VIEW",
     JUMP_TO_DEPTH:"JUMP_TO_DEPTH",
     SET_DRAFT_FILTER:"SET_DRAFT_FILTER",
     RESET_DRAFT_FILTERS:"RESET_DRAFT_FILTERS",
@@ -276,6 +277,11 @@
 
       case COMMANDS.SET_FILTER_PANEL_OPEN:
         return {...state,filterPanelOpen:Boolean(a.open)};
+
+      case COMMANDS.FIT_VIEW:
+        // FIT_VIEW is intentionally transient: renderer adapters consume it without
+        // polluting the serializable GraphSessionState.
+        return state;
 
       case COMMANDS.SET_CAMERA:
         return {...state,camera:{...state.camera,...deepClone(a.camera||{})}};

@@ -100,11 +100,22 @@
 
     <div id="viewBadge">2D Map</div>
 
-    <div id="graphControls" aria-label="Graph controls">
-      <button id="zoomIn" type="button" aria-label="Збільшити">+</button>
-      <button id="zoomOut" type="button" aria-label="Зменшити">−</button>
-      <button id="fit" type="button">Fit</button>
-    </div>
+    <section id="nodeControls" class="node-control-palette" aria-label="Керування вузлами">
+      <div class="node-control-head">
+        <strong id="nodeControlScope">Universe</strong>
+        <span id="nodeControlSelection">Нічого не вибрано</span>
+      </div>
+      <div class="node-control-grid">
+        <button id="expandAll" type="button">Розкрити всі</button>
+        <button id="collapseAll" type="button">Згорнути всі</button>
+        <button id="expandNode" type="button">Розкрити вузол</button>
+        <button id="collapseNode" type="button">Згорнути вузол</button>
+        <button id="backScope" type="button">Назад</button>
+        <button id="enterNode" type="button">Увійти</button>
+        <button id="homeScope" type="button">Додому</button>
+        <button id="fitView" type="button">Fit</button>
+      </div>
+    </section>
 
     <section id="inspector" aria-live="polite">
       <button id="close" type="button" aria-label="Закрити">×</button>
@@ -114,6 +125,7 @@
 
   <script src="sample-data.js"></script>
   <script src="graph-state.js"></script>
+  <script src="node-controls.js"></script>
   <script src="filter-model.js"></script>
   <script src="app.js"></script>
 </body>
