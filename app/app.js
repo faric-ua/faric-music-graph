@@ -61,14 +61,18 @@ const state={
     .map(edge=>[edge.source,edge.target]),
   currentWorld:null,
   hit:[],
+  navigationHit:[],
   selectedId:null,
   pointers:new Map(),
-  gesture:null
+  gesture:null,
+  entryTransition:null,
+  hintTimer:null
 };
 
 const colors={
   universe:"#8b6cff",
   root:"#8b6cff",
+  account:"#9a7cff",
   artist:"#25c6f7",
   year:"#f4ad45",
   genre:"#39d98a",
@@ -94,6 +98,17 @@ const navUi={
 };
 
 const orbitUi=$("#orbitHold");
+const nodeHintUi=$("#nodeHint");
+
+const nodeKindLabels=Object.freeze({
+  universe:"Всесвіт",
+  account:"Акаунт",
+  year:"Рік",
+  genre:"Жанр",
+  artist:"Виконавець",
+  release:"Реліз",
+  track:"Трек"
+});
 
 const nodeUi={
   root:$("#nodeControls"),
@@ -364,35 +379,29 @@ function layoutMap(nodes){
 }
 
 function layoutSphere(nodes){
-  const levels={};
-  let maxLevel=0;
-  nodes.forEach(n=>{
-    maxLevel=Math.max(maxLevel,n.l);
-    (levels[n.l]??=[]).push(n);
-  });
+  const scopeId=graphSession.currentScope&&graphSession.currentScope.id;
+  const focus=nodes.find(n=>n.id===scopeId)||null;
+  if(focus){
+    focus.sx=0;
+    focus.sy=0;
+    focus.sz=0;
+    focus.sphereRole="focus";
+  }
 
-  Object.entries(levels).forEach(([levelText,list])=>{
-    const level=Number(levelText);
-    if(level===0){
-      list.forEach(n=>{
-        n.sx=0;
-        n.sy=1;
-        n.sz=0;
-      });
-      return;
-    }
+  const orbitNodes=nodes
+    .filter(n=>!focus||n.id!==focus.id)
+    .sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+  const count=orbitNodes.length;
+  const goldenAngle=Math.PI*(3-Math.sqrt(5));
 
-    const t=maxLevel<=1?0.5:(level-1)/Math.max(1,maxLevel-1);
-    const latitude=(58-t*116)*Math.PI/180;
-    const ring=Math.cos(latitude);
-    const offset=(level%2)*0.38;
-
-    list.forEach((n,i)=>{
-      const longitude=(i/Math.max(1,list.length))*Math.PI*2+offset;
-      n.sx=ring*Math.cos(longitude);
-      n.sy=Math.sin(latitude);
-      n.sz=ring*Math.sin(longitude);
-    });
+  orbitNodes.forEach((n,i)=>{
+    const y=count<=1?0:1-2*((i+.5)/count);
+    const ring=Math.sqrt(Math.max(0,1-y*y));
+    const theta=i*goldenAngle;
+    n.sx=ring*Math.cos(theta);
+    n.sy=y;
+    n.sz=ring*Math.sin(theta);
+    n.sphereRole="orbit";
   });
 }
 
@@ -494,6 +503,115 @@ function position(n){
   return state.view==="map"?mapPosition(n):spherePosition(n);
 }
 
+function showNodeHint(node,point,prefix){
+  if(!nodeHintUi||!node||!point)return;
+  if(state.hintTimer)clearTimeout(state.hintTimer);
+
+  const kind=nodeKindLabels[node.kind]||"Нода";
+  nodeHintUi.textContent=(prefix?prefix+" · ":"")+kind+" · "+node.label;
+  nodeHintUi.style.left=point.x+"px";
+  nodeHintUi.style.top=point.y+"px";
+  nodeHintUi.classList.remove("fading");
+  nodeHintUi.classList.add("visible");
+
+  state.hintTimer=setTimeout(()=>{
+    nodeHintUi.classList.add("fading");
+    state.hintTimer=setTimeout(()=>{
+      nodeHintUi.classList.remove("visible","fading");
+      state.hintTimer=null;
+    },220);
+  },760);
+}
+
+function startEntryTransition(fromPoint){
+  if(!state.entryTransition){
+    state.entryTransition={
+      from:{x:fromPoint.x,y:fromPoint.y},
+      startedAt:performance.now(),
+      duration:300
+    };
+  }
+
+  function tick(now){
+    const tr=state.entryTransition;
+    if(!tr)return;
+    if(now-tr.startedAt>=tr.duration){
+      state.entryTransition=null;
+      draw();
+      return;
+    }
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+function entryTransitionProgress(){
+  const tr=state.entryTransition;
+  if(!tr)return 1;
+  const raw=clamp((performance.now()-tr.startedAt)/tr.duration,0,1);
+  return 1-Math.pow(1-raw,3);
+}
+
+function drawScopeTrail(width,height){
+  state.navigationHit=[];
+  if(state.view!=="sphere")return;
+
+  const path=Array.isArray(graphSession.drillPath)?graphSession.drillPath:[];
+  if(path.length<=1)return;
+
+  const cx=width/2+state.spherePanX;
+  const cy=height/2+state.spherePanY;
+  const ancestors=path.slice(0,-1).slice(-3).reverse();
+
+  ancestors.forEach((node,index)=>{
+    const distance=index+1;
+    const x=cx-26*distance;
+    const y=cy+20*distance;
+    const radius=Math.max(7,13-distance*1.5);
+    const alpha=Math.max(.08,.30-distance*.065);
+
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.strokeStyle=colors[node.kind]||"#8b6cff";
+    ctx.fillStyle="rgba(139,108,255,.16)";
+    ctx.lineWidth=1.2;
+    ctx.beginPath();
+    ctx.moveTo(x,y);
+    ctx.lineTo(cx,cy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x,y,radius,0,Math.PI*2);
+    ctx.fill();
+    ctx.stroke();
+
+    if(index===0){
+      ctx.globalAlpha=.54;
+      ctx.fillStyle="#cbd3e6";
+      ctx.font="11px system-ui";
+      ctx.fillText("← "+node.label,x+radius+6,y+4);
+    }
+    ctx.restore();
+
+    state.navigationHit.push({
+      depth:path.length-2-index,
+      node,
+      x,
+      y,
+      r:Math.max(22,radius+7)
+    });
+  });
+}
+
+function navigationHitTest(point){
+  const candidates=(state.navigationHit||[])
+    .map(hit=>({...hit,d:Math.hypot(hit.x-point.x,hit.y-point.y)}))
+    .filter(hit=>hit.d<=hit.r)
+    .sort((a,b)=>a.d-b.d);
+  return candidates.length?candidates[0]:null;
+}
+
 function drawSphereGuide(width,height){
   const radius=Math.min(width,height)*0.37*state.sphereZoom;
   const cx=width/2+state.spherePanX;
@@ -520,19 +638,56 @@ function draw(){
 
   if(state.view==="sphere"){
     drawSphereGuide(r.width,r.height);
+    drawScopeTrail(r.width,r.height);
+  }else{
+    state.navigationHit=[];
   }
 
-  const byId=new Map(state.nodes.map(n=>[n.id,n]));
+  const transitionT=entryTransitionProgress();
+  const scopeId=graphSession.currentScope&&graphSession.currentScope.id;
+  const scopeNode=state.nodes.find(n=>n.id===scopeId)||null;
+  const scopeBase=scopeNode?position(scopeNode):{x:r.width/2,y:r.height/2,z:0,p:1};
+
+  function visualFor(n){
+    const base=position(n);
+    if(!state.entryTransition)return {p:base,alpha:1,scale:1};
+
+    if(n.id===scopeId){
+      return {
+        p:{
+          ...base,
+          x:state.entryTransition.from.x+(base.x-state.entryTransition.from.x)*transitionT,
+          y:state.entryTransition.from.y+(base.y-state.entryTransition.from.y)*transitionT
+        },
+        alpha:1,
+        scale:1.28-.28*transitionT
+      };
+    }
+
+    return {
+      p:{
+        ...base,
+        x:scopeBase.x+(base.x-scopeBase.x)*transitionT,
+        y:scopeBase.y+(base.y-scopeBase.y)*transitionT
+      },
+      alpha:transitionT,
+      scale:.72+.28*transitionT
+    };
+  }
+
+  const visualById=new Map(
+    state.nodes.map(n=>[n.id,{n,...visualFor(n)}])
+  );
 
   for(const [a,b] of state.edges){
-    const A=byId.get(a);
-    const B=byId.get(b);
+    const A=visualById.get(a);
+    const B=visualById.get(b);
     if(!A||!B)continue;
-    const pa=position(A);
-    const pb=position(B);
+    const pa=A.p;
+    const pb=B.p;
     const depth=state.view==="sphere"?clamp(((pa.z+pb.z)/2+1)/2,0,1):1;
     ctx.save();
-    ctx.globalAlpha=state.view==="sphere"?.14+.48*depth:.65;
+    ctx.globalAlpha=(state.view==="sphere"?.14+.48*depth:.65)*Math.min(A.alpha,B.alpha);
     ctx.strokeStyle="#4a5368";
     ctx.lineWidth=state.view==="sphere"?Math.max(.6,1.1*depth):1;
     ctx.beginPath();
@@ -542,7 +697,7 @@ function draw(){
     ctx.restore();
   }
 
-  const ordered=[...state.nodes].map(n=>({n,p:position(n)}));
+  const ordered=[...visualById.values()];
   if(state.view==="sphere")ordered.sort((a,b)=>a.p.z-b.p.z);
 
   state.hit=[];
@@ -550,12 +705,12 @@ function draw(){
     const n=item.n;
     const p=item.p;
     const base=n.r||8;
-    const depthScale=state.view==="sphere"?(.62+(p.z+1)*.26):state.scale;
+    const depthScale=(state.view==="sphere"?(.62+(p.z+1)*.26):state.scale)*item.scale;
     const rr=clamp(base*depthScale,4,30);
     const selected=n.id===state.selectedId;
 
     ctx.save();
-    ctx.globalAlpha=state.view==="sphere"?clamp(.38+(p.z+1)*.31,.3,1):1;
+    ctx.globalAlpha=(state.view==="sphere"?clamp(.38+(p.z+1)*.31,.3,1):1)*item.alpha;
     if(selected){
       ctx.beginPath();
       ctx.fillStyle="rgba(255,255,255,.20)";
@@ -841,6 +996,7 @@ function activateNode(n){
     return;
   }
 
+  const fromPoint=position(n);
   const semanticNode={id:n.id,kind:n.kind,label:n.label};
   let next=G.reducer(graphSession,{
     type:G.COMMANDS.SELECT_NODE,
@@ -853,12 +1009,18 @@ function activateNode(n){
     defaultFilters:F.defaultFilters()
   });
 
+  state.entryTransition={
+    from:{x:fromPoint.x,y:fromPoint.y},
+    startedAt:performance.now(),
+    duration:300
+  };
   setGraphSession(next);
   state.selectedId=null;
   syncDraftControls();
   setNodeControlsOpen(false);
   rebuild();
   fitView();
+  startEntryTransition(fromPoint);
 }
 
 function hitTest(p){
@@ -1033,13 +1195,28 @@ function endPointer(e){
     }
 
     if(g&&!g.multi&&g.moved<8){
+      const navigationTarget=navigationHitTest(end);
+      if(navigationTarget){
+        showNodeHint(navigationTarget.node,end,"Назад");
+        setNodeControlsOpen(false);
+        jumpToDepth(navigationTarget.depth);
+        state.gesture=null;
+        return;
+      }
+
       const node=hitTest(end);
       if(node){
+        showNodeHint(node,end);
         const heldFor=performance.now()-(g.startedAt||performance.now());
         if(heldFor>=450)selectNode(node);
         else activateNode(node);
-      }else if(graphSession.inspector&&graphSession.inspector.open){
-        closeInspector();
+      }else{
+        if(graphSession.inspector&&graphSession.inspector.open){
+          closeInspector();
+        }
+        if(nodeUi.root&&nodeUi.root.classList.contains("mobile-open")){
+          setNodeControlsOpen(false);
+        }
       }
     }
     state.gesture=null;
