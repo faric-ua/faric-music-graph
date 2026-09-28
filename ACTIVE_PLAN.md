@@ -30,7 +30,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Implement structured Track terminal details.
 - [x] Add restoration tests for drill path, filters, selected node and open panels.
 - [x] Add performance guard for Expand All.
-- [ ] Run static/unit/schema tests and CI.
+- [x] Run static/unit/schema tests and CI.
 - [ ] Run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA.
 - [ ] Decide production renderer from measured phone/full-seed evidence.
 - [ ] Migrate full The Prodigy + Linkin Park seed through the canonical graph.

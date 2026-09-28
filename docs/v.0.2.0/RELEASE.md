@@ -281,3 +281,20 @@ Evidence level:
 automated/static. Real phone benchmarking is still required to establish a non-null immediate-expansion limit.
 
 Next unit: final static/unit/schema validation gate.
+
+
+## Validation checkpoint — Static / unit / schema
+
+Added:
+- JSON Schema conformance test for the canonical Account fixture;
+- negative schema controls for required fields, const values, union types and additional-properties rejection.
+
+Tested source:
+`acb642f40bb9bf6f3567dd15aa4050e0e9c7a713`
+
+CI:
+`36376536482` — PASS.
+
+All v0.2.0 automated suites passed together in this run.
+
+Next gate: merge the validated candidate to `main`, then real-phone portrait/landscape/gesture/filter/drill QA.

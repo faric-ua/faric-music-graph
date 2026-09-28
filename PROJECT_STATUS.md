@@ -47,6 +47,8 @@ Live multi-account inventory: **PENDING READ-ONLY IMPLEMENTATION/AUDIT**.
 - structured terminal Track details: implemented + CI PASS; external media/version facts remain explicit unknown until sourced; browser/phone UX acceptance pending;
 - semantic session restoration: implemented + CI PASS for path/filter/selection/open-panel restore; browser/phone lifecycle acceptance pending;
 - Expand All performance guard: implemented + CI PASS; real-phone tested immediate-expansion limit remains intentionally unset;
+- final v0.2.0 static/unit/schema validation gate: PASS on `acb642f40bb9bf6f3567dd15aa4050e0e9c7a713` / CI `36376536482`;
+- real-phone v0.2.0 UX/lifecycle/performance QA: READY / NOT RUN;
 - full seed migration: pending;
 - read-only channel inventory: pending;
 - Android app packaging: planned after graph state/UX stabilization;
