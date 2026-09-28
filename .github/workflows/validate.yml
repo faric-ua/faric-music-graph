@@ -42,6 +42,7 @@ jobs:
           node --check scripts/test_track_details.js
           node --check scripts/test_session_restoration.js
           node --check scripts/test_expand_all_guard.js
+          node --check scripts/test_json_schemas.js
       - name: Graph state tests
         run: node scripts/test_graph_state.js
       - name: Projection engine tests
@@ -62,5 +63,7 @@ jobs:
         run: node scripts/test_session_restoration.js
       - name: Expand All performance guard tests
         run: node scripts/test_expand_all_guard.js
+      - name: JSON Schema conformance tests
+        run: node scripts/test_json_schemas.js
       - name: Git whitespace check
         run: git diff --check HEAD^ HEAD || git diff --check

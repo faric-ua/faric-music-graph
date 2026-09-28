@@ -32,6 +32,7 @@ required = [
     "scripts/test_session_restoration.js",
     "app/expand-all-guard.js",
     "scripts/test_expand_all_guard.js",
+    "scripts/test_json_schemas.js",
 ]
 
 errors = []

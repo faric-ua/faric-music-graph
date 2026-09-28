@@ -191,7 +191,31 @@ Runtime wiring correction discovered during this step:
 - prior CI did not execute the browser entrypoint, so syntax/unit checks did not catch the missing runtime functions;
 - the functions were restored and a static runtime-wiring assertion was added to prevent recurrence.
 
+Final static/unit/schema validation checkpoint:
+- validation branch: `test/v0.2.0-validation-gate`;
+- tested source: `acb642f40bb9bf6f3567dd15aa4050e0e9c7a713`;
+- CI run `36376536482` — PASS;
+- repository/static validation PASS;
+- JavaScript syntax PASS;
+- GraphState PASS;
+- projection engine PASS;
+- Account model PASS;
+- adaptive filters PASS;
+- node-control palette PASS;
+- breadcrumb/navigation PASS;
+- canonical nested drill PASS;
+- structured Track details PASS;
+- semantic session restoration PASS;
+- Expand All performance guard PASS;
+- JSON Schema conformance PASS;
+- Git whitespace check PASS;
+- Account schema test verifies the canonical fixture and negative required/type/const/additionalProperties cases.
+
+Phone-QA delivery note:
+- `main` is still behind this candidate until the pending PR chain is merged;
+- do not phone-test an older `main` checkout and record it as v0.2.0 evidence.
+
 First unchecked step:
-**complete the final static/unit/schema validation gate; JSON Schema conformance is the remaining gap before that checkbox can be evidence-backed.**
+**merge the validated candidate to main through the established PR workflow, then run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA on the exact merged candidate.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

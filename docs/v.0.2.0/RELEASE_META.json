@@ -1,12 +1,12 @@
 {
   "versionName": "0.2.0",
-  "phase": "development",
+  "phase": "phone_qa_candidate",
   "feature": "Nested 3D Worlds navigation and mobile control architecture",
-  "branch": "feat/v0.2.0-canonical-nested-drill",
-  "testedSourceSha": "802d652d2cfc57b95ab0cd02685c1c99f3465b04",
-  "ciRun": 36369595825,
+  "branch": "test/v0.2.0-validation-gate",
+  "testedSourceSha": "acb642f40bb9bf6f3567dd15aa4050e0e9c7a713",
+  "ciRun": 36376536482,
   "browserQaStatus": "NOT_RUN",
-  "phoneQaStatus": "NOT_RUN",
+  "phoneQaStatus": "READY_NOT_RUN",
   "apkStatus": "NOT_BUILT",
   "channelReadAuditStatus": "PENDING",
   "channelWriteAuditStatus": "NOT_ENABLED"
