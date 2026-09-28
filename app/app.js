@@ -13,10 +13,11 @@ const NAV=window.NavigationUi;
 const W=window.NestedWorldModel;
 const T=window.TrackDetails;
 const S=window.SessionPersistence;
+const E=window.ExpandAllGuard;
 const X=window.MUSIC_PROTOTYPE_FIXTURES;
 
-if(!G||!P||!F||!N||!NAV||!W||!T||!S||!X){
-  throw new Error("Music Graph: nested world, Track detail and session persistence dependencies are required");
+if(!G||!P||!F||!N||!NAV||!W||!T||!S||!E||!X){
+  throw new Error("Music Graph: nested world, Track detail, persistence and expansion guard dependencies are required");
 }
 
 const canonicalPrototype=P.createProjectionGraph(
@@ -74,6 +75,10 @@ const colors={
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 
+// Deliberately null until a real target-phone benchmark establishes a safe
+// immediate expansion budget. Null means explicit confirmation is required.
+const EXPAND_ALL_TESTED_IMMEDIATE_NODE_LIMIT=null;
+
 const navUi={
   breadcrumb:$("#breadcrumb"),
   back:$("#navBack"),
@@ -109,6 +114,17 @@ const filterUi={
   reset:$("#resetFilters"),
   apply:$("#applyFilters")
 };
+
+const expandGuardUi={
+  root:$("#expandGuard"),
+  summary:$("#expandGuardSummary"),
+  visible:$("#expandGuardVisible"),
+  predicted:$("#expandGuardPredicted"),
+  budget:$("#expandGuardBudget"),
+  cancel:$("#expandGuardCancel"),
+  confirm:$("#expandGuardConfirm")
+};
+let pendingExpandAll=null;
 
 function setGraphSession(next){
   graphSession=next;
@@ -207,6 +223,98 @@ function applyDraftFilters(){
   $("#inspector").classList.remove("open","track-inspector");
   rebuild();
   fitView();
+}
+
+function currentControlCapabilities(){
+  const base=N.deriveControlState(
+    graphSession,
+    state.fullNodes,
+    state.fullEdges
+  );
+  const actions=state.currentWorld&&state.currentWorld.actions;
+  if(!actions)return base;
+
+  return {
+    ...base,
+    canExpandAll:actions.canExpandAll,
+    canCollapseAll:actions.canCollapseAll,
+    canExpandSelected:actions.canExpandSelected,
+    canCollapseSelected:actions.canCollapseSelected,
+    canEnter:actions.canEnter,
+    canBack:actions.canBack,
+    canHome:actions.canHome,
+    canFit:actions.canFit
+  };
+}
+
+function renderNavigationState(){
+  if(!navUi.breadcrumb)return;
+
+  const capabilities=currentControlCapabilities();
+  const navigation=NAV.deriveNavigationState(
+    graphSession,
+    capabilities.canEnter
+  );
+
+  navUi.back.disabled=!navigation.canBack;
+  navUi.home.disabled=!navigation.canHome;
+  navUi.enter.disabled=!navigation.canEnter;
+
+  navUi.breadcrumb.replaceChildren();
+
+  for(const item of NAV.breadcrumbItems(graphSession)){
+    const wrapper=document.createElement("span");
+    wrapper.className="breadcrumb-item";
+
+    const button=document.createElement("button");
+    button.type="button";
+    button.textContent=item.label;
+    button.title=item.label;
+    button.dataset.depth=String(item.depth);
+
+    if(item.current){
+      button.disabled=true;
+      button.setAttribute("aria-current","page");
+    }else{
+      button.setAttribute(
+        "aria-label",
+        "Перейти до "+item.label
+      );
+      button.onclick=()=>jumpToDepth(item.depth);
+    }
+
+    wrapper.append(button);
+    navUi.breadcrumb.append(wrapper);
+  }
+
+  const current=navUi.breadcrumb.querySelector('[aria-current="page"]');
+  if(current&&typeof current.scrollIntoView==="function"){
+    current.scrollIntoView({
+      block:"nearest",
+      inline:"nearest"
+    });
+  }
+}
+
+function renderNodeControls(){
+  if(!nodeUi.expandAll)return;
+  const capabilities=currentControlCapabilities();
+
+  nodeUi.expandAll.disabled=!capabilities.canExpandAll;
+  nodeUi.collapseAll.disabled=!capabilities.canCollapseAll;
+  nodeUi.expandNode.disabled=!capabilities.canExpandSelected;
+  nodeUi.collapseNode.disabled=!capabilities.canCollapseSelected;
+  nodeUi.enter.disabled=!capabilities.canEnter;
+  nodeUi.back.disabled=!capabilities.canBack;
+  nodeUi.home.disabled=!capabilities.canHome;
+  nodeUi.fit.disabled=!capabilities.canFit;
+
+  const selected=graphSession.selectedNode;
+  const scope=graphSession.currentScope||G.universeNode();
+  nodeUi.status.textContent=selected
+    ?scope.label+" · "+selected.label
+    :scope.label;
+  nodeUi.status.title=nodeUi.status.textContent;
 }
 
 function pointFromEvent(e){
@@ -882,19 +990,88 @@ function refreshAfterNodeCommand(options){
   if(opts.fit!==false)fitView();
 }
 
-nodeUi.expandAll.onclick=()=>{
-  const ids=N.expandableNodeIds(state.fullNodes,state.fullEdges)
-    .filter(id=>id!==graphSession.currentScope.id);
-  dispatchGraph({
-    type:G.COMMANDS.EXPAND_ALL,
-    ids
-  });
+function closeExpandGuard(options){
+  const opts=options||{};
+  expandGuardUi.root.hidden=true;
+  pendingExpandAll=null;
+  if(opts.restoreFocus!==false){
+    nodeUi.expandAll.focus();
+  }
+}
+
+function openExpandGuard(plan){
+  pendingExpandAll=plan;
+  const assessment=plan.assessment;
+
+  expandGuardUi.summary.textContent=
+    assessment.reason==="UNMEASURED_DEVICE_BUDGET"
+      ?"Безпечний auto-expand ліміт ще не виміряний на цільовому телефоні. Потрібне явне підтвердження."
+      :"Прогноз перевищує перевірений ліміт цього пристрою. Потрібне явне підтвердження.";
+  expandGuardUi.visible.textContent=String(assessment.visibleNodeCount);
+  expandGuardUi.predicted.textContent=
+    String(assessment.predictedFullyExpandedNodeCount)+
+    " (+"+assessment.additionalNodeCount+")";
+  expandGuardUi.budget.textContent=
+    assessment.testedImmediateNodeLimit==null
+      ?"Ще не виміряно"
+      :String(assessment.testedImmediateNodeLimit);
+  expandGuardUi.root.hidden=false;
+  expandGuardUi.cancel.focus();
+}
+
+function applyExpandPlan(plan,confirmed){
+  const next=E.applyDecision(
+    G,
+    graphSession,
+    plan.ids,
+    plan.assessment,
+    confirmed
+  );
+  if(next===graphSession)return false;
+  setGraphSession(next);
   refreshAfterNodeCommand({closeInspector:false});
+  return true;
+}
+
+function requestExpandAll(){
+  const world=state.currentWorld;
+  if(!world)return;
+
+  const ids=(world.bulkExpandNodeIds||[])
+    .filter(id=>!(graphSession.expandedNodeIds||[]).includes(id));
+  const assessment=E.assess({
+    visibleNodeCount:world.metrics.visibleNodeCount,
+    predictedFullyExpandedNodeCount:world.metrics.predictedFullyExpandedNodeCount,
+    testedImmediateNodeLimit:EXPAND_ALL_TESTED_IMMEDIATE_NODE_LIMIT
+  });
+  const plan={ids,assessment};
+
+  if(assessment.action==="noop")return;
+  if(assessment.action==="apply"){
+    applyExpandPlan(plan,false);
+    return;
+  }
+  openExpandGuard(plan);
+}
+
+nodeUi.expandAll.onclick=requestExpandAll;
+
+expandGuardUi.cancel.onclick=()=>closeExpandGuard();
+expandGuardUi.root.onclick=e=>{
+  if(e.target===expandGuardUi.root)closeExpandGuard();
+};
+expandGuardUi.confirm.onclick=()=>{
+  const plan=pendingExpandAll;
+  if(!plan)return;
+  closeExpandGuard({restoreFocus:false});
+  applyExpandPlan(plan,true);
+  nodeUi.expandAll.focus();
 };
 
 nodeUi.collapseAll.onclick=()=>{
-  const ids=N.expandableNodeIds(state.fullNodes,state.fullEdges)
-    .filter(id=>id!==graphSession.currentScope.id);
+  const ids=state.currentWorld
+    ?state.currentWorld.bulkExpandNodeIds||[]
+    :[];
   dispatchGraph({
     type:G.COMMANDS.COLLAPSE_ALL,
     ids
@@ -1018,7 +1195,12 @@ $("#view").onchange=e=>{
 };
 
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"&&graphSession.filterPanelOpen){
+  if(e.key!=="Escape")return;
+  if(!expandGuardUi.root.hidden){
+    closeExpandGuard();
+    return;
+  }
+  if(graphSession.filterPanelOpen){
     setFilterPanelOpen(false);
   }
 });

@@ -30,6 +30,8 @@ required = [
     "scripts/test_track_details.js",
     "app/session-persistence.js",
     "scripts/test_session_restoration.js",
+    "app/expand-all-guard.js",
+    "scripts/test_expand_all_guard.js",
 ]
 
 errors = []
