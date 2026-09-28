@@ -36,6 +36,17 @@ Expected:
 Important regression check:
 the page must not fail because `currentControlCapabilities`, `renderNavigationState` or `renderNodeControls` is undefined.
 
+## Retest gate after BUG-002
+
+Before continuing Test 2 on a build containing the fix:
+- tap `FARIC UA`;
+- confirm Account selection does not open raw JSON;
+- confirm top →/Enter enables immediately;
+- confirm mobile `− / + / ⋮` controls are in one compact top row;
+- open `⋮` and confirm the node-control palette remains usable without permanently covering the graph.
+
+If any of these fail, stop and record BUG-002/UX-004 as FAIL.
+
 ## Test 2 — Canonical drill
 
 Use:
