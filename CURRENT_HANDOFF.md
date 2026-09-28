@@ -244,7 +244,13 @@ Additional phone-UX refinement checkpoint:
 - 2D Fit targets ~80% of the canvas span to leave visible breathing room from screen edges;
 - `⋮` advanced menu remains unchanged for now.
 
+Merged Back/dismiss/Fit refinement checkpoint:
+- PR #25 merged to `main`;
+- runtime/code baseline `9a88a6e2808c4be4065ee23a1e3cc886f4b14109`;
+- PR validation run `36447186710` — PASS;
+- post-merge `main` validation run `36447243829` — PASS.
+
 First unchecked step:
-**merge this Back/dismiss/Fit refinement, update the phone to current `main`, record the actual tested HEAD, then continue the revised direct-drill + Track-detail + Sphere HOLD/ORBIT phone QA contract.**
+**update the phone to current `main`, record the actual tested HEAD, then continue the revised direct-drill + one-level Back + Track-dismiss + 80%-Fit + Sphere HOLD/ORBIT phone QA contract.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
