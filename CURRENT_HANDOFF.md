@@ -104,7 +104,21 @@ Adaptive filter checkpoint:
 - CI run `36368444005` — PASS;
 - browser/phone UX acceptance is still pending and must not be inferred from CI.
 
+Node-control checkpoint:
+- implementation branch: `feat/v0.2.0-node-controls`;
+- source: `c22d538e80b70632ef54520e422bdb6ca05c5c2f`;
+- floating palette uses an approximately 50%-transparent surface and 48px minimum touch targets;
+- controls implemented for Expand All, Collapse All, Expand selected, Collapse selected, Enter, Back, Home and Fit;
+- control enable/disable state is derived from `GraphSessionState` plus the current prototype graph;
+- current Canvas prototype now honors scope + expand state for visible-node projection;
+- selection is wired into `GraphSessionState`;
+- Enter changes scope; Back/Home restore semantic navigation state; Fit remains renderer-local;
+- this prototype visibility adapter is temporary and does not replace the upcoming canonical Account → Year → Genre → Artist → Release → Track projection;
+- automated node-control capability/layout contract added;
+- CI run `36368864096` — PASS;
+- browser/phone UX acceptance remains pending.
+
 First unchecked step:
-**implement the floating node-control palette and wire renderer-independent Expand/Collapse/Enter/Back/Home/Fit commands.**
+**implement the breadcrumb and visible Enter/Back/Home navigation surface over GraphSessionState drillPath/history.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

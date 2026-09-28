@@ -81,3 +81,15 @@
 - [x] one-column scrollable filter body is structurally asserted;
 - [x] fixed Reset/Apply footer is structurally asserted;
 - [x] portrait bottom-sheet and wider side-sheet breakpoints are asserted.
+
+
+## Automated node-control contract
+- [x] palette includes Expand All / Collapse All;
+- [x] palette includes Expand selected / Collapse selected;
+- [x] palette includes Enter / Back / Home / Fit;
+- [x] palette surface transparency is structurally asserted;
+- [x] minimum 48px touch targets are structurally asserted;
+- [x] selected-node capability state is derived from semantic state;
+- [x] terminal node cannot Enter;
+- [x] Back/Home capability follows drill scope;
+- [x] expanded selected node switches from Expand to Collapse capability.
