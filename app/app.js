@@ -87,6 +87,8 @@ const navUi={
 };
 
 const nodeUi={
+  root:$("#nodeControls"),
+  toggle:$("#nodeControlsToggle"),
   expandAll:$("#expandAll"),
   collapseAll:$("#collapseAll"),
   expandNode:$("#expandNode"),
@@ -740,44 +742,23 @@ function renderTrackDetails(container,model){
   container.append(article);
 }
 
-function renderDebugNodeDetails(container,n){
-  const pill=document.createElement("span");
-  pill.className="pill";
-  pill.textContent=n.kind;
-
-  const h=document.createElement("h2");
-  h.textContent=n.label;
-
-  const pre=document.createElement("pre");
-  pre.textContent=JSON.stringify({
-    canonicalId:n.canonicalId||n.id,
-    contextPath:n.contextPath||[],
-    facets:n.facets||{},
-    account:n.account||null,
-    artist:n.artist||null,
-    release:n.release||null,
-    track:n.track||null,
-    projection:n.projection||null
-  },null,2);
-
-  container.append(pill,h,pre);
-}
-
 function renderInspectorNode(n){
   const details=$("#details");
   const inspector=$("#inspector");
-  details.textContent="";
-  inspector.classList.toggle("track-inspector",n.kind==="track");
 
-  if(n.kind==="track"){
-    const model=T.buildTrackDetails(canonicalPrototype,n.id,{
-      assignmentStatus:X.assignments.status
-    });
-    renderTrackDetails(details,model);
-  }else{
-    renderDebugNodeDetails(details,n);
+  if(n.kind!=="track"){
+    inspector.classList.remove("open","track-inspector");
+    details.textContent="";
+    return;
   }
 
+  details.textContent="";
+  inspector.classList.add("track-inspector");
+
+  const model=T.buildTrackDetails(canonicalPrototype,n.id,{
+    assignmentStatus:X.assignments.status
+  });
+  renderTrackDetails(details,model);
   inspector.classList.add("open");
 }
 
@@ -791,7 +772,7 @@ function renderInspectorState(){
   }
 
   const node=canonicalPrototype.byId.get(stateValue.nodeId);
-  if(!node){
+  if(!node||node.kind!=="track"){
     inspector.classList.remove("open","track-inspector");
     return;
   }
@@ -805,14 +786,21 @@ function showNode(n){
     type:G.COMMANDS.SELECT_NODE,
     node:{id:n.id,kind:n.kind,label:n.label}
   });
-  next=G.reducer(next,{
-    type:G.COMMANDS.OPEN_INSPECTOR,
-    nodeId:n.id,
-    mode:n.kind==="track"?"track-terminal":"node-debug"
-  });
+
+  if(n.kind==="track"){
+    next=G.reducer(next,{
+      type:G.COMMANDS.OPEN_INSPECTOR,
+      nodeId:n.id,
+      mode:"track-terminal"
+    });
+  }else{
+    next=G.reducer(next,{
+      type:G.COMMANDS.CLOSE_INSPECTOR
+    });
+  }
+
   setGraphSession(next);
-  renderInspectorState();
-  draw();
+  rebuild();
 }
 
 function hitTest(p){
@@ -981,6 +969,19 @@ canvas.addEventListener("wheel",e=>{
 
 $("#zoomIn").onclick=()=>zoomBy(1.22);
 $("#zoomOut").onclick=()=>zoomBy(.82);
+
+function setNodeControlsOpen(open){
+  if(!nodeUi.root||!nodeUi.toggle)return;
+  const next=Boolean(open);
+  nodeUi.root.classList.toggle("mobile-open",next);
+  nodeUi.toggle.setAttribute("aria-expanded",String(next));
+}
+
+if(nodeUi.toggle){
+  nodeUi.toggle.onclick=()=>setNodeControlsOpen(
+    !nodeUi.root.classList.contains("mobile-open")
+  );
+}
 nodeUi.fit.onclick=fitView;
 
 function refreshAfterNodeCommand(options){

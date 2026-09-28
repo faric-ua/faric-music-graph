@@ -69,6 +69,7 @@ assert.equal(controls.canExpandSelected,false);
 const root=path.resolve(__dirname,"..");
 const html=fs.readFileSync(path.join(root,"app/index.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"app/app.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"app/app.js"),"utf8");
 
 for(const id of [
   "expandAll",
@@ -84,5 +85,11 @@ for(const id of [
 }
 assert(css.includes("background:rgba(14,16,22,.52)"),"palette must keep approximately 50% transparent surface");
 assert(css.includes("min-width:48px;min-height:48px"),"node controls must preserve touch targets");
+assert(html.includes('id="nodeControlsToggle"'),"mobile node-control menu toggle is required");
+assert(css.includes(".node-controls.mobile-open{display:grid}"),"mobile palette must open only on demand");
+assert(css.includes(".mobile-graph-controls{top:8px;right:8px;bottom:auto;gap:6px}"),"mobile quick controls must live in one compact top row");
+assert(!app.includes('"track-terminal":"node-debug"'),"non-track selection must not open the debug inspector");
+assert(app.includes('if(n.kind==="track"){'),"Track remains the only automatic inspector path");
+assert(app.includes("setGraphSession(next);\n  rebuild();"),"selection must rebuild capabilities so Enter becomes available immediately");
 
 console.log("PASS: floating node-control palette model/wiring contract tests");
