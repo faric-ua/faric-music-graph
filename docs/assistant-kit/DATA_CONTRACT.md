@@ -131,3 +131,25 @@ Warn on:
 - account/channel identity not yet verified.
 
 Never discard original source title/artist text. Store normalized search fields separately.
+
+
+## Canonical entity vs projection instance
+
+Canonical graph identity and UI navigation identity are separate.
+
+```text
+canonical entity
+artist:the-prodigy
+        ↑
+        ├─ nav:account-a:1992:electronic:artist:the-prodigy
+        └─ nav:account-a:1994:electronic:artist:the-prodigy
+```
+
+A contextual projection node MUST carry:
+- unique projection/navigation `id`;
+- stable `canonicalId`;
+- node `kind`;
+- user label;
+- enough context metadata to rebuild the drill path.
+
+Do not create duplicate canonical Artist/Track/Release records to solve navigation-context problems.
