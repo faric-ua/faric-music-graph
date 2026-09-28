@@ -28,6 +28,8 @@ required = [
     "scripts/test_nested_world.js",
     "app/track-details.js",
     "scripts/test_track_details.js",
+    "app/session-persistence.js",
+    "scripts/test_session_restoration.js",
 ]
 
 errors = []

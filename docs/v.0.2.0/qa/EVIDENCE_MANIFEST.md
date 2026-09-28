@@ -280,3 +280,31 @@ Truth boundary:
 - it does not infer remix/original relationships from titles;
 - it does not invent YouTube/YTM identities, duration or availability;
 - browser/phone visual and interaction acceptance is still pending.
+
+
+## Semantic session restoration — 2026-09-28
+
+Implementation source:
+`cfbc6540b95a336e8096a1a25bbd709da1373340`
+
+CI:
+`36375948517` — PASS.
+
+Automated evidence:
+- deep path restore preserves Account → Year → Genre → Artist → Release scope;
+- selected terminal Track restores without replaying Enter;
+- applied filters and a distinct pending draft both restore;
+- open filter panel restores;
+- open Track inspector target/mode restores;
+- renderer mode restores;
+- restored world still contains the selected Track under the applied filter;
+- stale canonical navigation path fails closed to Universe and is discarded;
+- invalid inspector target closes only the inspector;
+- corrupt JSON fails closed;
+- unavailable/throwing storage does not break startup or state transitions;
+- restore path is proven not to call GraphState.reducer.
+
+Boundary:
+- transient pointer/gesture/animation state is intentionally not persisted;
+- camera/orbit persistence remains “when practical” and is not claimed by this checkpoint;
+- actual browser refresh, Android recreation and rotation remain later browser/phone lifecycle QA.

@@ -233,3 +233,25 @@ Evidence level:
 automated/static only. Browser and real-phone layout/usability remain pending.
 
 Next unit: restoration tests for drill path, filters, selected node and open panels.
+
+
+## Implementation checkpoint — Semantic session restoration
+
+Added:
+- versioned browser semantic-session persistence;
+- canonical-graph validation before accepting a stored drill path;
+- exact restore of scope/path, selected node, filters, open filter panel, inspector and renderer mode;
+- inspector UI reconstruction from restored semantic state;
+- fail-closed handling for stale graph IDs, corrupt serialized state and unavailable storage;
+- no-replay restoration contract.
+
+Tested source:
+`cfbc6540b95a336e8096a1a25bbd709da1373340`
+
+CI:
+`36375948517` — PASS.
+
+Evidence level:
+automated/static lifecycle contract. Real refresh/orientation/Android recreation remains pending.
+
+Next unit: performance guard for Expand All.
