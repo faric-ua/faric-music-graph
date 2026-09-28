@@ -238,7 +238,13 @@ Real-phone UX revision checkpoint:
 - post-merge `main` validation run `36444887504` — PASS;
 - formal real-phone acceptance of this revised interaction is still pending.
 
+Additional phone-UX refinement checkpoint:
+- one-level Back is available from the header and by right-swipe starting at the left graph edge;
+- Track details close on empty graph tap as well as ×;
+- 2D Fit targets ~80% of the canvas span to leave visible breathing room from screen edges;
+- `⋮` advanced menu remains unchanged for now.
+
 First unchecked step:
-**update the phone to current `main`, record the actual tested HEAD, then run the revised direct-drill + Track-detail + Sphere HOLD/ORBIT phone QA contract.**
+**merge this Back/dismiss/Fit refinement, update the phone to current `main`, record the actual tested HEAD, then continue the revised direct-drill + Track-detail + Sphere HOLD/ORBIT phone QA contract.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
