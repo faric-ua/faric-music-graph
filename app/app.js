@@ -77,6 +77,10 @@ const colors={
 };
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+const FIT_OCCUPANCY=.80;
+const EDGE_BACK_START_PX=28;
+const EDGE_BACK_DISTANCE_PX=64;
+const EDGE_BACK_MAX_VERTICAL_PX=56;
 
 // Deliberately null until a real target-phone benchmark establishes a safe
 // immediate expansion budget. Null means explicit confirmation is required.
@@ -912,10 +916,11 @@ function fitView(){
   const maxX=Math.max(...xs);
   const minY=Math.min(...ys);
   const maxY=Math.max(...ys);
-  const margin=55;
   const w=Math.max(1,maxX-minX);
   const h=Math.max(1,maxY-minY);
-  state.scale=clamp(Math.min((r.width-margin*2)/w,(r.height-margin*2)/h),.28,2.2);
+  const usableWidth=Math.max(1,r.width*FIT_OCCUPANCY);
+  const usableHeight=Math.max(1,r.height*FIT_OCCUPANCY);
+  state.scale=clamp(Math.min(usableWidth/w,usableHeight/h),.28,2.2);
   state.ox=(r.width-(minX+maxX)*state.scale)/2;
   state.oy=(r.height-(minY+maxY)*state.scale)/2;
   draw();
@@ -928,6 +933,7 @@ function startGesture(){
       multi:false,
       moved:0,
       startedAt:performance.now(),
+      start:{...points[0]},
       last:{...points[0]}
     };
   }else if(points.length>=2){
@@ -1002,18 +1008,38 @@ canvas.addEventListener("pointermove",e=>{
   }
 });
 
+function isEdgeBackGesture(g,end){
+  if(!g||g.multi||!g.start)return false;
+  const dx=end.x-g.start.x;
+  const dy=end.y-g.start.y;
+  return (
+    g.start.x<=EDGE_BACK_START_PX&&
+    dx>=EDGE_BACK_DISTANCE_PX&&
+    Math.abs(dy)<=EDGE_BACK_MAX_VERTICAL_PX
+  );
+}
+
 function endPointer(e){
   const end=pointFromEvent(e);
   state.pointers.delete(e.pointerId);
 
   if(state.pointers.size===0){
     const g=state.gesture;
+
+    if(isEdgeBackGesture(g,end)&&graphSession.drillPath.length>1){
+      state.gesture=null;
+      goBackScope();
+      return;
+    }
+
     if(g&&!g.multi&&g.moved<8){
       const node=hitTest(end);
       if(node){
         const heldFor=performance.now()-(g.startedAt||performance.now());
         if(heldFor>=450)selectNode(node);
         else activateNode(node);
+      }else if(graphSession.inspector&&graphSession.inspector.open){
+        closeInspector();
       }
     }
     state.gesture=null;
@@ -1233,7 +1259,7 @@ navUi.enter.onclick=enterSelectedScope;
 navUi.back.onclick=goBackScope;
 navUi.home.onclick=goHomeScope;
 
-$("#close").onclick=()=>{
+function closeInspector(){
   $("#inspector").classList.remove("open","track-inspector");
   state.selectedId=null;
   let next=G.reducer(graphSession,{
@@ -1245,7 +1271,9 @@ $("#close").onclick=()=>{
   });
   setGraphSession(next);
   draw();
-};
+}
+
+$("#close").onclick=closeInspector;
 
 filterUi.artist.innerHTML='<option value="all">Усі</option>'+
   D.artists.map(a=>'<option value="'+a.id+'">'+a.name+"</option>").join("");
