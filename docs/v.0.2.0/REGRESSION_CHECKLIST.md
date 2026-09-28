@@ -36,3 +36,14 @@
 - [ ] no YouTube write controls;
 - [ ] no secrets in repository;
 - [ ] current release docs and diagrams updated.
+
+
+## Automated semantic-state contract
+- [x] select does not implicitly Enter;
+- [x] Enter pushes scope/history;
+- [x] Back restores previous semantic state;
+- [x] Home returns to Universe;
+- [x] ancestor-depth jump works;
+- [x] draft filters stay separate until Apply;
+- [x] expand/collapse state semantics tested;
+- [x] serialize/restore round-trip tested;
