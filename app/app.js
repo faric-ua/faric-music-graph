@@ -7,9 +7,10 @@ const canvas=$("#graph");
 const ctx=canvas.getContext("2d");
 const G=window.GraphState;
 const F=window.FilterModel;
+const N=window.NodeControls;
 
-if(!G||!F){
-  throw new Error("Music Graph: GraphState and FilterModel are required");
+if(!G||!F||!N){
+  throw new Error("Music Graph: GraphState, FilterModel and NodeControls are required");
 }
 
 let graphSession=G.createInitialState({
@@ -28,6 +29,8 @@ const state={
   pitch:0.22,
   nodes:[],
   edges:[],
+  fullNodes:[],
+  fullEdges:[],
   hit:[],
   selectedId:null,
   pointers:new Map(),
@@ -35,6 +38,7 @@ const state={
 };
 
 const colors={
+  universe:"#8b6cff",
   root:"#8b6cff",
   artist:"#25c6f7",
   year:"#f4ad45",
@@ -44,6 +48,18 @@ const colors={
 };
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+
+const nodeUi={
+  expandAll:$("#expandAll"),
+  collapseAll:$("#collapseAll"),
+  expandNode:$("#expandNode"),
+  collapseNode:$("#collapseNode"),
+  enter:$("#enterNode"),
+  back:$("#backScope"),
+  home:$("#homeScope"),
+  fit:$("#fit"),
+  status:$("#nodeControlStatus")
+};
 
 const filterUi={
   panel:$("#filters"),
@@ -65,6 +81,7 @@ const filterUi={
 function setGraphSession(next){
   graphSession=next;
   renderFilterState();
+  renderNodeControls();
 }
 
 function dispatchGraph(action){
@@ -172,6 +189,76 @@ function addNode(list,id,label,kind,level,meta){
   }
 }
 
+function projectPrototypeVisibility(fullNodes,fullEdges){
+  const byId=new Map(fullNodes.map(n=>[n.id,n]));
+  const children=new Map();
+  for(const [source,target] of fullEdges){
+    if(!children.has(source))children.set(source,[]);
+    children.get(source).push(target);
+  }
+
+  const scope=graphSession.currentScope||G.universeNode();
+  if(!byId.has(scope.id)){
+    addNode(fullNodes,scope.id,scope.label,scope.kind,0,{prototypeScope:true});
+    byId.set(scope.id,fullNodes[fullNodes.length-1]);
+  }
+
+  const expanded=new Set(graphSession.expandedNodeIds||[]);
+  const visible=new Map();
+  const visibleEdges=[];
+  const seen=new Set();
+
+  function reveal(parentId,depth){
+    if(seen.has(parentId))return;
+    seen.add(parentId);
+    for(const childId of children.get(parentId)||[]){
+      const child=byId.get(childId);
+      if(!child)continue;
+      if(!visible.has(childId)){
+        visible.set(childId,{...child,l:depth+1});
+        visibleEdges.push([parentId,childId]);
+      }
+      if(expanded.has(childId)){
+        reveal(childId,depth+1);
+      }
+    }
+  }
+
+  const scopeNode=byId.get(scope.id);
+  visible.set(scope.id,{...scopeNode,l:0});
+  reveal(scope.id,0);
+
+  return {
+    nodes:[...visible.values()],
+    edges:visibleEdges
+  };
+}
+
+function renderNodeControls(){
+  if(!nodeUi.expandAll)return;
+  const capabilities=N.deriveControlState(
+    graphSession,
+    state.fullNodes,
+    state.fullEdges
+  );
+
+  nodeUi.expandAll.disabled=!capabilities.canExpandAll;
+  nodeUi.collapseAll.disabled=!capabilities.canCollapseAll;
+  nodeUi.expandNode.disabled=!capabilities.canExpandSelected;
+  nodeUi.collapseNode.disabled=!capabilities.canCollapseSelected;
+  nodeUi.enter.disabled=!capabilities.canEnter;
+  nodeUi.back.disabled=!capabilities.canBack;
+  nodeUi.home.disabled=!capabilities.canHome;
+  nodeUi.fit.disabled=!capabilities.canFit;
+
+  const selected=graphSession.selectedNode;
+  const scope=graphSession.currentScope||G.universeNode();
+  nodeUi.status.textContent=selected
+    ?scope.label+" · "+selected.label
+    :scope.label;
+  nodeUi.status.title=nodeUi.status.textContent;
+}
+
 function layoutMap(nodes){
   const levels={};
   nodes.forEach(n=>(levels[n.l]??=[]).push(n));
@@ -223,13 +310,13 @@ function rebuild(){
   const nodes=[];
   const edges=[];
   const edge=(a,b)=>edges.push([a,b]);
-  addNode(nodes,"root","MUSIC","root",0,{});
+  addNode(nodes,"universe","Universe","universe",0,{});
 
   if(state.structure==="artist"){
     for(const artist of D.artists.filter(a=>releases.some(r=>r.artistId===a.id))){
       const aid="a:"+artist.id;
       addNode(nodes,aid,artist.name,"artist",1,artist);
-      edge("root",aid);
+      edge("universe",aid);
 
       for(const release of releases.filter(r=>r.artistId===artist.id)){
         const rid="r:"+release.id;
@@ -248,7 +335,7 @@ function rebuild(){
       const year=release.year??"Unknown";
       const yid="y:"+year;
       addNode(nodes,yid,String(year),"year",1,{year:release.year});
-      edge("root",yid);
+      edge("universe",yid);
 
       const artist=D.artists.find(a=>a.id===release.artistId);
       const genre=artist.genres[0];
@@ -266,14 +353,31 @@ function rebuild(){
     }
   }
 
-  layoutMap(nodes);
-  layoutSphere(nodes);
-  state.nodes=nodes;
-  state.edges=edges;
+  state.fullNodes=nodes;
+  state.fullEdges=edges;
+
+  const projected=projectPrototypeVisibility(nodes,edges);
+  layoutMap(projected.nodes);
+  layoutSphere(projected.nodes);
+  state.nodes=projected.nodes;
+  state.edges=projected.edges;
+
+  const visibleIds=new Set(state.nodes.map(n=>n.id));
+  if(graphSession.selectedNode&&!visibleIds.has(graphSession.selectedNode.id)){
+    graphSession=G.reducer(graphSession,{
+      type:G.COMMANDS.SELECT_NODE,
+      node:null
+    });
+    state.selectedId=null;
+    $("#inspector").classList.remove("open");
+  }else{
+    state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
+  }
 
   const activeFilters=F.activeFilterCount(graphSession.appliedFilters);
-  $("#stats").innerHTML="<b>"+releases.length+"</b> релізів у view<br><b>"+nodes.length+"</b> вузлів<br><b>"+activeFilters+"</b> активних фільтрів<br><b>"+(state.view==="map"?"2D Map":"Sphere 3D")+"</b>";
+  $("#stats").innerHTML="<b>"+releases.length+"</b> релізів у view<br><b>"+state.nodes.length+"</b> видимих вузлів<br><b>"+activeFilters+"</b> активних фільтрів<br><b>"+(state.view==="map"?"2D Map":"Sphere 3D")+"</b>";
   $("#viewBadge").textContent=state.view==="map"?"2D Map":"Sphere 3D";
+  renderNodeControls();
   draw();
 }
 
@@ -400,6 +504,10 @@ function draw(){
 
 function showNode(n){
   state.selectedId=n.id;
+  setGraphSession(G.reducer(graphSession,{
+    type:G.COMMANDS.SELECT_NODE,
+    node:{id:n.id,kind:n.kind,label:n.label}
+  }));
   const details=$("#details");
   details.textContent="";
 
@@ -584,11 +692,83 @@ canvas.addEventListener("wheel",e=>{
 
 $("#zoomIn").onclick=()=>zoomBy(1.22);
 $("#zoomOut").onclick=()=>zoomBy(.82);
-$("#fit").onclick=fitView;
+nodeUi.fit.onclick=fitView;
+
+function refreshAfterNodeCommand(options){
+  const opts=options||{};
+  if(opts.syncFilters)syncDraftControls();
+  if(opts.closeInspector!==false)$("#inspector").classList.remove("open");
+  rebuild();
+  if(opts.fit!==false)fitView();
+}
+
+nodeUi.expandAll.onclick=()=>{
+  const ids=N.expandableNodeIds(state.fullNodes,state.fullEdges)
+    .filter(id=>id!==graphSession.currentScope.id);
+  dispatchGraph({
+    type:G.COMMANDS.EXPAND_ALL,
+    ids
+  });
+  refreshAfterNodeCommand({closeInspector:false});
+};
+
+nodeUi.collapseAll.onclick=()=>{
+  const ids=N.expandableNodeIds(state.fullNodes,state.fullEdges)
+    .filter(id=>id!==graphSession.currentScope.id);
+  dispatchGraph({
+    type:G.COMMANDS.COLLAPSE_ALL,
+    ids
+  });
+  refreshAfterNodeCommand({closeInspector:false});
+};
+
+nodeUi.expandNode.onclick=()=>{
+  if(!graphSession.selectedNode)return;
+  dispatchGraph({
+    type:G.COMMANDS.EXPAND_NODE,
+    id:graphSession.selectedNode.id
+  });
+  refreshAfterNodeCommand({closeInspector:false});
+};
+
+nodeUi.collapseNode.onclick=()=>{
+  if(!graphSession.selectedNode)return;
+  dispatchGraph({
+    type:G.COMMANDS.COLLAPSE_NODE,
+    id:graphSession.selectedNode.id
+  });
+  refreshAfterNodeCommand({closeInspector:false});
+};
+
+nodeUi.enter.onclick=()=>{
+  if(!graphSession.selectedNode)return;
+  const selected=graphSession.selectedNode;
+  dispatchGraph({
+    type:G.COMMANDS.ENTER_NODE,
+    node:selected,
+    defaultFilters:F.defaultFilters()
+  });
+  state.selectedId=null;
+  refreshAfterNodeCommand({syncFilters:true});
+};
+
+nodeUi.back.onclick=()=>{
+  dispatchGraph({type:G.COMMANDS.BACK_SCOPE});
+  refreshAfterNodeCommand({syncFilters:true});
+};
+
+nodeUi.home.onclick=()=>{
+  dispatchGraph({type:G.COMMANDS.HOME_SCOPE});
+  refreshAfterNodeCommand({syncFilters:true});
+};
 
 $("#close").onclick=()=>{
   $("#inspector").classList.remove("open");
   state.selectedId=null;
+  dispatchGraph({
+    type:G.COMMANDS.SELECT_NODE,
+    node:null
+  });
   draw();
 };
 
@@ -620,6 +800,12 @@ filterUi.releaseType.onchange=e=>setDraftFilter("releaseType",e.target.value);
 
 $("#structure").onchange=e=>{
   state.structure=e.target.value;
+  graphSession=G.reducer(graphSession,{type:G.COMMANDS.HOME_SCOPE});
+  graphSession=G.reducer(graphSession,{type:G.COMMANDS.COLLAPSE_ALL,ids:[]});
+  graphSession=G.reducer(graphSession,{type:G.COMMANDS.SELECT_NODE,node:null});
+  state.selectedId=null;
+  $("#inspector").classList.remove("open");
+  renderFilterState();
   rebuild();
   fitView();
 };

@@ -66,9 +66,13 @@ body.filters-open .filter-panel{transform:translateX(0);visibility:visible;point
 
 #stats{line-height:1.8;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
 #viewBadge{position:absolute;left:12px;top:12px;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(20,23,32,.86);color:var(--muted);pointer-events:none}
-#graphControls{position:absolute;right:12px;bottom:12px;display:grid;grid-template-columns:52px 52px;gap:8px}
-#graphControls button{min-width:52px;padding:0;font-size:20px;background:rgba(20,23,32,.94);backdrop-filter:blur(8px)}
-#graphControls #fit{grid-column:1/3;font-size:14px}
+.node-controls{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:grid;gap:8px;width:128px;padding:8px;border:1px solid rgba(139,108,255,.34);border-radius:16px;background:rgba(14,16,22,.52);backdrop-filter:blur(10px);box-shadow:0 12px 35px rgba(0,0,0,.28)}
+.node-control-group{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.node-controls button{min-width:48px;min-height:48px;padding:0 5px;background:rgba(20,23,32,.88);font-size:12px;line-height:1.1}
+.node-controls button:disabled{opacity:.3}
+.node-control-status{overflow:hidden;padding:4px 3px 1px;color:var(--muted);font-size:10px;line-height:1.25;text-align:center;text-overflow:ellipsis;white-space:nowrap}
+.zoom-controls{position:absolute;right:12px;bottom:12px;display:grid;grid-template-columns:52px 52px;gap:8px}
+.zoom-controls button{min-width:52px;padding:0;font-size:20px;background:rgba(20,23,32,.94);backdrop-filter:blur(8px)}
 #inspector{position:absolute;right:12px;top:12px;width:min(390px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;padding:18px;border:1px solid var(--border);border-radius:16px;background:rgba(20,23,32,.97);display:none;box-shadow:0 16px 50px rgba(0,0,0,.35)}
 #inspector.open{display:block}
 #close{float:right;width:48px;padding:0;font-size:20px}
@@ -83,7 +87,8 @@ pre{white-space:pre-wrap;color:#bac4d9;word-break:break-word}
   header button{min-height:44px;padding:0 10px}
   #inspector{top:auto;bottom:76px;max-height:48%;width:calc(100% - 24px)}
   #viewBadge{top:8px;left:8px}
-  #graphControls{right:8px;bottom:8px}
+  .node-controls{right:8px;width:120px}
+  .zoom-controls{right:8px;bottom:8px}
 }
 
 @media(max-width:760px) and (orientation:portrait){
