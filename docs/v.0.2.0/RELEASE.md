@@ -255,3 +255,29 @@ Evidence level:
 automated/static lifecycle contract. Real refresh/orientation/Android recreation remains pending.
 
 Next unit: performance guard for Expand All.
+
+
+## Implementation checkpoint — Expand All performance guard
+
+Added:
+- scope-limited recursive bulk-expand ID derivation in the projection engine;
+- predicted-size guard policy;
+- explicit confirmation UI;
+- strict Cancel-as-no-op behavior;
+- future tested-device budget hook without inventing a current threshold;
+- scope-consistent Collapse All behavior;
+- browser runtime-wiring regression assertions.
+
+Also corrected:
+- missing `currentControlCapabilities`, `renderNavigationState` and `renderNodeControls` functions that earlier static CI had not detected.
+
+Tested source:
+`f3e1db37a0ed620f5e1c51c9b05937e6ea373a87`
+
+CI:
+`36376362499` — PASS.
+
+Evidence level:
+automated/static. Real phone benchmarking is still required to establish a non-null immediate-expansion limit.
+
+Next unit: final static/unit/schema validation gate.

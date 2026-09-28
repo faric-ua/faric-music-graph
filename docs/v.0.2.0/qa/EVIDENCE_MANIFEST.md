@@ -308,3 +308,33 @@ Boundary:
 - transient pointer/gesture/animation state is intentionally not persisted;
 - camera/orbit persistence remains “when practical” and is not claimed by this checkpoint;
 - actual browser refresh, Android recreation and rotation remain later browser/phone lifecycle QA.
+
+
+## Expand All performance guard — 2026-09-28
+
+Implementation source:
+`f3e1db37a0ed620f5e1c51c9b05937e6ea373a87`
+
+CI:
+`36376362499` — PASS.
+
+Automated evidence:
+- projection exposes scope-specific bulk-expand IDs;
+- confirmed bulk expansion reveals exactly the predicted fully-expanded scoped node count in the prototype fixture;
+- after full expansion, semantic `canExpandAll` becomes false and `canCollapseAll` becomes true;
+- unmeasured device budget requires confirmation rather than assuming a guessed safe threshold;
+- a supplied tested limit applies immediately below/equal to the tested budget and asks for confirmation above it;
+- Cancel returns the exact same GraphSessionState object and serialized state;
+- guard dialog includes current/predicted/budget information and explicit Cancel/Expand actions;
+- Escape/click-outside cancel the transient guard;
+- Collapse All uses the same scoped bulk IDs.
+
+Runtime defect found/fixed:
+- three browser runtime wiring functions were missing while still referenced;
+- restored functions now derive controls from the canonical projected world;
+- the new guard suite statically asserts those definitions remain present.
+
+Boundary:
+- the immediate-expansion threshold remains intentionally unmeasured until real target-phone performance QA;
+- confirmation-dialog rotation restoration is not claimed; losing this pre-action dialog is Cancel-equivalent and cannot execute expansion;
+- no remote action is involved.

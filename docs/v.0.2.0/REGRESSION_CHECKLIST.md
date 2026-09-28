@@ -150,3 +150,15 @@
 - [x] invalid inspector target does not destroy otherwise-valid session state;
 - [x] corrupt/blocked browser storage degrades safely;
 - [x] restore does not dispatch semantic commands.
+
+
+## Automated Expand All performance-guard contract
+- [x] full-expansion estimate is produced before bulk expansion;
+- [x] bulk expansion IDs are limited to the current canonical scope;
+- [x] unmeasured phone budget requires explicit confirmation;
+- [x] measured-limit policy supports immediate apply below/equal to tested budget;
+- [x] measured-limit policy confirms above tested budget;
+- [x] Cancel is an exact semantic no-op;
+- [x] confirmed expansion reaches the predicted scoped visible-node count;
+- [x] Collapse All uses the same scoped bulk IDs;
+- [x] missing browser control/navigation runtime definitions are now CI-asserted.
