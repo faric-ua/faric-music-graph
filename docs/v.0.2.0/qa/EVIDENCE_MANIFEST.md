@@ -371,3 +371,21 @@ Schema gate negative controls prove enforcement of:
 - `additionalProperties=false`.
 
 This closes automated/static validation only. Browser/phone QA remains explicitly NOT RUN.
+
+## Merged candidate delivered to main — 2026-09-28
+
+Merge sequence:
+- PR #15 — canonical nested drill;
+- PR #16 — structured Track terminal details;
+- PR #17 — semantic session restoration;
+- PR #18 — Expand All performance guard;
+- PR #19 — final validation gate before phone QA.
+
+Exact merged phone-QA candidate:
+`f25cb380fe7b95a76abc56426bbdc8174ef04e27`
+
+Fresh validation:
+- PR #19 run `36435030701` — PASS;
+- post-merge `main` run `36435075892` — PASS.
+
+This establishes the exact source for real-phone v0.2.0 QA. It does not itself prove portrait/landscape layout, gestures, restoration under rotation/reload, or target-phone performance.
