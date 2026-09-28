@@ -216,10 +216,19 @@ Merged phone-QA candidate checkpoint:
 - validated runtime/code baseline: `f25cb380fe7b95a76abc56426bbdc8174ef04e27`;
 - PR #19 validation run `36435030701` — PASS;
 - post-merge `main` validation run `36435075892` — PASS;
-- a later docs-only handoff merge may advance `main` without changing app/runtime code;
-- phone QA must update to current `main`, record its exact HEAD, and must not use a checkout older than the validated baseline.
+- docs-only handoff then advanced `main` without changing runtime code.
+
+Real-phone QA finding/fix checkpoint:
+- BUG-002 found on phone: non-Track tap opened raw debug JSON and Enter capability stayed stale after selection;
+- UX-004: persistent mobile controls occupied too much graph space;
+- PR #21 merged the fix into `main` at `ef0a6029b7593a33933e803477523d6f3355a4e9`;
+- PR validation run `36441340178` — PASS;
+- post-merge `main` validation run `36441389775` — PASS;
+- non-Track nodes now select without opening debug JSON;
+- selection rebuilds projection/capabilities so →/Enter can enable immediately;
+- mobile `− / + / ⋮` quick controls are grouped at the top; the node palette opens on demand.
 
 First unchecked step:
-**run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA on current `main`, with `f25cb380fe7b95a76abc56426bbdc8174ef04e27` as the validated runtime/code baseline, and record the actual tested HEAD.**
+**update the phone to current `main`, record the tested HEAD, and retest BUG-002/UX-004 before continuing canonical Test 2.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
