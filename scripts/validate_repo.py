@@ -17,6 +17,8 @@ required = [
     "data/channel.json",
     "data/accounts.fixture.json",
     "data/schemas/account.schema.json",
+    "app/filter-model.js",
+    "scripts/test_filter_panel.js",
 ]
 
 errors = []
