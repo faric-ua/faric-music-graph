@@ -30,6 +30,7 @@ jobs:
           node --check app/navigation-ui.js
           node --check app/nested-world-model.js
           node --check app/track-details.js
+          node --check app/session-persistence.js
           node --check scripts/test_graph_state.js
           node --check scripts/test_graph_projection.js
           node --check scripts/test_account_model.js
@@ -38,6 +39,7 @@ jobs:
           node --check scripts/test_navigation_ui.js
           node --check scripts/test_nested_world.js
           node --check scripts/test_track_details.js
+          node --check scripts/test_session_restoration.js
       - name: Graph state tests
         run: node scripts/test_graph_state.js
       - name: Projection engine tests
@@ -54,5 +56,7 @@ jobs:
         run: node scripts/test_nested_world.js
       - name: Structured Track detail tests
         run: node scripts/test_track_details.js
+      - name: Semantic session restoration tests
+        run: node scripts/test_session_restoration.js
       - name: Git whitespace check
         run: git diff --check HEAD^ HEAD || git diff --check

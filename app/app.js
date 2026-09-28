@@ -12,10 +12,11 @@ const N=window.NodeControls;
 const NAV=window.NavigationUi;
 const W=window.NestedWorldModel;
 const T=window.TrackDetails;
+const S=window.SessionPersistence;
 const X=window.MUSIC_PROTOTYPE_FIXTURES;
 
-if(!G||!P||!F||!N||!NAV||!W||!T||!X){
-  throw new Error("Music Graph: nested world and Track detail dependencies are required");
+if(!G||!P||!F||!N||!NAV||!W||!T||!S||!X){
+  throw new Error("Music Graph: nested world, Track detail and session persistence dependencies are required");
 }
 
 const canonicalPrototype=P.createProjectionGraph(
@@ -26,13 +27,22 @@ const canonicalPrototype=P.createProjectionGraph(
   )
 );
 
-let graphSession=G.createInitialState({
+function browserSemanticStorage(){
+  try{return window.localStorage;}catch(_){return null;}
+}
+
+const semanticStorage=browserSemanticStorage();
+const restoredSession=S.restoreSession({
+  storage:semanticStorage,
+  graphState:G,
+  graph:canonicalPrototype,
   defaultFilters:F.defaultFilters(),
   rendererMode:"map"
 });
+let graphSession=restoredSession.state;
 
 const state={
-  view:"map",
+  view:graphSession.rendererMode==="sphere"?"sphere":"map",
   scale:1,
   ox:52,
   oy:70,
@@ -102,6 +112,7 @@ const filterUi={
 
 function setGraphSession(next){
   graphSession=next;
+  S.saveSession(semanticStorage,G,graphSession);
   renderFilterState();
   renderNodeControls();
   renderNavigationState();
@@ -167,32 +178,31 @@ function renderFilterState(){
 }
 
 function resetDraftFilters(){
-  graphSession=G.reducer(graphSession,{
+  setGraphSession(G.reducer(graphSession,{
     type:G.COMMANDS.RESET_DRAFT_FILTERS,
     defaults:F.defaultFilters()
-  });
+  }));
   syncDraftControls();
-  renderFilterState();
 }
 
 function applyDraftFilters(){
   const normalized=F.normalizeFilters(graphSession.draftFilters);
-  graphSession=G.reducer(graphSession,{
+  let next=G.reducer(graphSession,{
     type:G.COMMANDS.RESET_DRAFT_FILTERS,
     defaults:normalized
   });
-  graphSession=G.reducer(graphSession,{
+  next=G.reducer(next,{
     type:G.COMMANDS.APPLY_FILTERS
   });
-  syncDraftControls();
-  renderFilterState();
-  graphSession=G.reducer(graphSession,{
+  next=G.reducer(next,{
     type:G.COMMANDS.SELECT_NODE,
     node:null
   });
-  graphSession=G.reducer(graphSession,{
+  next=G.reducer(next,{
     type:G.COMMANDS.CLOSE_INSPECTOR
   });
+  setGraphSession(next);
+  syncDraftControls();
   state.selectedId=null;
   $("#inspector").classList.remove("open","track-inspector");
   rebuild();
@@ -297,13 +307,14 @@ function rebuild(){
 
   const visibleIds=new Set(state.nodes.map(n=>n.id));
   if(graphSession.selectedNode&&!visibleIds.has(graphSession.selectedNode.id)){
-    graphSession=G.reducer(graphSession,{
+    let nextSession=G.reducer(graphSession,{
       type:G.COMMANDS.SELECT_NODE,
       node:null
     });
-    graphSession=G.reducer(graphSession,{
+    nextSession=G.reducer(nextSession,{
       type:G.COMMANDS.CLOSE_INSPECTOR
     });
+    setGraphSession(nextSession);
     state.selectedId=null;
     $("#inspector").classList.remove("open","track-inspector");
   }else{
@@ -323,6 +334,7 @@ function rebuild(){
 
   renderNodeControls();
   renderNavigationState();
+  renderInspectorState();
   draw();
 }
 
@@ -643,19 +655,7 @@ function renderDebugNodeDetails(container,n){
   container.append(pill,h,pre);
 }
 
-function showNode(n){
-  state.selectedId=n.id;
-  let next=G.reducer(graphSession,{
-    type:G.COMMANDS.SELECT_NODE,
-    node:{id:n.id,kind:n.kind,label:n.label}
-  });
-  next=G.reducer(next,{
-    type:G.COMMANDS.OPEN_INSPECTOR,
-    nodeId:n.id,
-    mode:n.kind==="track"?"track-terminal":"node-debug"
-  });
-  setGraphSession(next);
-
+function renderInspectorNode(n){
   const details=$("#details");
   const inspector=$("#inspector");
   details.textContent="";
@@ -671,6 +671,39 @@ function showNode(n){
   }
 
   inspector.classList.add("open");
+}
+
+function renderInspectorState(){
+  const inspector=$("#inspector");
+  const stateValue=graphSession.inspector||{open:false};
+
+  if(!stateValue.open||!stateValue.nodeId){
+    inspector.classList.remove("open","track-inspector");
+    return;
+  }
+
+  const node=canonicalPrototype.byId.get(stateValue.nodeId);
+  if(!node){
+    inspector.classList.remove("open","track-inspector");
+    return;
+  }
+
+  renderInspectorNode(node);
+}
+
+function showNode(n){
+  state.selectedId=n.id;
+  let next=G.reducer(graphSession,{
+    type:G.COMMANDS.SELECT_NODE,
+    node:{id:n.id,kind:n.kind,label:n.label}
+  });
+  next=G.reducer(next,{
+    type:G.COMMANDS.OPEN_INSPECTOR,
+    nodeId:n.id,
+    mode:n.kind==="track"?"track-terminal":"node-debug"
+  });
+  setGraphSession(next);
+  renderInspectorState();
   draw();
 }
 
@@ -845,7 +878,6 @@ nodeUi.fit.onclick=fitView;
 function refreshAfterNodeCommand(options){
   const opts=options||{};
   if(opts.syncFilters)syncDraftControls();
-  if(opts.closeInspector!==false)$("#inspector").classList.remove("open");
   rebuild();
   if(opts.fit!==false)fitView();
 }
@@ -977,7 +1009,7 @@ filterUi.releaseType.onchange=e=>setDraftFilter("releaseType",e.target.value);
 
 $("#view").onchange=e=>{
   state.view=e.target.value;
-  graphSession=G.reducer(graphSession,{
+  dispatchGraph({
     type:G.COMMANDS.SET_RENDERER_MODE,
     mode:e.target.value
   });
@@ -991,6 +1023,7 @@ document.addEventListener("keydown",e=>{
   }
 });
 
+$("#view").value=state.view;
 syncDraftControls();
 renderFilterState();
 renderNavigationState();
