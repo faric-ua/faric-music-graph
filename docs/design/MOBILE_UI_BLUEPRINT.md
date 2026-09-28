@@ -105,8 +105,10 @@ The advanced panel keeps an approximately 50% transparent background and 48dp-cl
 Default graph navigation:
 - short tap on a non-terminal node = enter that nested world;
 - short tap on Track = open Track details;
+- tap empty graph space while Track details are open = close Track details;
 - long press on a node = select/focus only, for advanced Expand/Collapse commands;
-- Back/breadcrumb returns to parent scope.
+- header Back/breadcrumb returns to parent scope;
+- swipe right from the left graph edge = one semantic level back.
 
 2D Map:
 - one-finger drag = pan;
@@ -163,3 +165,10 @@ Raw JSON is a debug view only, not the normal product UI.
 - color is never the only status signal;
 - panel transparency must not reduce text/icon contrast below practical readability;
 - no animation may block Back or make controls move unpredictably.
+
+
+## Viewport breathing room
+
+Renderer-local Fit should not stretch the graph to the full physical viewport.
+
+For the phone prototype, 2D Fit targets approximately 80% of the available canvas span so nodes and labels keep visible space from the screen boundaries. This is a presentation rule only; it does not change graph topology, scope or filters.

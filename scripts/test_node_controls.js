@@ -100,5 +100,10 @@ assert(app.includes("state.orbitHold"),"3D orbit modifier state is required");
 assert(app.includes("state.spherePanX+=dx"),"3D drag without HOLD must pan the sphere");
 assert(app.includes("state.yaw+=dx*.009"),"3D HOLD drag must rotate the sphere");
 assert(css.includes(".orbit-hold.active"),"HOLD control needs an active pressed state");
+assert(app.includes("const FIT_OCCUPANCY=.80"),"Fit must reserve about 20% viewport breathing room");
+assert(app.includes("function isEdgeBackGesture(g,end){"),"edge-swipe one-level back gesture is required");
+assert(app.includes("goBackScope();\n      return;"),"edge-swipe must route through semantic BACK_SCOPE");
+assert(app.includes("else if(graphSession.inspector&&graphSession.inspector.open){\n        closeInspector();"),"empty graph tap must dismiss Track inspector");
+assert(html.includes('aria-label="На рівень вище"'),"header Back must be clearly labeled as one level up");
 
-console.log("PASS: direct-drill, advanced selection and mobile 3D control contract tests");
+console.log("PASS: direct-drill, back/dismiss, fit and mobile 3D control contract tests");

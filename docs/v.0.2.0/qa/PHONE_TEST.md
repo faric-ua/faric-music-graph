@@ -49,12 +49,16 @@ At each non-terminal level:
 - one short tap enters the tapped node directly;
 - no second →/Enter tap is required;
 - breadcrumb matches the current semantic path;
-- Back returns exactly one level;
+- header ← returns exactly one level;
+- swipe right starting from the left edge of the graph also returns exactly one level;
 - Home returns to Universe;
-- dragging the graph does not accidentally drill.
+- dragging the graph away from the edge does not accidentally drill or go Back;
+- after auto-Fit, graph content keeps visible breathing room instead of touching viewport edges.
 
 At Track:
 - one short tap opens structured Track details;
+- tap on empty graph space closes the Track details;
+- × also closes the Track details;
 - Track remains terminal;
 - the normal view is user-facing rather than raw JSON.
 

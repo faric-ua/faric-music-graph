@@ -443,3 +443,24 @@ The next evidence gate is real-phone acceptance of:
 - 2D pan/tap ownership;
 - Sphere 3D pan vs HOLD/ORBIT rotation;
 - pinch zoom and control occlusion in portrait/landscape.
+
+## Back / empty-dismiss / fit refinement — 2026-09-28
+
+Phone feedback:
+- tap-first forward drill feels natural;
+- returning one level was not equally discoverable;
+- Track detail sheet should dismiss when the user taps empty graph space;
+- auto-Fit placed graph content too close to viewport boundaries.
+
+Implemented:
+- explicit header Back remains available;
+- right-swipe beginning at the left graph edge dispatches semantic `BACK_SCOPE`;
+- edge-swipe requires horizontal distance and bounded vertical drift;
+- empty graph tap dismisses an open Track inspector while × remains available;
+- 2D Fit uses `FIT_OCCUPANCY=.80` to preserve approximately 10% breathing room per side before scale clamps.
+
+Automated regression source includes assertions for all three interaction rules.
+
+Boundary:
+- phone acceptance remains pending;
+- no graph semantics, account data or remote YouTube/YTM state are mutated by these renderer/input changes.
