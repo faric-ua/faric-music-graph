@@ -20,7 +20,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Define track terminal information model and breadcrumb/state restoration contract.
 - [x] Define Music Graph-specific APK/signing/artifact contract.
 - [x] Create v0.2.0 release/QA/diagram skeleton before feature code.
-- [ ] Implement renderer-independent GraphSessionState + command reducer/state machine.
+- [x] Implement renderer-independent GraphSessionState + command reducer/state machine.
 - [ ] Implement projection engine for current scope/drill level/filters/expand state.
 - [ ] Add Account entity + multi-account fixture without storing auth secrets.
 - [ ] Implement adaptive filter panel: one column, scroll body, sticky footer, draft/applied state.
