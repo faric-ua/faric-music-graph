@@ -114,6 +114,28 @@ pre{white-space:pre-wrap;color:#bac4d9;word-break:break-word}
 .track-detail-technical>summary::after{content:"＋";float:right;color:var(--muted)}
 .track-detail-technical[open]>summary::after{content:"−"}
 .track-detail-technical-body{display:grid;gap:10px;padding:0 10px 10px}
+.node-hint{
+  position:absolute;
+  z-index:16;
+  max-width:min(72vw,320px);
+  padding:7px 10px;
+  border:1px solid rgba(139,108,255,.34);
+  border-radius:999px;
+  background:rgba(14,16,22,.86);
+  color:#dfe4f4;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.2;
+  pointer-events:none;
+  opacity:0;
+  transform:translate(-50%,-115%) scale(.96);
+  transition:opacity .18s ease,transform .18s ease;
+  box-shadow:0 10px 28px rgba(0,0,0,.28);
+  backdrop-filter:blur(8px);
+}
+.node-hint.visible{opacity:1;transform:translate(-50%,-125%) scale(1)}
+.node-hint.fading{opacity:0;transform:translate(-50%,-138%) scale(.98)}
+
 .orbit-hold[hidden]{display:none}
 .orbit-hold{
   position:absolute;
