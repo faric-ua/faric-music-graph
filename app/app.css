@@ -83,8 +83,10 @@ body.filters-open .filter-panel{transform:translateX(0);visibility:visible;point
 .node-controls button{min-width:48px;min-height:48px;padding:0 5px;background:rgba(20,23,32,.88);font-size:12px;line-height:1.1}
 .node-controls button:disabled{opacity:.3}
 .node-control-status{overflow:hidden;padding:4px 3px 1px;color:var(--muted);font-size:10px;line-height:1.25;text-align:center;text-overflow:ellipsis;white-space:nowrap}
-.zoom-controls{position:absolute;right:12px;bottom:12px;display:grid;grid-template-columns:52px 52px;gap:8px}
-.zoom-controls button{min-width:52px;padding:0;font-size:20px;background:rgba(20,23,32,.94);backdrop-filter:blur(8px)}
+.mobile-graph-controls{position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:8px;z-index:12}
+.zoom-controls{display:grid;grid-template-columns:52px 52px;gap:8px}
+.zoom-controls button,.node-controls-toggle{min-width:52px;padding:0;font-size:20px;background:rgba(20,23,32,.94);backdrop-filter:blur(8px)}
+.node-controls-toggle{display:none}
 #inspector{position:absolute;right:12px;top:12px;width:min(390px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;padding:18px;border:1px solid var(--border);border-radius:16px;background:rgba(20,23,32,.97);display:none;box-shadow:0 16px 50px rgba(0,0,0,.35)}
 #inspector.open{display:block}
 #inspector.track-inspector{width:min(540px,calc(100% - 24px))}
@@ -131,10 +133,21 @@ pre{white-space:pre-wrap;color:#bac4d9;word-break:break-word}
   .breadcrumb button{max-width:125px;min-height:38px;padding:0 6px;font-size:12px}
   header .filter-toggle{min-height:44px;padding:0 8px}
   .filter-toggle>span:first-child{display:none}
-  #inspector{top:auto;bottom:76px;max-height:48%;width:calc(100% - 24px)}
+  #inspector{top:auto;bottom:12px;max-height:48%;width:calc(100% - 24px)}
   #viewBadge{top:8px;left:8px}
-  .node-controls{right:8px;width:120px}
-  .zoom-controls{right:8px;bottom:8px}
+  .mobile-graph-controls{top:8px;right:8px;bottom:auto;gap:6px}
+  .zoom-controls{grid-template-columns:44px 44px;gap:6px}
+  .zoom-controls button,.node-controls-toggle{min-width:44px;width:44px;min-height:44px;padding:0}
+  .node-controls-toggle{display:block}
+  .node-controls{
+    display:none;
+    right:8px;
+    top:58px;
+    transform:none;
+    width:120px;
+    z-index:13
+  }
+  .node-controls.mobile-open{display:grid}
 }
 
 @media(max-width:760px) and (orientation:portrait){
