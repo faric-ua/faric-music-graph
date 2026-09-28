@@ -21,18 +21,21 @@ jobs:
         run: |
           node --check app/app.js
           node --check app/sample-data.js
+          node --check app/prototype-fixtures.js
           node --check app/graph-state.js
           node --check app/graph-projection.js
           node --check app/account-model.js
           node --check app/filter-model.js
           node --check app/node-controls.js
           node --check app/navigation-ui.js
+          node --check app/nested-world-model.js
           node --check scripts/test_graph_state.js
           node --check scripts/test_graph_projection.js
           node --check scripts/test_account_model.js
           node --check scripts/test_filter_panel.js
           node --check scripts/test_node_controls.js
           node --check scripts/test_navigation_ui.js
+          node --check scripts/test_nested_world.js
       - name: Graph state tests
         run: node scripts/test_graph_state.js
       - name: Projection engine tests
@@ -45,5 +48,7 @@ jobs:
         run: node scripts/test_node_controls.js
       - name: Breadcrumb navigation tests
         run: node scripts/test_navigation_ui.js
+      - name: Canonical nested drill tests
+        run: node scripts/test_nested_world.js
       - name: Git whitespace check
         run: git diff --check HEAD^ HEAD || git diff --check

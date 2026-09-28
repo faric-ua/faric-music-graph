@@ -131,7 +131,22 @@ Breadcrumb/navigation checkpoint:
 - CI run `36369197076` — PASS;
 - browser/phone layout and gesture acceptance remain pending.
 
+Canonical nested-drill checkpoint:
+- implementation branch: `feat/v0.2.0-canonical-nested-drill`;
+- source: `802d652d2cfc57b95ab0cd02685c1c99f3465b04`;
+- `app.js` now renders `GraphProjection.projectWorld()` instead of the temporary Artist/Year Canvas hierarchy;
+- browser prototype graph is built through `NestedWorldModel` as Universe → Account → Year → Genre → Artist → Release → Track;
+- canonical IDs are separated from contextual projection IDs, so one canonical release may appear in multiple genre contexts without identity collision;
+- provider-neutral Account fixture is the Universe root source;
+- browser Account fixture is regression-checked against `data/accounts.fixture.json`;
+- sample account-to-release assignments are explicitly marked `PROTOTYPE_ONLY_NOT_ACCOUNT_INVENTORY`; they are not claimed as live @faric_ua inventory;
+- current 7-release browser sample is used only for this navigation foundation; the prepared 88-release / 863-track migration remains a later separate gate;
+- ancestor search terms are propagated so descendant text search can preserve a visible path through parent worlds;
+- legacy user-selectable hierarchy switch was removed; the product hierarchy is now fixed;
+- CI run `36369595825` — PASS, including an automated full drill to terminal Track;
+- browser/phone UX acceptance remains pending.
+
 First unchecked step:
-**replace the temporary Canvas hierarchy with the canonical Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.**
+**implement structured terminal Track details instead of exposing raw prototype JSON.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

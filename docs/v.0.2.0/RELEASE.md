@@ -180,3 +180,33 @@ Evidence level:
 automated/static only. Header fit, touch comfort, portrait/landscape behavior and real-phone acceptance remain pending.
 
 Next unit: canonical Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.
+
+
+## Implementation checkpoint — Canonical nested drill
+
+Added:
+- canonical browser graph builder for Universe → Account → Year → Genre → Artist → Release → Track;
+- renderer now consumes `GraphProjection.projectWorld()`;
+- contextual projection IDs separated from canonical entity IDs;
+- multi-genre contextual paths can point to the same canonical Artist/Release/Track identity;
+- Account fixture drives the Universe level;
+- browser Account fixture is checked against canonical `data/accounts.fixture.json`;
+- prototype-only account→release assignments carry the explicit status `PROTOTYPE_ONLY_NOT_ACCOUNT_INVENTORY`;
+- current 7-release browser sample only; no false claim that the prepared 88/863 catalog or live channel inventory has been migrated;
+- ancestor search enrichment to retain navigable paths to matching descendants;
+- fixed product hierarchy; the legacy hierarchy selector was removed.
+
+Tested source:
+`802d652d2cfc57b95ab0cd02685c1c99f3465b04`
+
+CI:
+`36369595825` — PASS.
+
+Automated drill proof:
+`Universe → FARIC UA → 1994 → Big Beat → The Prodigy → Music for the Jilted Generation → Voodoo People`,
+with Track terminality and a seven-level breadcrumb asserted.
+
+Evidence level:
+automated/static only. Browser/phone UX remains pending.
+
+Next unit: structured terminal Track details.

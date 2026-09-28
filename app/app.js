@@ -6,13 +6,24 @@ const $=s=>document.querySelector(s);
 const canvas=$("#graph");
 const ctx=canvas.getContext("2d");
 const G=window.GraphState;
+const P=window.GraphProjection;
 const F=window.FilterModel;
 const N=window.NodeControls;
 const NAV=window.NavigationUi;
+const W=window.NestedWorldModel;
+const X=window.MUSIC_PROTOTYPE_FIXTURES;
 
-if(!G||!F||!N||!NAV){
-  throw new Error("Music Graph: GraphState, FilterModel, NodeControls and NavigationUi are required");
+if(!G||!P||!F||!N||!NAV||!W||!X){
+  throw new Error("Music Graph: nested world dependencies are required");
 }
+
+const canonicalPrototype=P.createProjectionGraph(
+  W.buildNestedGraph(
+    X.accountDocument,
+    D,
+    X.assignments
+  )
+);
 
 let graphSession=G.createInitialState({
   defaultFilters:F.defaultFilters(),
@@ -20,7 +31,6 @@ let graphSession=G.createInitialState({
 });
 
 const state={
-  structure:"artist",
   view:"map",
   scale:1,
   ox:52,
@@ -30,8 +40,11 @@ const state={
   pitch:0.22,
   nodes:[],
   edges:[],
-  fullNodes:[],
-  fullEdges:[],
+  fullNodes:canonicalPrototype.nodes,
+  fullEdges:canonicalPrototype.edges
+    .filter(edge=>edge.navigation)
+    .map(edge=>[edge.source,edge.target]),
+  currentWorld:null,
   hit:[],
   selectedId:null,
   pointers:new Map(),
@@ -192,135 +205,6 @@ function resize(){
   draw();
 }
 
-function addNode(list,id,label,kind,level,meta){
-  if(!list.some(v=>v.id===id)){
-    list.push({id,label,kind,l:level,meta:meta||{}});
-  }
-}
-
-function projectPrototypeVisibility(fullNodes,fullEdges){
-  const byId=new Map(fullNodes.map(n=>[n.id,n]));
-  const children=new Map();
-  for(const [source,target] of fullEdges){
-    if(!children.has(source))children.set(source,[]);
-    children.get(source).push(target);
-  }
-
-  const scope=graphSession.currentScope||G.universeNode();
-  if(!byId.has(scope.id)){
-    addNode(fullNodes,scope.id,scope.label,scope.kind,0,{prototypeScope:true});
-    byId.set(scope.id,fullNodes[fullNodes.length-1]);
-  }
-
-  const expanded=new Set(graphSession.expandedNodeIds||[]);
-  const visible=new Map();
-  const visibleEdges=[];
-  const seen=new Set();
-
-  function reveal(parentId,depth){
-    if(seen.has(parentId))return;
-    seen.add(parentId);
-    for(const childId of children.get(parentId)||[]){
-      const child=byId.get(childId);
-      if(!child)continue;
-      if(!visible.has(childId)){
-        visible.set(childId,{...child,l:depth+1});
-        visibleEdges.push([parentId,childId]);
-      }
-      if(expanded.has(childId)){
-        reveal(childId,depth+1);
-      }
-    }
-  }
-
-  const scopeNode=byId.get(scope.id);
-  visible.set(scope.id,{...scopeNode,l:0});
-  reveal(scope.id,0);
-
-  return {
-    nodes:[...visible.values()],
-    edges:visibleEdges
-  };
-}
-
-function currentControlCapabilities(){
-  return N.deriveControlState(
-    graphSession,
-    state.fullNodes,
-    state.fullEdges
-  );
-}
-
-function renderNavigationState(){
-  if(!navUi.breadcrumb)return;
-
-  const capabilities=currentControlCapabilities();
-  const navigation=NAV.deriveNavigationState(
-    graphSession,
-    capabilities.canEnter
-  );
-
-  navUi.back.disabled=!navigation.canBack;
-  navUi.home.disabled=!navigation.canHome;
-  navUi.enter.disabled=!navigation.canEnter;
-
-  navUi.breadcrumb.replaceChildren();
-
-  for(const item of NAV.breadcrumbItems(graphSession)){
-    const wrapper=document.createElement("span");
-    wrapper.className="breadcrumb-item";
-
-    const button=document.createElement("button");
-    button.type="button";
-    button.textContent=item.label;
-    button.title=item.label;
-    button.dataset.depth=String(item.depth);
-
-    if(item.current){
-      button.disabled=true;
-      button.setAttribute("aria-current","page");
-    }else{
-      button.setAttribute(
-        "aria-label",
-        "Перейти до "+item.label
-      );
-      button.onclick=()=>jumpToDepth(item.depth);
-    }
-
-    wrapper.append(button);
-    navUi.breadcrumb.append(wrapper);
-  }
-
-  const current=navUi.breadcrumb.querySelector('[aria-current="page"]');
-  if(current&&typeof current.scrollIntoView==="function"){
-    current.scrollIntoView({
-      block:"nearest",
-      inline:"nearest"
-    });
-  }
-}
-
-function renderNodeControls(){
-  if(!nodeUi.expandAll)return;
-  const capabilities=currentControlCapabilities();
-
-  nodeUi.expandAll.disabled=!capabilities.canExpandAll;
-  nodeUi.collapseAll.disabled=!capabilities.canCollapseAll;
-  nodeUi.expandNode.disabled=!capabilities.canExpandSelected;
-  nodeUi.collapseNode.disabled=!capabilities.canCollapseSelected;
-  nodeUi.enter.disabled=!capabilities.canEnter;
-  nodeUi.back.disabled=!capabilities.canBack;
-  nodeUi.home.disabled=!capabilities.canHome;
-  nodeUi.fit.disabled=!capabilities.canFit;
-
-  const selected=graphSession.selectedNode;
-  const scope=graphSession.currentScope||G.universeNode();
-  nodeUi.status.textContent=selected
-    ?scope.label+" · "+selected.label
-    :scope.label;
-  nodeUi.status.title=nodeUi.status.textContent;
-}
-
 function layoutMap(nodes){
   const levels={};
   nodes.forEach(n=>(levels[n.l]??=[]).push(n));
@@ -328,7 +212,16 @@ function layoutMap(nodes){
     list.forEach((n,i)=>{
       n.px=Number(level)*245;
       n.py=45+i*70;
-      n.r=n.kind==="root"?23:n.kind==="artist"?18:n.kind==="release"?12:8;
+      const radii={
+        universe:23,
+        account:20,
+        year:17,
+        genre:15,
+        artist:14,
+        release:11,
+        track:7
+      };
+      n.r=radii[n.kind]||9;
     });
   });
 }
@@ -367,62 +260,32 @@ function layoutSphere(nodes){
 }
 
 function rebuild(){
-  const releases=F.filterReleases(D,graphSession.appliedFilters);
+  const world=P.projectWorld(
+    canonicalPrototype,
+    graphSession,
+    {rendererHint:state.view}
+  );
+  state.currentWorld=world;
 
-  const nodes=[];
-  const edges=[];
-  const edge=(a,b)=>edges.push([a,b]);
-  addNode(nodes,"universe","Universe","universe",0,{});
-
-  if(state.structure==="artist"){
-    for(const artist of D.artists.filter(a=>releases.some(r=>r.artistId===a.id))){
-      const aid="a:"+artist.id;
-      addNode(nodes,aid,artist.name,"artist",1,artist);
-      edge("universe",aid);
-
-      for(const release of releases.filter(r=>r.artistId===artist.id)){
-        const rid="r:"+release.id;
-        addNode(nodes,rid,release.title,"release",2,release);
-        edge(aid,rid);
-
-        release.tracks.forEach((title,i)=>{
-          const tid=rid+":t:"+i;
-          addNode(nodes,tid,title,"track",3,{title,release:release.title,artist:artist.name});
-          edge(rid,tid);
-        });
-      }
+  state.nodes=world.nodes.map(node=>({
+    ...node,
+    l:node.projection.depth,
+    meta:{
+      canonicalId:node.canonicalId||node.id,
+      contextPath:node.contextPath||[],
+      facets:node.facets||{},
+      projection:node.projection,
+      account:node.account||null,
+      artist:node.artist||null,
+      release:node.release||null,
+      track:node.track||null,
+      prototypeOnly:Boolean(node.meta&&node.meta.prototypeOnly)
     }
-  }else{
-    for(const release of releases){
-      const year=release.year??"Unknown";
-      const yid="y:"+year;
-      addNode(nodes,yid,String(year),"year",1,{year:release.year});
-      edge("universe",yid);
+  }));
+  state.edges=world.edges.map(edge=>[edge.source,edge.target]);
 
-      const artist=D.artists.find(a=>a.id===release.artistId);
-      const genre=artist.genres[0];
-      const gid=yid+":g:"+genre;
-      addNode(nodes,gid,genre,"genre",2,{genre});
-      edge(yid,gid);
-
-      const aid=gid+":a:"+artist.id;
-      addNode(nodes,aid,artist.name,"artist",3,artist);
-      edge(gid,aid);
-
-      const rid="r:"+release.id;
-      addNode(nodes,rid,release.title,"release",4,release);
-      edge(aid,rid);
-    }
-  }
-
-  state.fullNodes=nodes;
-  state.fullEdges=edges;
-
-  const projected=projectPrototypeVisibility(nodes,edges);
-  layoutMap(projected.nodes);
-  layoutSphere(projected.nodes);
-  state.nodes=projected.nodes;
-  state.edges=projected.edges;
+  layoutMap(state.nodes);
+  layoutSphere(state.nodes);
 
   const visibleIds=new Set(state.nodes.map(n=>n.id));
   if(graphSession.selectedNode&&!visibleIds.has(graphSession.selectedNode.id)){
@@ -437,8 +300,16 @@ function rebuild(){
   }
 
   const activeFilters=F.activeFilterCount(graphSession.appliedFilters);
-  $("#stats").innerHTML="<b>"+releases.length+"</b> релізів у view<br><b>"+state.nodes.length+"</b> видимих вузлів<br><b>"+activeFilters+"</b> активних фільтрів<br><b>"+(state.view==="map"?"2D Map":"Sphere 3D")+"</b>";
-  $("#viewBadge").textContent=state.view==="map"?"2D Map":"Sphere 3D";
+  const next=world.nextKind||"terminal";
+  $("#stats").innerHTML=
+    "<b>"+world.scope.label+"</b> scope<br>"+
+    "<b>"+world.metrics.visibleNodeCount+"</b> видимих вузлів<br>"+
+    "<b>"+world.metrics.directChildCount+"</b> прямих "+next+"<br>"+
+    "<b>"+world.metrics.predictedFullyExpandedNodeCount+"</b> вузлів при full expand<br>"+
+    "<b>"+activeFilters+"</b> активних фільтрів";
+  $("#viewBadge").textContent=
+    (state.view==="map"?"2D Map":"Sphere 3D")+" · "+world.scopeKind;
+
   renderNodeControls();
   renderNavigationState();
   draw();
@@ -582,7 +453,16 @@ function showNode(n){
   h.textContent=n.label;
 
   const pre=document.createElement("pre");
-  pre.textContent=JSON.stringify(n.meta,null,2);
+  pre.textContent=JSON.stringify({
+    canonicalId:n.canonicalId||n.id,
+    contextPath:n.contextPath||[],
+    facets:n.facets||{},
+    account:n.account||null,
+    artist:n.artist||null,
+    release:n.release||null,
+    track:n.track||null,
+    projection:n.projection||null
+  },null,2);
 
   details.append(pill,h,pre);
   $("#inspector").classList.add("open");
@@ -885,18 +765,6 @@ filterUi.yearMin.oninput=e=>setDraftYearBound("min",e.target.value);
 filterUi.yearMax.oninput=e=>setDraftYearBound("max",e.target.value);
 filterUi.genre.onchange=e=>setDraftFilter("genre",e.target.value);
 filterUi.releaseType.onchange=e=>setDraftFilter("releaseType",e.target.value);
-
-$("#structure").onchange=e=>{
-  state.structure=e.target.value;
-  graphSession=G.reducer(graphSession,{type:G.COMMANDS.HOME_SCOPE});
-  graphSession=G.reducer(graphSession,{type:G.COMMANDS.COLLAPSE_ALL,ids:[]});
-  graphSession=G.reducer(graphSession,{type:G.COMMANDS.SELECT_NODE,node:null});
-  state.selectedId=null;
-  $("#inspector").classList.remove("open");
-  renderFilterState();
-  rebuild();
-  fitView();
-};
 
 $("#view").onchange=e=>{
   state.view=e.target.value;
