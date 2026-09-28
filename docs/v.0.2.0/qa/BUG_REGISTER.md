@@ -16,9 +16,15 @@ Status: IMPLEMENTED / CI PASS / PHONE QA PENDING.
 Status: IMPLEMENTED / CI PASS / PHONE QA PENDING.
 
 ## UX-003 — Explicit selection vs Enter
-Status: IMPLEMENTED / CI PASS / PHONE QA PENDING.
+Status: SUPERSEDED BY REAL-PHONE UX FEEDBACK.
 
-Reason: orbit/pan gestures must not accidentally drill into nodes.
+The original v0.2.0 contract required tap → select and a separate Enter action. Phone use showed that this makes ordinary nested browsing feel mechanical and unclear.
+
+Revised contract:
+- short tap on non-terminal node = direct drill;
+- long press = explicit selection/focus for advanced node commands;
+- explicit Enter remains only as fallback/advanced semantic control;
+- drag/orbit remains movement-thresholded to prevent accidental drill.
 
 ## BUG-001 — Browser runtime control/navigation functions were missing
 Status: FIXED / CI REGRESSION ASSERTION ADDED.
@@ -43,7 +49,7 @@ Status: OPEN MEASUREMENT / SAFE GUARD IMPLEMENTED.
 Until real target-phone measurement establishes a safe immediate node budget, non-trivial Expand All requires explicit confirmation. No production threshold is guessed in code or docs.
 
 ## BUG-002 — Non-Track tap opened raw debug JSON and left Enter stale
-Status: MERGED / CI PASS / PHONE RETEST PENDING.
+Status: PHONE BEHAVIOR OBSERVED FIXED / FORMAL TESTED-HEAD RECORD STILL PENDING.
 
 Found during real-phone v0.2.0 QA on 2026-09-28.
 
@@ -72,7 +78,9 @@ Phone recheck:
 - enter Account and continue canonical drill.
 
 ## UX-004 — Compact mobile graph controls
-Status: MERGED / CI PASS / PHONE RETEST PENDING.
+Status: PHONE-ACCEPTED FOR NOW / MAY REVISIT.
+
+Real-phone screenshots show the compact top `− / + / ⋮` row working. The `⋮` popout remains visually bulky, but the user explicitly accepted leaving it this way for now.
 
 Real-phone feedback: persistent right-side node controls plus bottom-right zoom controls consume too much graph space.
 
@@ -80,3 +88,36 @@ Adjustment:
 - mobile zoom `− / +` moved into one compact top-right graph row;
 - node controls are hidden by default on mobile and opened from a compact `⋮` button in the same row;
 - desktop floating palette behavior remains unchanged.
+
+
+## UX-005 — Tap-first nested drill
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+
+Real-phone feedback: ordinary browsing should feel like opening nested music worlds, not selecting a node and then hunting for a separate Enter command.
+
+Implemented interaction:
+- short tap on Account / Year / Genre / Artist / Release enters that world immediately;
+- Track tap opens Track details;
+- long press preserves selection-only behavior for advanced Expand/Collapse-selected commands;
+- semantic state still uses the existing renderer-independent `ENTER_NODE` reducer command;
+- movement threshold prevents normal drag from being interpreted as tap.
+
+## UX-006 — Track detail readability
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+
+Real-phone screenshots confirmed the card/skin direction is acceptable, but the default Track surface exposed too much developer terminology.
+
+Adjustment:
+- default view leads with `Де ви зараз`, library/account context, plain-language YouTube/YTM state and a short data-state note;
+- canonical/projection IDs, internal assignment codes, verification details and full warnings move under collapsed `Технічні дані`;
+- no data is removed or invented.
+
+## UX-007 — Sphere 3D HOLD / ORBIT gesture
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+
+Requested mobile gesture model:
+- normal 3D drag pans/moves the sphere on screen;
+- holding the bottom `HOLD / ORBIT` button changes drag into yaw/pitch rotation;
+- release returns drag to pan immediately;
+- pinch remains zoom;
+- the gesture modifier is renderer-local and does not mutate semantic graph state.
