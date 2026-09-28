@@ -28,7 +28,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Implement breadcrumb + Enter/Back/Home navigation.
 - [x] Implement Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.
 - [x] Implement structured Track terminal details.
-- [ ] Add restoration tests for drill path, filters, selected node and open panels.
+- [x] Add restoration tests for drill path, filters, selected node and open panels.
 - [ ] Add performance guard for Expand All.
 - [ ] Run static/unit/schema tests and CI.
 - [ ] Run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA.

@@ -136,3 +136,17 @@
 - [x] fixture-account context warning is asserted;
 - [x] normal Track UI uses structured groups rather than raw JSON;
 - [x] inspector open/close commands are wired into GraphSessionState.
+
+
+## Automated semantic-restoration contract
+- [x] drill path and current scope restore without replaying Enter;
+- [x] selected node restores;
+- [x] applied filters restore;
+- [x] pending draft filters restore independently from applied filters;
+- [x] open filter panel restores;
+- [x] open Track inspector target/mode restores;
+- [x] renderer mode restores;
+- [x] stale canonical path fails closed to Universe;
+- [x] invalid inspector target does not destroy otherwise-valid session state;
+- [x] corrupt/blocked browser storage degrades safely;
+- [x] restore does not dispatch semantic commands.

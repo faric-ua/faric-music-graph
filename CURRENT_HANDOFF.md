@@ -159,7 +159,21 @@ Structured Track terminal-details checkpoint:
 - CI run `36375617001` — PASS;
 - browser/phone visual acceptance remains pending.
 
+Semantic session-restoration checkpoint:
+- implementation branch: `feat/v0.2.0-session-restoration`;
+- source: `cfbc6540b95a336e8096a1a25bbd709da1373340`;
+- semantic session is persisted under a versioned local-storage key;
+- restore validates the stored drill path against current canonical navigation edges before accepting it;
+- valid restore preserves drill path/current scope, selected node, applied filters, pending draft filters, filter-panel visibility, inspector target/mode and renderer mode;
+- Track inspector is rebuilt from semantic inspector state instead of replaying selection/Enter;
+- stale graph paths or corrupt serialized state fail closed to a fresh Universe session and the invalid stored session is discarded;
+- a missing inspector target closes only the inspector while preserving the rest of a valid session;
+- blocked/unavailable browser storage degrades safely without breaking startup;
+- automated test uses a GraphState wrapper whose reducer throws during restore, proving restore does not replay semantic commands;
+- CI run `36375948517` — PASS;
+- camera/orbit persistence remains optional/later and phone/WebView lifecycle acceptance remains pending.
+
 First unchecked step:
-**add restoration tests for drill path, filters, selected node and open panels, then wire any missing restore behavior exposed by those tests.**
+**add the performance guard for Expand All using the projection engine’s predicted expansion size, preserving Cancel as a no-op.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
