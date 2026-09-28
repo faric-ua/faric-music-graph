@@ -94,3 +94,41 @@ Verified:
 - canonical identity and contextual projection identity are documented separately.
 
 No live account inventory or authentication was performed by this step.
+
+
+## Adaptive filter panel — 2026-09-28
+
+Implementation source:
+`ab5071e83a8eec60ec4242b9ae0ecb656364ec8a`
+
+CI:
+`36368444005` — PASS.
+
+Automated evidence:
+- repository validation PASS;
+- JavaScript syntax PASS;
+- GraphSessionState tests PASS;
+- Projection engine tests PASS;
+- Account model tests PASS;
+- adaptive filter panel model/state/layout tests PASS;
+- Git whitespace check PASS.
+
+Implemented behavior:
+- portrait filter panel is a bottom sheet targeted at 45–55% viewport height;
+- wider/landscape layouts use a side sheet targeted at 40–50% viewport width;
+- body is one column and independently scrollable;
+- Reset/Apply footer is outside the scroll body and remains fixed inside the panel;
+- filter edits modify `draftFilters` only;
+- graph rebuild/filter effect occurs only after explicit Apply;
+- Reset returns only the draft to defaults;
+- button badge counts applied filters;
+- pending marker shows unapplied draft changes;
+- search, artist, year range, genre and release type are covered by the filter model.
+
+Not proven by this checkpoint:
+- browser visual fit;
+- portrait/landscape touch behavior;
+- real-phone ergonomics;
+- Android/WebView behavior.
+
+Those remain later QA gates.

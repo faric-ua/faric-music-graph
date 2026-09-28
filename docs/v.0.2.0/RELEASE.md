@@ -101,3 +101,30 @@ CI:
 `36362670818` — PASS.
 
 Next unit: adaptive filter panel.
+
+
+## Implementation checkpoint — Adaptive filter panel
+
+Added:
+- responsive filter sheet with one-column content;
+- portrait bottom-sheet sizing at roughly 45–55% of viewport height;
+- landscape/tablet/desktop side-sheet sizing at roughly 40–50% of viewport width;
+- independently scrollable filter body;
+- fixed Reset/Apply action footer;
+- explicit draft/applied state through `GraphSessionState`;
+- pending-draft marker separate from applied-filter count;
+- semantic filter model for search, artist, year range, genre and release type;
+- Reset-as-draft-only behavior;
+- Apply-only graph rebuild;
+- automated model/state/layout contract checks.
+
+Tested source:
+`ab5071e83a8eec60ec4242b9ae0ecb656364ec8a`
+
+CI:
+`36368444005` — PASS.
+
+Evidence level:
+automated/static only. Browser portrait/landscape and real-phone gesture/filter acceptance remain pending.
+
+Next unit: floating node-control palette and command wiring.

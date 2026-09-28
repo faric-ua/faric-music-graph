@@ -68,3 +68,16 @@
 - [x] known public target keeps unverified external ID null;
 - [x] synthetic account is fixture-only;
 - [x] visible account-to-account non-navigation edge tested.
+
+
+## Automated adaptive-filter contract
+- [x] semantic filter defaults are normalized;
+- [x] active applied-filter count is deterministic;
+- [x] search / artist / year range / genre / release-type filtering covered;
+- [x] inverted year range normalizes safely;
+- [x] draft edit does not mutate applied filters;
+- [x] Reset mutates draft only;
+- [x] Apply copies draft to applied;
+- [x] one-column scrollable filter body is structurally asserted;
+- [x] fixed Reset/Apply footer is structurally asserted;
+- [x] portrait bottom-sheet and wider side-sheet breakpoints are asserted.

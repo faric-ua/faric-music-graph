@@ -23,7 +23,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Implement renderer-independent GraphSessionState + command reducer/state machine.
 - [x] Implement projection engine for current scope/drill level/filters/expand state.
 - [x] Add Account entity + multi-account fixture without storing auth secrets.
-- [ ] Implement adaptive filter panel: one column, scroll body, sticky footer, draft/applied state.
+- [x] Implement adaptive filter panel: one column, scroll body, sticky footer, draft/applied state.
 - [ ] Implement floating node-control palette and command wiring.
 - [ ] Implement breadcrumb + Enter/Back/Home navigation.
 - [ ] Implement Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.

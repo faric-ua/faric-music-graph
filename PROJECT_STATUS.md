@@ -37,9 +37,10 @@ Live multi-account inventory: **PENDING READ-ONLY IMPLEMENTATION/AUDIT**.
 - repository + recovery docs: established;
 - v0.1.1 interaction prototype: implemented/CI PASS, historical prototype;
 - product/UX contract: v0.2.0 Nested 3D Worlds accepted;
-- renderer-independent session state: pending;
-- projection engine: pending;
-- filter drawer contract: accepted, implementation pending;
+- renderer-independent session state: implemented + CI PASS;
+- projection engine: implemented + CI PASS;
+- provider-neutral Account foundation: implemented + CI PASS;
+- adaptive filter panel: implemented + CI PASS; browser/phone UX acceptance pending;
 - floating node controls: accepted, implementation pending;
 - full seed migration: pending;
 - read-only channel inventory: pending;
