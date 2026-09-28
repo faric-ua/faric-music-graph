@@ -2,13 +2,15 @@
 
 Status: READY / NOT RUN.
 
-Validated source before merge:
-`acb642f40bb9bf6f3567dd15aa4050e0e9c7a713`
+Merged phone-QA source:
+`f25cb380fe7b95a76abc56426bbdc8174ef04e27`
 
-Validation CI:
-`36376536482` — PASS.
+Validation evidence:
+- pre-merge validation source `acb642f40bb9bf6f3567dd15aa4050e0e9c7a713`, CI `36376536482` — PASS;
+- PR #19 validation run `36435030701` — PASS;
+- post-merge `main` run `36435075892` — PASS.
 
-Phone QA must run only after the validated candidate is merged to `main` and the phone checkout is updated to that merged candidate.
+Phone QA must run against exact `main` `f25cb380fe7b95a76abc56426bbdc8174ef04e27`. If step 6 reports another HEAD, update first and do not record PASS/FAIL evidence yet.
 
 ## Start on phone
 
