@@ -5,12 +5,21 @@ const D=window.MUSIC_SAMPLE;
 const $=s=>document.querySelector(s);
 const canvas=$("#graph");
 const ctx=canvas.getContext("2d");
+const G=window.GraphState;
+const F=window.FilterModel;
+
+if(!G||!F){
+  throw new Error("Music Graph: GraphState and FilterModel are required");
+}
+
+let graphSession=G.createInitialState({
+  defaultFilters:F.defaultFilters(),
+  rendererMode:"map"
+});
 
 const state={
-  artist:"all",
   structure:"artist",
   view:"map",
-  q:"",
   scale:1,
   ox:52,
   oy:70,
@@ -35,6 +44,113 @@ const colors={
 };
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+
+const filterUi={
+  panel:$("#filters"),
+  toggle:$("#filterToggle"),
+  badge:$("#filterBadge"),
+  pending:$("#filterPending"),
+  close:$("#filterClose"),
+  scrim:$("#filterScrim"),
+  search:$("#search"),
+  artist:$("#artist"),
+  yearMin:$("#yearMin"),
+  yearMax:$("#yearMax"),
+  genre:$("#genre"),
+  releaseType:$("#releaseType"),
+  reset:$("#resetFilters"),
+  apply:$("#applyFilters")
+};
+
+function setGraphSession(next){
+  graphSession=next;
+  renderFilterState();
+}
+
+function dispatchGraph(action){
+  setGraphSession(G.reducer(graphSession,action));
+}
+
+function setFilterPanelOpen(open){
+  dispatchGraph({
+    type:G.COMMANDS.SET_FILTER_PANEL_OPEN,
+    open:Boolean(open)
+  });
+}
+
+function setDraftFilter(key,value){
+  dispatchGraph({
+    type:G.COMMANDS.SET_DRAFT_FILTER,
+    key,
+    value
+  });
+}
+
+function draftYearRange(){
+  const year=graphSession.draftFilters&&graphSession.draftFilters.year;
+  return {
+    min:year&&Number.isFinite(Number(year.min))?Number(year.min):null,
+    max:year&&Number.isFinite(Number(year.max))?Number(year.max):null
+  };
+}
+
+function setDraftYearBound(bound,rawValue){
+  const current=draftYearRange();
+  const value=rawValue===""?null:Number(rawValue);
+  current[bound]=Number.isFinite(value)?value:null;
+  setDraftFilter("year",current);
+}
+
+function syncDraftControls(){
+  const draft=F.normalizeFilters(graphSession.draftFilters);
+  filterUi.search.value=draft.search;
+  filterUi.artist.value=draft.artist;
+  filterUi.yearMin.value=draft.year.min==null?"":String(draft.year.min);
+  filterUi.yearMax.value=draft.year.max==null?"":String(draft.year.max);
+  filterUi.genre.value=draft.genre;
+  filterUi.releaseType.value=draft.releaseType;
+}
+
+function renderFilterState(){
+  const open=Boolean(graphSession.filterPanelOpen);
+  const pending=G.filtersPending(graphSession);
+  const active=F.activeFilterCount(graphSession.appliedFilters);
+
+  document.body.classList.toggle("filters-open",open);
+  filterUi.panel.setAttribute("aria-hidden",String(!open));
+  filterUi.toggle.setAttribute("aria-expanded",String(open));
+
+  filterUi.badge.hidden=active===0;
+  filterUi.badge.textContent=String(active);
+  filterUi.pending.hidden=!pending;
+  filterUi.apply.disabled=!pending;
+}
+
+function resetDraftFilters(){
+  graphSession=G.reducer(graphSession,{
+    type:G.COMMANDS.RESET_DRAFT_FILTERS,
+    defaults:F.defaultFilters()
+  });
+  syncDraftControls();
+  renderFilterState();
+}
+
+function applyDraftFilters(){
+  const normalized=F.normalizeFilters(graphSession.draftFilters);
+  graphSession=G.reducer(graphSession,{
+    type:G.COMMANDS.RESET_DRAFT_FILTERS,
+    defaults:normalized
+  });
+  graphSession=G.reducer(graphSession,{
+    type:G.COMMANDS.APPLY_FILTERS
+  });
+  syncDraftControls();
+  renderFilterState();
+  state.selectedId=null;
+  $("#inspector").classList.remove("open");
+  rebuild();
+  fitView();
+}
 
 function pointFromEvent(e){
   const r=canvas.getBoundingClientRect();
@@ -102,12 +218,7 @@ function layoutSphere(nodes){
 }
 
 function rebuild(){
-  const releases=D.releases.filter(r=>{
-    const artistOk=state.artist==="all"||r.artistId===state.artist;
-    const text=(r.title+" "+r.tracks.join(" ")).toLowerCase();
-    const queryOk=!state.q||text.includes(state.q);
-    return artistOk&&queryOk;
-  });
+  const releases=F.filterReleases(D,graphSession.appliedFilters);
 
   const nodes=[];
   const edges=[];
@@ -160,7 +271,8 @@ function rebuild(){
   state.nodes=nodes;
   state.edges=edges;
 
-  $("#stats").innerHTML="<b>"+releases.length+"</b> релізів у view<br><b>"+nodes.length+"</b> вузлів<br><b>"+(state.view==="map"?"2D Map":"Sphere 3D")+"</b>";
+  const activeFilters=F.activeFilterCount(graphSession.appliedFilters);
+  $("#stats").innerHTML="<b>"+releases.length+"</b> релізів у view<br><b>"+nodes.length+"</b> вузлів<br><b>"+activeFilters+"</b> активних фільтрів<br><b>"+(state.view==="map"?"2D Map":"Sphere 3D")+"</b>";
   $("#viewBadge").textContent=state.view==="map"?"2D Map":"Sphere 3D";
   draw();
 }
@@ -480,29 +592,31 @@ $("#close").onclick=()=>{
   draw();
 };
 
-$("#filterToggle").onclick=()=>document.body.classList.toggle("filters-collapsed");
-
-$("#reset").onclick=()=>{
-  state.artist="all";
-  state.structure="artist";
-  state.q="";
-  $("#artist").value="all";
-  $("#structure").value="artist";
-  $("#search").value="";
-  state.selectedId=null;
-  $("#inspector").classList.remove("open");
-  rebuild();
-  fitView();
-};
-
-$("#artist").innerHTML='<option value="all">Усі</option>'+
+filterUi.artist.innerHTML='<option value="all">Усі</option>'+
   D.artists.map(a=>'<option value="'+a.id+'">'+a.name+"</option>").join("");
 
-$("#artist").onchange=e=>{
-  state.artist=e.target.value;
-  rebuild();
-  fitView();
-};
+const genres=[...new Set(D.artists.flatMap(a=>a.genres||[]))]
+  .sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:"base"}));
+filterUi.genre.innerHTML='<option value="all">Усі</option>'+
+  genres.map(genre=>'<option value="'+genre+'">'+genre+"</option>").join("");
+
+const releaseTypes=[...new Set(D.releases.map(r=>r.type).filter(Boolean))]
+  .sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:"base"}));
+filterUi.releaseType.innerHTML='<option value="all">Усі</option>'+
+  releaseTypes.map(type=>'<option value="'+type+'">'+type+"</option>").join("");
+
+filterUi.toggle.onclick=()=>setFilterPanelOpen(!graphSession.filterPanelOpen);
+filterUi.close.onclick=()=>setFilterPanelOpen(false);
+filterUi.scrim.onclick=()=>setFilterPanelOpen(false);
+filterUi.reset.onclick=resetDraftFilters;
+filterUi.apply.onclick=applyDraftFilters;
+
+filterUi.search.oninput=e=>setDraftFilter("search",e.target.value);
+filterUi.artist.onchange=e=>setDraftFilter("artist",e.target.value);
+filterUi.yearMin.oninput=e=>setDraftYearBound("min",e.target.value);
+filterUi.yearMax.oninput=e=>setDraftYearBound("max",e.target.value);
+filterUi.genre.onchange=e=>setDraftFilter("genre",e.target.value);
+filterUi.releaseType.onchange=e=>setDraftFilter("releaseType",e.target.value);
 
 $("#structure").onchange=e=>{
   state.structure=e.target.value;
@@ -512,19 +626,22 @@ $("#structure").onchange=e=>{
 
 $("#view").onchange=e=>{
   state.view=e.target.value;
+  graphSession=G.reducer(graphSession,{
+    type:G.COMMANDS.SET_RENDERER_MODE,
+    mode:e.target.value
+  });
   rebuild();
   fitView();
 };
 
-$("#search").oninput=e=>{
-  state.q=e.target.value.trim().toLowerCase();
-  rebuild();
-  fitView();
-};
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&graphSession.filterPanelOpen){
+    setFilterPanelOpen(false);
+  }
+});
 
-if(window.matchMedia&&window.matchMedia("(max-width:760px)").matches){
-  document.body.classList.add("filters-collapsed");
-}
+syncDraftControls();
+renderFilterState();
 
 addEventListener("resize",resize);
 resize();

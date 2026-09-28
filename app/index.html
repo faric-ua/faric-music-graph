@@ -10,41 +10,89 @@
   <header>
     <div class="brand">
       <strong>FARIC Music Graph</strong>
-      <span>v0.1.1 mobile prototype</span>
+      <span>v0.2.0 Nested 3D Worlds</span>
     </div>
     <div class="header-actions">
-      <button id="filterToggle" type="button">Фільтри</button>
-      <button id="reset" type="button">Скинути</button>
+      <button
+        id="filterToggle"
+        class="filter-toggle"
+        type="button"
+        aria-controls="filters"
+        aria-expanded="false"
+      >
+        <span>Фільтри</span>
+        <span id="filterBadge" class="filter-badge" hidden>0</span>
+        <span id="filterPending" class="filter-pending" aria-label="Є незастосовані зміни" hidden>•</span>
+      </button>
     </div>
   </header>
 
-  <aside id="filters">
-    <label>Пошук
-      <input id="search" placeholder="трек, альбом, виконавець">
-    </label>
+  <button id="filterScrim" class="filter-scrim" type="button" aria-label="Закрити фільтри"></button>
 
-    <label>Виконавець
-      <select id="artist"><option value="all">Усі</option></select>
-    </label>
+  <aside id="filters" class="filter-panel" aria-hidden="true">
+    <div class="filter-panel-header">
+      <div>
+        <strong>ФІЛЬТРИ</strong>
+        <small>Зміни набудуть сили після «Застосувати»</small>
+      </div>
+      <button id="filterClose" class="icon-button" type="button" aria-label="Закрити фільтри">×</button>
+    </div>
 
-    <label>Вид графа
-      <select id="view">
-        <option value="map">2D Map</option>
-        <option value="sphere">Sphere 3D</option>
-      </select>
-    </label>
+    <div class="filter-panel-body">
+      <section class="filter-section" aria-label="Фільтри графа">
+        <label>Пошук
+          <input id="search" type="search" placeholder="трек, альбом, виконавець">
+        </label>
 
-    <label>Структура
-      <select id="structure">
-        <option value="artist">Виконавець → реліз → трек</option>
-        <option value="year">Рік → жанр → виконавець</option>
-      </select>
-    </label>
+        <label>Виконавець
+          <select id="artist"><option value="all">Усі</option></select>
+        </label>
 
-    <div id="stats"></div>
-    <p class="note">
-      1 палець: панорама / обертання · 2 пальці: масштаб · tap: деталі
-    </p>
+        <label>Рік
+          <span class="filter-range">
+            <input id="yearMin" type="number" inputmode="numeric" placeholder="від" aria-label="Рік від">
+            <span aria-hidden="true">—</span>
+            <input id="yearMax" type="number" inputmode="numeric" placeholder="до" aria-label="Рік до">
+          </span>
+        </label>
+
+        <label>Жанр
+          <select id="genre"><option value="all">Усі</option></select>
+        </label>
+
+        <label>Тип релізу
+          <select id="releaseType"><option value="all">Усі</option></select>
+        </label>
+      </section>
+
+      <section class="filter-section prototype-section" aria-label="Налаштування прототипу">
+        <h2>Відображення прототипу</h2>
+
+        <label>Вид графа
+          <select id="view">
+            <option value="map">2D Map</option>
+            <option value="sphere">Sphere 3D</option>
+          </select>
+        </label>
+
+        <label>Структура
+          <select id="structure">
+            <option value="artist">Виконавець → реліз → трек</option>
+            <option value="year">Рік → жанр → виконавець</option>
+          </select>
+        </label>
+      </section>
+
+      <div id="stats"></div>
+      <p class="note">
+        1 палець: панорама / обертання · 2 пальці: масштаб · tap: деталі
+      </p>
+    </div>
+
+    <footer class="filter-panel-footer">
+      <button id="resetFilters" type="button">Скинути</button>
+      <button id="applyFilters" class="primary-action" type="button" disabled>Застосувати</button>
+    </footer>
   </aside>
 
   <main>
@@ -65,6 +113,8 @@
   </main>
 
   <script src="sample-data.js"></script>
+  <script src="graph-state.js"></script>
+  <script src="filter-model.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

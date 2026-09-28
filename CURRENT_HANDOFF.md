@@ -90,7 +90,21 @@ Account checkpoint:
 - canonical identity is separated from contextual projection identity;
 - CI run `36362670818` — PASS.
 
+Adaptive filter checkpoint:
+- implementation branch: `feat/v0.2.0-adaptive-filter-panel`;
+- source: `ab5071e83a8eec60ec4242b9ae0ecb656364ec8a`;
+- filter panel is one-column with independently scrollable body and fixed Reset/Apply footer;
+- portrait uses a 45–55% bottom sheet; landscape/tablet/desktop uses a 40–50% side sheet;
+- filter changes write only to `draftFilters`; graph data is rebuilt only after explicit Apply;
+- Reset returns draft filters to defaults without silently applying them;
+- applied-filter badge and pending-draft marker are separate;
+- semantic filters implemented for search, artist, year range, genre and release type;
+- renderer/legacy structure controls remain prototype-only and are not counted as semantic filters;
+- automated filter/layout contract added;
+- CI run `36368444005` — PASS;
+- browser/phone UX acceptance is still pending and must not be inferred from CI.
+
 First unchecked step:
-**implement the adaptive filter panel: one column, scrollable body, fixed Reset/Apply footer and draft/applied UI state.**
+**implement the floating node-control palette and wire renderer-independent Expand/Collapse/Enter/Back/Home/Fit commands.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

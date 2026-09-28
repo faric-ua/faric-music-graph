@@ -24,14 +24,18 @@ jobs:
           node --check app/graph-state.js
           node --check app/graph-projection.js
           node --check app/account-model.js
+          node --check app/filter-model.js
           node --check scripts/test_graph_state.js
           node --check scripts/test_graph_projection.js
           node --check scripts/test_account_model.js
+          node --check scripts/test_filter_panel.js
       - name: Graph state tests
         run: node scripts/test_graph_state.js
       - name: Projection engine tests
         run: node scripts/test_graph_projection.js
       - name: Account model tests
         run: node scripts/test_account_model.js
+      - name: Adaptive filter panel tests
+        run: node scripts/test_filter_panel.js
       - name: Git whitespace check
         run: git diff --check HEAD^ HEAD || git diff --check
