@@ -123,3 +123,16 @@
 - [x] browser Account fixture matches canonical account JSON;
 - [x] sample assignments cannot load unless explicitly marked non-inventory;
 - [x] descendant-search enrichment preserves paths to matching content.
+
+
+## Automated structured Track-detail contract
+- [x] Track terminal details resolve through canonical ID while retaining projection ID;
+- [x] contextual genre/account copies dedupe canonical Artist and Release facts;
+- [x] multi-account prototype appearances aggregate without becoming live-inventory claims;
+- [x] TrackVersion state remains explicitly unmodeled when absent;
+- [x] YouTube/YTM IDs and URLs remain null/unknown when absent;
+- [x] duration, availability and playlists remain unknown when absent;
+- [x] prototype assignment and unverified inventory warnings are asserted;
+- [x] fixture-account context warning is asserted;
+- [x] normal Track UI uses structured groups rather than raw JSON;
+- [x] inspector open/close commands are wired into GraphSessionState.

@@ -44,6 +44,7 @@ Live multi-account inventory: **PENDING READ-ONLY IMPLEMENTATION/AUDIT**.
 - floating node controls: implemented + CI PASS; browser/phone UX acceptance pending;
 - breadcrumb + shared Enter/Back/Home navigation: implemented + CI PASS; browser/phone UX acceptance pending;
 - canonical nested drill projection Account → Year → Genre → Artist → Release → Track: implemented + CI PASS on prototype sample; browser/phone UX acceptance pending;
+- structured terminal Track details: implemented + CI PASS; external media/version facts remain explicit unknown until sourced; browser/phone UX acceptance pending;
 - full seed migration: pending;
 - read-only channel inventory: pending;
 - Android app packaging: planned after graph state/UX stabilization;

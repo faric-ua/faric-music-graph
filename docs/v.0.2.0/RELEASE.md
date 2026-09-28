@@ -210,3 +210,26 @@ Evidence level:
 automated/static only. Browser/phone UX remains pending.
 
 Next unit: structured terminal Track details.
+
+
+## Implementation checkpoint — Structured Track terminal details
+
+Added:
+- renderer-independent Track detail aggregation keyed by canonical Track identity;
+- structured terminal UI replacing raw Track JSON;
+- grouped identity, current context, Artist/Release, Account/playlist, external-media, availability, provenance and warning sections;
+- contextual appearance aggregation with canonical deduplication;
+- explicit unknown/unmodeled states for data not yet present in the canonical sample;
+- explicit prototype-only account-assignment boundary;
+- inspector open/close state wired into GraphSessionState for later restore coverage.
+
+Tested source:
+`1b081ee404a35cedd7451d3f559fd7a4e18acf57`
+
+CI:
+`36375617001` — PASS.
+
+Evidence level:
+automated/static only. Browser and real-phone layout/usability remain pending.
+
+Next unit: restoration tests for drill path, filters, selected node and open panels.

@@ -27,7 +27,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Implement floating node-control palette and command wiring.
 - [x] Implement breadcrumb + Enter/Back/Home navigation.
 - [x] Implement Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.
-- [ ] Implement structured Track terminal details.
+- [x] Implement structured Track terminal details.
 - [ ] Add restoration tests for drill path, filters, selected node and open panels.
 - [ ] Add performance guard for Expand All.
 - [ ] Run static/unit/schema tests and CI.

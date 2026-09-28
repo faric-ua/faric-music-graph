@@ -146,7 +146,20 @@ Canonical nested-drill checkpoint:
 - CI run `36369595825` — PASS, including an automated full drill to terminal Track;
 - browser/phone UX acceptance remains pending.
 
+Structured Track terminal-details checkpoint:
+- implementation branch: `feat/v0.2.0-track-terminal-details`;
+- source: `1b081ee404a35cedd7451d3f559fd7a4e18acf57`;
+- terminal Track selection now renders grouped product-facing details instead of raw JSON;
+- the detail model aggregates one canonical Track across contextual Account/Year/Genre/Artist/Release appearances while preserving the selected projection ID;
+- known sample facts are grouped into identity, current context, artists/releases and account contexts;
+- TrackVersion relationships, playlists, exact YouTube/YTM IDs/URLs, duration and availability remain explicitly unknown/unmodeled instead of being inferred;
+- prototype Account assignments are clearly marked `PROTOTYPE_ONLY_NOT_ACCOUNT_INVENTORY`; live account inventory is not claimed;
+- fixture-account context, unverified inventory, unavailable TrackVersion data and unknown external media identity emit explicit warning codes;
+- opening/closing the inspector is now represented in `GraphSessionState.inspector`, preparing later restoration coverage;
+- CI run `36375617001` — PASS;
+- browser/phone visual acceptance remains pending.
+
 First unchecked step:
-**implement structured terminal Track details instead of exposing raw prototype JSON.**
+**add restoration tests for drill path, filters, selected node and open panels, then wire any missing restore behavior exposed by those tests.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

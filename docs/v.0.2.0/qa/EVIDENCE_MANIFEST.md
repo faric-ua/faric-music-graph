@@ -246,3 +246,37 @@ Not yet proven:
 - touch/gesture usability;
 - phone performance;
 - Android/WebView behavior.
+
+
+## Structured Track terminal details — 2026-09-28
+
+Implementation source:
+`1b081ee404a35cedd7451d3f559fd7a4e18acf57`
+
+CI:
+`36375617001` — PASS.
+
+Automated evidence:
+- repository validation PASS;
+- JavaScript syntax PASS;
+- all previous semantic/projection/account/filter/control/navigation/nested-drill suites remain PASS;
+- dedicated structured Track detail tests PASS;
+- Git whitespace check PASS.
+
+Implemented behavior:
+- terminal Track uses a grouped detail surface instead of normal-product raw JSON;
+- detail identity keeps both contextual projection ID and stable canonical Track ID;
+- all contextual appearances of the same canonical Track are aggregated and canonical Artist/Release/Account facts are deduplicated;
+- current Account → Year → Genre → Artist → Release context remains visible;
+- prototype-only account assignment is surfaced as `PROTOTYPE_ONLY_NOT_ACCOUNT_INVENTORY`;
+- live account inventory is explicitly not claimed;
+- TrackVersion/relationship data remains `unmodeled`;
+- playlists, exact YouTube/YTM IDs and URLs, duration and availability remain `unknown` when no source exists;
+- fixture context and missing verification/data produce explicit warning codes;
+- inspector open/close is mirrored into GraphSessionState.
+
+Truth boundary:
+- this checkpoint does not add live channel inventory;
+- it does not infer remix/original relationships from titles;
+- it does not invent YouTube/YTM identities, duration or availability;
+- browser/phone visual and interaction acceptance is still pending.
