@@ -29,12 +29,12 @@ Universe → Account → Year → Genre → Artist → Release → Track
 At every graph level:
 - contextual filters;
 - breadcrumb;
-- floating node-control palette;
-- Expand/Collapse selected;
-- Expand/Collapse all;
-- explicit Enter/Back/Home;
-- Fit;
-- selection separate from drill navigation.
+- short tap drills directly into non-terminal nodes;
+- Track tap opens Track details;
+- long press selects/focuses without drilling for advanced commands;
+- compact mobile `− / + / ⋮` quick controls;
+- advanced Expand/Collapse/Enter fallback/Back/Home/Fit in the `⋮` palette;
+- Sphere 3D uses normal drag to pan and `HOLD / ORBIT` + drag to rotate.
 
 Filter panel:
 - single-column;
@@ -228,7 +228,15 @@ Real-phone QA finding/fix checkpoint:
 - selection rebuilds projection/capabilities so →/Enter can enable immediately;
 - mobile `− / + / ⋮` quick controls are grouped at the top; the node palette opens on demand.
 
+Real-phone UX revision checkpoint:
+- phone screenshots confirmed the raw non-Track JSON regression is no longer the main blocker and compact top controls are visible;
+- user accepted the current visual skin/cards and the `⋮` popout for now;
+- explicit select → Enter browsing was rejected as too mechanical for normal use;
+- feature branch `feat/v0.2.0-direct-drill-orbit-hold` implements tap-first drill, long-press selection, simplified Track details and HOLD/ORBIT 3D gesture semantics;
+- branch CI is PASS for the implementation and regression assertions;
+- formal real-phone acceptance of this revised interaction is still pending.
+
 First unchecked step:
-**update the phone to current `main`, record the tested HEAD, and retest BUG-002/UX-004 before continuing canonical Test 2.**
+**merge the revised interaction candidate through PR after final CI, update the phone, record exact HEAD, and run the new direct-drill + Track-detail + Sphere HOLD/ORBIT phone QA contract.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
