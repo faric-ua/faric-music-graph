@@ -76,11 +76,17 @@
     const edgeIds=new Set(edges.map(e=>e.id));
     const artists=new Map(sampleData.artists.map(a=>[a.id,a]));
 
+    const firstReleasePerArtist=[];
+    const seenArtists=new Set();
+    for(const release of sampleData.releases){
+      if(seenArtists.has(release.artistId))continue;
+      seenArtists.add(release.artistId);
+      firstReleasePerArtist.push(release.id);
+    }
+
     const assignments=new Map([
       ["account:youtube_music:faric_ua",sampleData.releases.map(r=>r.id)],
-      ["account:fixture:secondary",sampleData.releases
-        .filter(r=>r.id==="release:prodigy-experience"||r.id==="release:lp-hybrid")
-        .map(r=>r.id)]
+      ["account:fixture:secondary",firstReleasePerArtist]
     ]);
     const releases=new Map(sampleData.releases.map(r=>[r.id,r]));
 
