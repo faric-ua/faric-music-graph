@@ -58,3 +58,25 @@ CI:
 `36362006903` — PASS.
 
 Next implementation unit: projection engine.
+
+
+## Implementation checkpoint — Projection Engine
+
+Added renderer-independent nested-world projection:
+- level sequence enforcement;
+- current-scope projection;
+- facet-aware applied filters;
+- explicit expansion/collapse visibility;
+- breadcrumb and command capabilities;
+- visible node/edge metrics;
+- unique-node full-expansion estimate;
+- terminal Track handling;
+- dangling-edge validation.
+
+Tested source:
+`8e7f16bf9b80bf9414b424dfa86488a48dba68fc`
+
+CI:
+`36362381756` — PASS.
+
+Next unit: provider-neutral Account data + multi-account fixture.
