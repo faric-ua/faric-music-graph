@@ -121,9 +121,19 @@
       <div id="nodeControlStatus" class="node-control-status">Universe</div>
     </div>
 
-    <div id="zoomControls" class="zoom-controls" aria-label="Масштаб">
-      <button id="zoomIn" type="button" aria-label="Збільшити">+</button>
-      <button id="zoomOut" type="button" aria-label="Зменшити">−</button>
+    <div id="mobileGraphControls" class="mobile-graph-controls" aria-label="Швидке керування графом">
+      <div id="zoomControls" class="zoom-controls" aria-label="Масштаб">
+        <button id="zoomOut" type="button" aria-label="Зменшити">−</button>
+        <button id="zoomIn" type="button" aria-label="Збільшити">+</button>
+      </div>
+      <button
+        id="nodeControlsToggle"
+        class="node-controls-toggle"
+        type="button"
+        aria-controls="nodeControls"
+        aria-expanded="false"
+        aria-label="Показати керування вузлами"
+      >⋮</button>
     </div>
 
     <section id="inspector" aria-live="polite">
