@@ -12,11 +12,23 @@
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:14px system-ui,sans-serif;overscroll-behavior:none}
 body{display:grid;grid-template-rows:var(--header-h) minmax(0,1fr);overflow:hidden}
-header{grid-row:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;border-bottom:1px solid var(--border);background:#0f1118;z-index:30}
-.brand{display:flex;gap:12px;align-items:baseline;min-width:0}
+header{grid-row:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--border);background:#0f1118;z-index:30}
+.brand{display:flex;gap:12px;align-items:baseline;min-width:0;flex:0 0 auto}
 .brand strong{white-space:nowrap}
 .brand span,.note{color:var(--muted);font-size:12px}
-.header-actions{display:flex;gap:8px}
+.graph-navigation{display:grid;grid-template-columns:44px 44px minmax(0,1fr) auto;align-items:center;gap:5px;min-width:0;flex:1 1 auto}
+.graph-navigation button{min-height:44px;border-radius:10px;padding:0 9px}
+.nav-icon{min-width:44px;width:44px;padding:0;font-size:20px}
+.nav-enter{white-space:nowrap}
+.breadcrumb{display:flex;align-items:center;gap:3px;min-width:0;overflow-x:auto;overflow-y:hidden;padding:3px 2px;scrollbar-width:thin;overscroll-behavior-x:contain}
+.breadcrumb-item{display:flex;align-items:center;gap:3px;flex:0 0 auto}
+.breadcrumb-item::after{content:"›";color:var(--muted);padding:0 1px}
+.breadcrumb-item:last-child::after{display:none}
+.breadcrumb button{min-height:38px;max-width:180px;padding:0 8px;border:0;background:transparent;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.breadcrumb button:not(:disabled):hover{background:var(--surface)}
+.breadcrumb button[aria-current="page"]{color:var(--text);font-weight:700}
+.breadcrumb button:disabled{opacity:1;cursor:default}
+.header-actions{display:flex;gap:8px;flex:0 0 auto}
 button,select,input{min-height:48px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);padding:0 12px;font:inherit}
 button{cursor:pointer}
 button:active:not(:disabled){transform:scale(.98)}
@@ -80,11 +92,19 @@ body.filters-open .filter-panel{transform:translateX(0);visibility:visible;point
 pre{white-space:pre-wrap;color:#bac4d9;word-break:break-word}
 
 @media(max-width:760px){
-  :root{--header-h:58px}
-  header{padding:0 8px}
-  .brand{gap:7px}
+  :root{--header-h:64px}
+  header{padding:0 7px;gap:5px}
+  .brand{max-width:84px}
+  .brand strong{font-size:11px;white-space:normal;line-height:1.05}
   .brand span{display:none}
-  header button{min-height:44px;padding:0 10px}
+  .graph-navigation{grid-template-columns:42px minmax(0,1fr) auto;gap:3px}
+  .graph-navigation button{min-height:44px;padding:0 7px}
+  #navHome{display:none}
+  .nav-enter{font-size:0;width:44px;min-width:44px;padding:0}
+  .nav-enter::after{content:"→";font-size:18px}
+  .breadcrumb button{max-width:125px;min-height:38px;padding:0 6px;font-size:12px}
+  header .filter-toggle{min-height:44px;padding:0 8px}
+  .filter-toggle>span:first-child{display:none}
   #inspector{top:auto;bottom:76px;max-height:48%;width:calc(100% - 24px)}
   #viewBadge{top:8px;left:8px}
   .node-controls{right:8px;width:120px}

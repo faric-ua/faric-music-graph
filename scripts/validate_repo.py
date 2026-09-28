@@ -21,6 +21,8 @@ required = [
     "scripts/test_filter_panel.js",
     "app/node-controls.js",
     "scripts/test_node_controls.js",
+    "app/navigation-ui.js",
+    "scripts/test_navigation_ui.js",
 ]
 
 errors = []

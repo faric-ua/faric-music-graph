@@ -8,9 +8,10 @@ const ctx=canvas.getContext("2d");
 const G=window.GraphState;
 const F=window.FilterModel;
 const N=window.NodeControls;
+const NAV=window.NavigationUi;
 
-if(!G||!F||!N){
-  throw new Error("Music Graph: GraphState, FilterModel and NodeControls are required");
+if(!G||!F||!N||!NAV){
+  throw new Error("Music Graph: GraphState, FilterModel, NodeControls and NavigationUi are required");
 }
 
 let graphSession=G.createInitialState({
@@ -49,6 +50,13 @@ const colors={
 
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 
+const navUi={
+  breadcrumb:$("#breadcrumb"),
+  back:$("#navBack"),
+  home:$("#navHome"),
+  enter:$("#navEnter")
+};
+
 const nodeUi={
   expandAll:$("#expandAll"),
   collapseAll:$("#collapseAll"),
@@ -82,6 +90,7 @@ function setGraphSession(next){
   graphSession=next;
   renderFilterState();
   renderNodeControls();
+  renderNavigationState();
 }
 
 function dispatchGraph(action){
@@ -234,13 +243,66 @@ function projectPrototypeVisibility(fullNodes,fullEdges){
   };
 }
 
-function renderNodeControls(){
-  if(!nodeUi.expandAll)return;
-  const capabilities=N.deriveControlState(
+function currentControlCapabilities(){
+  return N.deriveControlState(
     graphSession,
     state.fullNodes,
     state.fullEdges
   );
+}
+
+function renderNavigationState(){
+  if(!navUi.breadcrumb)return;
+
+  const capabilities=currentControlCapabilities();
+  const navigation=NAV.deriveNavigationState(
+    graphSession,
+    capabilities.canEnter
+  );
+
+  navUi.back.disabled=!navigation.canBack;
+  navUi.home.disabled=!navigation.canHome;
+  navUi.enter.disabled=!navigation.canEnter;
+
+  navUi.breadcrumb.replaceChildren();
+
+  for(const item of NAV.breadcrumbItems(graphSession)){
+    const wrapper=document.createElement("span");
+    wrapper.className="breadcrumb-item";
+
+    const button=document.createElement("button");
+    button.type="button";
+    button.textContent=item.label;
+    button.title=item.label;
+    button.dataset.depth=String(item.depth);
+
+    if(item.current){
+      button.disabled=true;
+      button.setAttribute("aria-current","page");
+    }else{
+      button.setAttribute(
+        "aria-label",
+        "Перейти до "+item.label
+      );
+      button.onclick=()=>jumpToDepth(item.depth);
+    }
+
+    wrapper.append(button);
+    navUi.breadcrumb.append(wrapper);
+  }
+
+  const current=navUi.breadcrumb.querySelector('[aria-current="page"]');
+  if(current&&typeof current.scrollIntoView==="function"){
+    current.scrollIntoView({
+      block:"nearest",
+      inline:"nearest"
+    });
+  }
+}
+
+function renderNodeControls(){
+  if(!nodeUi.expandAll)return;
+  const capabilities=currentControlCapabilities();
 
   nodeUi.expandAll.disabled=!capabilities.canExpandAll;
   nodeUi.collapseAll.disabled=!capabilities.canCollapseAll;
@@ -378,6 +440,7 @@ function rebuild(){
   $("#stats").innerHTML="<b>"+releases.length+"</b> релізів у view<br><b>"+state.nodes.length+"</b> видимих вузлів<br><b>"+activeFilters+"</b> активних фільтрів<br><b>"+(state.view==="map"?"2D Map":"Sphere 3D")+"</b>";
   $("#viewBadge").textContent=state.view==="map"?"2D Map":"Sphere 3D";
   renderNodeControls();
+  renderNavigationState();
   draw();
 }
 
@@ -740,8 +803,11 @@ nodeUi.collapseNode.onclick=()=>{
   refreshAfterNodeCommand({closeInspector:false});
 };
 
-nodeUi.enter.onclick=()=>{
+function enterSelectedScope(){
   if(!graphSession.selectedNode)return;
+  const capabilities=currentControlCapabilities();
+  if(!capabilities.canEnter)return;
+
   const selected=graphSession.selectedNode;
   dispatchGraph({
     type:G.COMMANDS.ENTER_NODE,
@@ -750,17 +816,39 @@ nodeUi.enter.onclick=()=>{
   });
   state.selectedId=null;
   refreshAfterNodeCommand({syncFilters:true});
-};
+}
 
-nodeUi.back.onclick=()=>{
+function goBackScope(){
+  if(graphSession.drillPath.length<=1)return;
   dispatchGraph({type:G.COMMANDS.BACK_SCOPE});
+  state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
   refreshAfterNodeCommand({syncFilters:true});
-};
+}
 
-nodeUi.home.onclick=()=>{
+function goHomeScope(){
+  if(graphSession.currentScope.id==="universe")return;
   dispatchGraph({type:G.COMMANDS.HOME_SCOPE});
+  state.selectedId=null;
   refreshAfterNodeCommand({syncFilters:true});
-};
+}
+
+function jumpToDepth(depth){
+  const currentDepth=graphSession.drillPath.length-1;
+  if(!Number.isInteger(depth)||depth<0||depth>=currentDepth)return;
+  dispatchGraph({
+    type:G.COMMANDS.JUMP_TO_DEPTH,
+    depth
+  });
+  state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
+  refreshAfterNodeCommand({syncFilters:true});
+}
+
+nodeUi.enter.onclick=enterSelectedScope;
+nodeUi.back.onclick=goBackScope;
+nodeUi.home.onclick=goHomeScope;
+navUi.enter.onclick=enterSelectedScope;
+navUi.back.onclick=goBackScope;
+navUi.home.onclick=goHomeScope;
 
 $("#close").onclick=()=>{
   $("#inspector").classList.remove("open");
@@ -828,6 +916,7 @@ document.addEventListener("keydown",e=>{
 
 syncDraftControls();
 renderFilterState();
+renderNavigationState();
 
 addEventListener("resize",resize);
 resize();
