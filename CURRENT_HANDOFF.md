@@ -66,7 +66,14 @@ Release/product docs created before feature code:
 
 Read `ACTIVE_PLAN.md`.
 
+Implementation checkpoint:
+- renderer-independent `GraphSessionState` + command reducer implemented on source `2bc8c90adae36cc7ee3d6402a3a4cfe1c99a82b2`;
+- state tests cover selection vs Enter, expand/collapse, draft/apply filters, Back/Home/breadcrumb-depth navigation and serialization/restore;
+- first CI run `36361888481` correctly failed because one test assumed Expand All should erase unrelated expansion state;
+- test semantics were corrected without weakening the implementation contract;
+- CI run `36362006903` — PASS.
+
 First unchecked step:
-**implement renderer-independent GraphSessionState + command reducer/state machine.**
+**implement the projection engine for current scope / drill level / applied filters / expand-collapse state.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
