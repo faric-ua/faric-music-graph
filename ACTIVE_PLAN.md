@@ -31,7 +31,8 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Add restoration tests for drill path, filters, selected node and open panels.
 - [x] Add performance guard for Expand All.
 - [x] Run static/unit/schema tests and CI.
-- [ ] Run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA.
+- [x] Implement real-phone UX revision: tap-first nested drill, long-press advanced selection, simplified Track details, compact mobile controls, and 3D HOLD/ORBIT gesture prototype.
+- [ ] Run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA against the revised interaction contract.
 - [ ] Decide production renderer from measured phone/full-seed evidence.
 - [ ] Migrate full The Prodigy + Linkin Park seed through the canonical graph.
 - [ ] Validate canonical IDs, provenance and version/remix edges.
