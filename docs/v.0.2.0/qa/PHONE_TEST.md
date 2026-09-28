@@ -47,6 +47,8 @@ Use:
 
 At each non-terminal level:
 - one short tap enters the tapped node directly;
+- a brief fading hint identifies node kind + label;
+- entry should visually expand the next world from the tapped focus rather than feeling like an unexplained teleport;
 - no second →/Enter tap is required;
 - breadcrumb matches the current semantic path;
 - header ← returns exactly one level;
@@ -148,6 +150,10 @@ In 2D portrait and landscape:
 - pinch zoom works.
 
 In **Sphere 3D**:
+- current scope is visually centered;
+- visible child/neighbor nodes surround it spherically;
+- previous scopes appear as faint depth-trail ghost nodes;
+- tapping the nearest parent ghost returns to that ancestor;
 - without HOLD, one-finger drag moves/pans the sphere on screen;
 - press and keep holding the bottom **HOLD / ORBIT** control with one finger;
 - while HOLD is pressed, drag the graph with another finger and confirm yaw/pitch rotation;
@@ -156,6 +162,8 @@ In **Sphere 3D**:
 - a normal drag/orbit does not accidentally drill.
 
 For both renderers:
+- opening `⋮` then tapping empty graph space closes the advanced menu;
+- opening Track details then tapping empty graph space closes the Track details;
 - controls do not make key nodes permanently unreachable;
 - filter panel owns gestures inside itself;
 - graph owns gestures outside the panel;
