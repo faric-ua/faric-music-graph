@@ -77,3 +77,17 @@ Signed Android APK is the product delivery target.
 Status: ACCEPTED.
 
 YTM/Renault engineering lessons may be adapted, but those repositories are not modified during Music Graph work and their signing/security material is never reused.
+
+
+## ADR-013 — Separate canonical IDs from contextual projection IDs
+Status: ACCEPTED.
+
+The same canonical music entity may appear in multiple drill paths.
+
+Therefore:
+- canonical IDs represent the real music/account entity;
+- projection IDs represent one contextual appearance in the active navigation model;
+- Track/Artist/Release details resolve by canonical ID;
+- breadcrumb and renderer selection use projection ID.
+
+This prevents Account/Year/Genre context from leaking across shared graph nodes while preserving many-to-many canonical relationships.

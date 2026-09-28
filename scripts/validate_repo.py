@@ -15,6 +15,8 @@ required = [
     "docs/assistant-kit/YOUTUBE_CHANNEL_CONTRACT.md",
     "data/catalog.seed.json",
     "data/channel.json",
+    "data/accounts.fixture.json",
+    "data/schemas/account.schema.json",
 ]
 
 errors = []
@@ -22,7 +24,7 @@ for rel in required:
     if not (ROOT / rel).is_file():
         errors.append(f"missing: {rel}")
 
-for rel in ["data/catalog.seed.json", "data/channel.json", "docs/v.0.1.0/RELEASE_META.json"]:
+for rel in ["data/catalog.seed.json", "data/channel.json", "data/accounts.fixture.json", "data/schemas/account.schema.json", "docs/v.0.1.0/RELEASE_META.json", "docs/v.0.2.0/RELEASE_META.json"]:
     path = ROOT / rel
     if path.exists():
         try:

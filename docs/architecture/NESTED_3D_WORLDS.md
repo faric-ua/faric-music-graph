@@ -184,3 +184,38 @@ Candidate production renderers:
 - a 2D WebGL renderer as debug/fallback/overview mode.
 
 No renderer is accepted as production merely because its demo looks good. Phone gesture quality, full-seed FPS, memory, heat and APK WebView behavior decide.
+
+
+## Canonical identity vs contextual projection identity
+
+A canonical music entity and a visible navigation node are not always the same identity.
+
+Example:
+- canonical artist: `artist:the-prodigy`;
+- contextual projection instance under Account A → 1992 → Electronic:
+  `nav:account-a:1992:electronic:artist:the-prodigy`;
+- contextual projection instance under Account A → 1994 → Electronic:
+  a different navigation ID with the same `canonicalId=artist:the-prodigy`.
+
+Reason:
+the same artist, track or release may legitimately appear in multiple accounts, years, genres, playlists or relationship paths. Reusing one navigation-node ID for every path would leak sibling context into the current drill world.
+
+Projection node contract:
+
+```ts
+ProjectionNode {
+  id: string          // unique contextual/navigation instance ID
+  canonicalId: string // stable music/account entity ID
+  kind: string
+  label: string
+  contextPath: string[]
+}
+```
+
+Rules:
+- canonical IDs deduplicate real entities;
+- projection IDs preserve navigation context;
+- renderer selection operates on projection IDs;
+- inspector/details resolve through `canonicalId`;
+- breadcrumbs use contextual projection nodes;
+- no canonical entity is cloned merely because it appears in another context.

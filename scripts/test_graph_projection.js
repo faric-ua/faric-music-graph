@@ -122,4 +122,19 @@ assert.throws(
   /dangling edge/
 );
 
+const relationGraph=P.createProjectionGraph({
+  nodes:[
+    {id:"universe",kind:"universe",label:"Universe"},
+    {id:"account:a",kind:"account",label:"A"},
+    {id:"account:b",kind:"account",label:"B"}
+  ],
+  edges:[
+    {id:"ua",source:"universe",target:"account:a",kind:"NAV_CHILD",navigation:true},
+    {id:"ub",source:"universe",target:"account:b",kind:"NAV_CHILD",navigation:true},
+    {id:"related",source:"account:a",target:"account:b",kind:"RELATED_ACCOUNT",navigation:false}
+  ]
+});
+const relationWorld=P.projectWorld(relationGraph,G.createInitialState());
+assert.equal(relationWorld.edges.filter(e=>e.kind==="RELATED_ACCOUNT").length,1);
+
 console.log("PASS: Nested world projection-engine tests");

@@ -72,3 +72,25 @@ Automated coverage proves:
 - dangling navigation edges are rejected.
 
 This is semantic projection evidence, not renderer or phone evidence.
+
+
+## Provider-neutral Account foundation — 2026-09-28
+
+Tested source:
+`dd4b7ca3c01a583f570361445d6e3ca41fde6cbf`
+
+CI:
+`36362670818` — PASS.
+
+Verified:
+- Account model validates provider-neutral public account metadata;
+- account fixture explicitly declares `authDataIncluded=false`;
+- secret-like keys are rejected;
+- known target `@faric_ua` maps to `account:youtube_music:faric_ua`;
+- its external provider/channel ID remains null until a real read-only verification;
+- second account is explicitly synthetic and fixture-only;
+- account-to-account `RELATED_ACCOUNT` is visible but non-navigation;
+- channel target references the canonical Account identity;
+- canonical identity and contextual projection identity are documented separately.
+
+No live account inventory or authentication was performed by this step.

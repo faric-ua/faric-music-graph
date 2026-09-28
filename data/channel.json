@@ -6,5 +6,6 @@
   "resolvedChannelId": null,
   "inventoryStatus": "PENDING_LIVE_READ_ONLY_AUDIT",
   "lastSnapshotId": null,
-  "writeEnabled": false
+  "writeEnabled": false,
+  "accountId": "account:youtube_music:faric_ua"
 }

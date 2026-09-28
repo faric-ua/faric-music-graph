@@ -80,3 +80,24 @@ CI:
 `36362381756` — PASS.
 
 Next unit: provider-neutral Account data + multi-account fixture.
+
+
+## Implementation checkpoint — Account model
+
+Added:
+- provider-neutral Account entity model;
+- public-target record for `@faric_ua`;
+- synthetic second account for Universe testing;
+- no-auth-data guard;
+- Account JSON schema;
+- non-navigation account relationship;
+- channel-target → Account link;
+- canonical vs contextual projection identity rule.
+
+Tested source:
+`dd4b7ca3c01a583f570361445d6e3ca41fde6cbf`
+
+CI:
+`36362670818` — PASS.
+
+Next unit: adaptive filter panel.

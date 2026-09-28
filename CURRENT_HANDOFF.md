@@ -81,7 +81,16 @@ Projection checkpoint:
 - CI runs `36362295175` and `36362342273` exposed the initial overcount contract issue;
 - corrected CI run `36362381756` and PR run `36362384151` — PASS.
 
+Account checkpoint:
+- provider-neutral Account model implemented on `dd4b7ca3c01a583f570361445d6e3ca41fde6cbf`;
+- `@faric_ua` is represented as the known public target with unverified `externalAccountId=null`;
+- a second account is explicitly synthetic/fixture-only;
+- auth/secrets are forbidden from the fixture/model;
+- Universe supports visible non-navigation `RELATED_ACCOUNT` edges;
+- canonical identity is separated from contextual projection identity;
+- CI run `36362670818` — PASS.
+
 First unchecked step:
-**add provider-neutral Account entities and a multi-account fixture without auth secrets.**
+**implement the adaptive filter panel: one column, scrollable body, fixed Reset/Apply footer and draft/applied UI state.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
