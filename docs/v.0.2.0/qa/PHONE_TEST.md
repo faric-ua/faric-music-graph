@@ -2,7 +2,7 @@
 
 Status: READY / NOT RUN.
 
-Merged phone-QA source:
+Validated runtime/code baseline:
 `f25cb380fe7b95a76abc56426bbdc8174ef04e27`
 
 Validation evidence:
@@ -10,7 +10,7 @@ Validation evidence:
 - PR #19 validation run `36435030701` — PASS;
 - post-merge `main` run `36435075892` — PASS.
 
-Phone QA must run against exact `main` `f25cb380fe7b95a76abc56426bbdc8174ef04e27`. If step 6 reports another HEAD, update first and do not record PASS/FAIL evidence yet.
+A docs-only handoff merge may advance `main` after this validated code baseline. Phone QA must first update to current `main`, record the actual HEAD in step 6, and must not use a checkout older than `f25cb380fe7b95a76abc56426bbdc8174ef04e27`.
 
 ## Start on phone
 
