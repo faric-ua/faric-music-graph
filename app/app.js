@@ -724,7 +724,7 @@ function draw(){
 
     const showLabel=state.view==="map"||p.z>-.18||selected||n.kind==="artist";
     if(showLabel){
-      ctx.globalAlpha=state.view==="sphere"?clamp(.5+(p.z+1)*.25,.45,1):1;
+      ctx.globalAlpha=(state.view==="sphere"?clamp(.5+(p.z+1)*.25,.45,1):1)*item.alpha;
       ctx.fillStyle="#dce2f0";
       const fontSize=state.view==="sphere"?clamp(10*depthScale,9,14):clamp(12*state.scale,9,17);
       ctx.font=fontSize+"px system-ui";
