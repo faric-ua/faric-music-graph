@@ -4,36 +4,46 @@ Canonical entry point for every new assistant/session. The repository must be su
 
 ## Mission
 
-Build a local-first music knowledge graph and a future management workspace for the YouTube / YouTube Music channel `@faric_ua`.
+Build a mobile-first nested music knowledge graph and a future management workspace for multiple YouTube / YouTube Music accounts/channels.
 
-Initial catalog work already exists for **The Prodigy** and **Linkin Park**.
+Initial catalog work exists for **The Prodigy** and **Linkin Park**.
 
-The product must support relationships, not only folders:
+Final user-facing target: **signed Android APK**.
 
-`year ↔ genre ↔ artist ↔ release ↔ track ↔ version/remix ↔ YouTube item`.
+Primary UX: **Nested 3D Worlds**.
+
+`Universe → Account → Year → Genre → Artist → Release → Track`.
+
+The canonical data remains a many-to-many graph. The sequence above is the primary navigation projection.
 
 ## Mandatory reading order
 
 1. `CURRENT_HANDOFF.md`
-2. `ACTIVE_PLAN.md` — live checkbox plan; first unchecked item is the default resume point.
-3. `MUSIC_GRAPH_ASSISTANT_WORKFLOW.md`
-4. `PROJECT_STATUS.md`
-5. `BACKLOG.md`
-6. `OPEN_FINDINGS.md`
-7. `docs/assistant-kit/ASSISTANT_TOOL_MAP.md`
-8. `docs/assistant-kit/SYSTEM_BEHAVIOR_CONTRACT.md`
-9. `docs/assistant-kit/UI_CONTRACT.md`
-10. `docs/assistant-kit/DATA_CONTRACT.md`
-11. `docs/assistant-kit/YOUTUBE_CHANNEL_CONTRACT.md`
-12. `TERMUX_COMMANDS.md`
-13. `docs/architecture.md`
-14. current release folder under `docs/v.*`.
+2. `ACTIVE_PLAN.md`
+3. `docs/product/PRODUCT_VISION.md`
+4. `docs/architecture/NESTED_3D_WORLDS.md`
+5. `docs/design/MOBILE_UI_BLUEPRINT.md`
+6. `MUSIC_GRAPH_ASSISTANT_WORKFLOW.md`
+7. `PROJECT_STATUS.md`
+8. `BACKLOG.md`
+9. `OPEN_FINDINGS.md`
+10. `docs/assistant-kit/DOCUMENTATION_DISCIPLINE.md`
+11. `docs/assistant-kit/SIBLING_PROJECT_REFERENCE_RULE.md`
+12. `docs/assistant-kit/ASSISTANT_TOOL_MAP.md`
+13. `docs/assistant-kit/SYSTEM_BEHAVIOR_CONTRACT.md`
+14. `docs/assistant-kit/UI_CONTRACT.md`
+15. `docs/assistant-kit/DATA_CONTRACT.md`
+16. `docs/assistant-kit/YOUTUBE_CHANNEL_CONTRACT.md`
+17. `docs/android/APK_DELIVERY_CONTRACT.md`
+18. `TERMUX_COMMANDS.md`
+19. `docs/architecture.md`
+20. current release folder under `docs/v.*`.
 
 ## Sources of truth
 
 When evidence conflicts, prefer:
-1. current real channel/API result for channel facts;
-2. real phone/browser behavior;
+1. real phone behavior for UI/gesture/lifecycle facts;
+2. live channel/API result for current channel facts;
 3. verified CI/build evidence;
 4. current GitHub code;
 5. current contracts/status docs;
@@ -44,24 +54,32 @@ Never turn a guess into catalog truth.
 
 ## Development strategy
 
-Phase 1 is read-only: normalize → visualize → inventory channel → match → detect missing/duplicate/wrong-version items.
+Current product sequence:
 
-Only after that layer is stable may write actions exist. Every future mutation must follow:
+```text
+product contract
+→ renderer-independent state/navigation
+→ Nested 3D projection
+→ mobile filter/control UX
+→ full seed
+→ multi-account read-only inventory
+→ performance/phone hardening
+→ Android packaging
+→ signed APK pipeline
+→ real-phone APK QA
+→ later safe remote writes
+```
 
-`preview → explicit confirmation → mutation → verified result → audit record`.
+## Sibling projects
 
-## Technology direction
+YTM and Renault may be read for proven engineering lessons.
 
-Web/PWA first. Planned candidate stack after version verification:
-- TypeScript;
-- React + Vite;
-- Graphology + Sigma.js;
-- JSON Schema or Zod;
-- IndexedDB;
-- Playwright;
-- Vitest;
-- GitHub Actions.
+They are read-only references while working on Music Graph.
 
-A packaged Android app may later use Capacitor unless a native-only requirement justifies Kotlin/Compose.
+Never modify them, reuse their signing keys, or copy project-specific behavior blindly.
 
-Do not create a native Android module merely because other projects have one.
+## Remote-write boundary
+
+Only after read-only inventory/matching is stable:
+
+`preview → explicit confirmation → mutation → read-after-write verification → audit record`.
