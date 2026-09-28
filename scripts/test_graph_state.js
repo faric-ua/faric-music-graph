@@ -81,8 +81,17 @@ assert.equal(s.currentScope.id,"universe");
 assert.equal(s.drillPath.length,1);
 assert.equal(s.selectedNode,null);
 
+s=dispatch(s,G.COMMANDS.EXPAND_NODE,{id:"account:a"});
 s=dispatch(s,G.COMMANDS.EXPAND_ALL,{ids:["a","b","a"]});
-assert.deepEqual(s.expandedNodeIds.sort(),["a","b"]);
+assert.deepEqual(
+  [...s.expandedNodeIds].sort(),
+  ["a","account:a","b"],
+  "expand all must preserve already-expanded nodes outside the supplied set"
+);
+
+s=G.createInitialState();
+s=dispatch(s,G.COMMANDS.EXPAND_ALL,{ids:["a","b","a"]});
+assert.deepEqual([...s.expandedNodeIds].sort(),["a","b"]);
 s=dispatch(s,G.COMMANDS.COLLAPSE_ALL,{ids:["a"]});
 assert.deepEqual(s.expandedNodeIds,["b"]);
 assert.deepEqual(s.collapsedNodeIds,["a"]);
