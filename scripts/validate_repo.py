@@ -23,6 +23,9 @@ required = [
     "scripts/test_node_controls.js",
     "app/navigation-ui.js",
     "scripts/test_navigation_ui.js",
+    "app/prototype-fixtures.js",
+    "app/nested-world-model.js",
+    "scripts/test_nested_world.js",
 ]
 
 errors = []

@@ -1,4 +1,11 @@
-window.MUSIC_SAMPLE={
+(function(root,factory){
+  "use strict";
+  const data=factory();
+  if(typeof module==="object"&&module.exports){module.exports=data;}
+  if(root){root.MUSIC_SAMPLE=data;}
+})(typeof globalThis!=="undefined"?globalThis:this,function(){
+  "use strict";
+  return {
   artists:[
     {id:"artist:the-prodigy",name:"The Prodigy",genres:["Electronic","Big Beat","Breakbeat","Rave"]},
     {id:"artist:linkin-park",name:"Linkin Park",genres:["Alternative Rock","Nu Metal","Electronic Rock"]}
@@ -13,3 +20,4 @@ window.MUSIC_SAMPLE={
     {id:"release:lp-exclusive",artistId:"artist:linkin-park",title:"Exclusive Missing Remixes & Edits",year:null,type:"exclusive",tracks:["Numb (UEFA Remix)"]}
   ]
 };
+});

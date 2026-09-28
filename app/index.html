@@ -83,12 +83,9 @@
           </select>
         </label>
 
-        <label>Структура
-          <select id="structure">
-            <option value="artist">Виконавець → реліз → трек</option>
-            <option value="year">Рік → жанр → виконавець</option>
-          </select>
-        </label>
+        <p class="note">
+          Ієрархія фіксована: Account → Year → Genre → Artist → Release → Track.
+        </p>
       </section>
 
       <div id="stats"></div>
@@ -136,10 +133,14 @@
   </main>
 
   <script src="sample-data.js"></script>
+  <script src="prototype-fixtures.js"></script>
   <script src="graph-state.js"></script>
+  <script src="graph-projection.js"></script>
+  <script src="account-model.js"></script>
   <script src="filter-model.js"></script>
   <script src="node-controls.js"></script>
   <script src="navigation-ui.js"></script>
+  <script src="nested-world-model.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
