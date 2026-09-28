@@ -1,68 +1,89 @@
 # Architecture
 
+Updated: 2026-09-28
+
+## High-level product architecture
+
 ```mermaid
 flowchart TB
-  S[Music sources / prepared packs] --> N[Normalizer + validators]
-  N --> G[Canonical music graph]
-  G --> V[Web/PWA graph UI]
-  YR[YouTube read adapter] --> C[Channel snapshot]
-  C --> M[Matcher]
-  G --> M
-  M --> V
-  V --> P[Mutation preview]
-  P -. disabled until later .-> YW[YouTube write adapter]
-  YW --> A[Mutation audit]
+  SRC[Music sources / prepared packs] --> N[Normalizer + validators]
+  N --> CG[Canonical music graph]
+
+  ACC[Read-only account/channel adapters] --> SNAP[Account snapshots]
+  SNAP --> MATCH[Matcher]
+  CG --> MATCH
+  MATCH --> CG
+
+  CG --> PROJ[World Projection Engine]
+  NAV[GraphSessionState] --> PROJ
+  FIL[Applied filters] --> PROJ
+
+  PROJ --> WORLD[Visible Nested World]
+  WORLD --> R[3D Renderer]
+  R --> UI[Mobile-first UI]
+
+  UI --> CMD[Command / Reducer]
+  CMD --> NAV
+  CMD --> FIL
+
+  UI --> PRE[Future mutation preview]
+  PRE -. disabled until later .-> WR[Write adapters]
+  WR --> AUDIT[Mutation audit]
 ```
 
-## Canonical graph
+## Product navigation
 
-Folders are views, not truth. A track can belong to multiple releases and have multiple variants.
+Primary projection:
+`Universe → Account → Year → Genre → Artist → Release → Track`.
 
-Entities:
-- Artist;
-- Release;
-- Track;
-- TrackVersion;
-- Genre;
-- Year;
-- YouTubeItem;
-- Playlist;
-- Snapshot;
-- AuditEvent.
+This is a navigation projection only.
 
-Important edges:
-- ARTIST_HAS_RELEASE;
-- RELEASE_HAS_TRACK;
-- VERSION_OF;
-- REMIX_OF;
-- LIVE_VERSION_OF;
-- DEMO_OF;
-- MATCHES_YOUTUBE_ITEM;
-- ITEM_IN_PLAYLIST.
+## Renderer separation
 
-## Implementation direction
+The renderer is replaceable.
 
-v0.x: static/local-first web app with generated JSON.
+Semantic state, command behavior and projection logic must be testable without WebGL.
 
-Production web/PWA candidate:
-- TypeScript;
-- React + Vite;
-- Graphology;
-- Sigma.js;
-- IndexedDB;
-- schema validation;
-- Playwright + Vitest.
+This allows:
+- Canvas prototype now;
+- Three.js/WebGL later;
+- 2D debug/fallback renderer;
+- Android WebView/Capacitor packaging without rewriting business state.
 
-Verify current dependency versions at scaffold time.
+## State layers
 
-Android: package the accepted web/PWA with Capacitor first; choose native Kotlin/Compose only for a measurable unmet requirement.
+1. canonical graph data;
+2. account/channel snapshots;
+3. GraphSessionState;
+4. draft/applied filters;
+5. projected visible world;
+6. renderer/camera;
+7. UI overlays.
+
+Do not collapse these into one mutable rendering object.
+
+## Android direction
+
+Final product is a signed APK.
+
+Initial packaging candidate:
+- accepted web UI + Android shell/Capacitor/WebView.
+
+Native Kotlin/Compose or native renderer is chosen only if measured requirements justify it.
+
+APK contract:
+`docs/android/APK_DELIVERY_CONTRACT.md`.
+
+## Provenance / identity
+
+Every imported source preserves provenance.
+
+Titles are not stable IDs.
+
+External IDs are opaque.
 
 ## YouTube boundary
 
-Read and write adapters are separate. Write adapter remains absent/disabled until the write contract is accepted and tested.
+Read and write adapters are separate.
 
-## Provenance
-
-Every imported release/list should preserve source package/file, source type, import timestamp, confidence/verification state and external IDs when available.
-
-Titles alone are not stable identifiers.
+Write remains absent/disabled until the read-only graph/account model and preview contract are accepted.
