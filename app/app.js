@@ -48,8 +48,11 @@ const state={
   ox:52,
   oy:70,
   sphereZoom:1,
+  spherePanX:0,
+  spherePanY:0,
   yaw:-0.45,
   pitch:0.22,
+  orbitHold:false,
   nodes:[],
   edges:[],
   fullNodes:canonicalPrototype.nodes,
@@ -85,6 +88,8 @@ const navUi={
   home:$("#navHome"),
   enter:$("#navEnter")
 };
+
+const orbitUi=$("#orbitHold");
 
 const nodeUi={
   root:$("#nodeControls"),
@@ -445,6 +450,7 @@ function rebuild(){
   renderNodeControls();
   renderNavigationState();
   renderInspectorState();
+  syncOrbitControl();
   draw();
 }
 
@@ -473,8 +479,8 @@ function spherePosition(n){
   const perspective=1/(1.45-z2*0.28);
 
   return {
-    x:r.width/2+x1*radius*perspective,
-    y:r.height/2-y2*radius*perspective,
+    x:r.width/2+state.spherePanX+x1*radius*perspective,
+    y:r.height/2+state.spherePanY-y2*radius*perspective,
     z:z2,
     p:perspective
   };
@@ -486,17 +492,19 @@ function position(n){
 
 function drawSphereGuide(width,height){
   const radius=Math.min(width,height)*0.37*state.sphereZoom;
+  const cx=width/2+state.spherePanX;
+  const cy=height/2+state.spherePanY;
   ctx.save();
   ctx.strokeStyle="rgba(139,108,255,.24)";
   ctx.lineWidth=1;
   ctx.beginPath();
-  ctx.arc(width/2,height/2,radius,0,Math.PI*2);
+  ctx.arc(cx,cy,radius,0,Math.PI*2);
   ctx.stroke();
   ctx.beginPath();
-  ctx.ellipse(width/2,height/2,radius,radius*.25,state.yaw,0,Math.PI*2);
+  ctx.ellipse(cx,cy,radius,radius*.25,state.yaw,0,Math.PI*2);
   ctx.stroke();
   ctx.beginPath();
-  ctx.ellipse(width/2,height/2,radius*.25,radius,state.pitch,0,Math.PI*2);
+  ctx.ellipse(cx,cy,radius*.25,radius,state.pitch,0,Math.PI*2);
   ctx.stroke();
   ctx.restore();
 }
@@ -640,79 +648,84 @@ function renderTrackDetails(container,model){
 
   const terminal=document.createElement("span");
   terminal.className="track-detail-terminal";
-  terminal.textContent="Термінальний вузол";
+  terminal.textContent="Деталі треку";
 
   header.append(pill,title,terminal);
   article.append(header);
 
-  appendDetailRows(article,"Ідентичність треку",[
-    {label:"Canonical ID",value:model.identity.canonicalId,mono:true},
-    {label:"Projection ID",value:model.identity.projectionId,mono:true},
-    {label:"Позиція в релізі",value:model.identity.position}
-  ]);
-
-  appendDetailRows(article,"Поточний контекст",[
+  appendDetailRows(article,"Де ви зараз",[
     {label:"Акаунт",value:model.currentContext.account&&model.currentContext.account.label},
     {label:"Рік",value:model.currentContext.year&&model.currentContext.year.label},
     {label:"Жанр",value:model.currentContext.genre&&model.currentContext.genre.label},
     {label:"Виконавець",value:model.currentContext.artist&&model.currentContext.artist.name},
-    {label:"Реліз",value:model.currentContext.release&&model.currentContext.release.title}
-  ]);
-
-  appendDetailRows(article,"Версія / зв’язки",[
-    {label:"TrackVersion",value:model.version.state==="unmodeled"?"Ще не змодельовано":model.version.state},
-    {label:"Version relationships",value:model.version.relationships.length||"Невідомо"},
-    {label:"Verification",value:model.version.verification}
+    {label:"Реліз",value:model.currentContext.release&&model.currentContext.release.title},
+    {label:"№ у релізі",value:model.identity.position}
   ]);
 
   appendDetailItems(
     article,
-    "Виконавці + релізи",
-    [
-      ...model.appearances.artists.map(item=>"Виконавець: "+item.name+" · "+item.canonicalId),
-      ...model.appearances.releases.map(item=>
-        "Реліз: "+item.title+
-        (item.year==null?"":" · "+item.year)+
-        (item.type?" · "+item.type:"")+
-        " · "+item.canonicalId
-      )
-    ],
-    "Немає структурованих даних."
-  );
-
-  appendDetailItems(
-    article,
-    "Акаунти + плейлисти",
+    "У бібліотеці",
     [
       ...model.appearances.accounts.map(item=>
-        item.label+
-        (item.handle?" · "+item.handle:"")+
-        " · "+item.catalogAssignmentStatus
+        item.label+(item.handle?" · "+item.handle:"")
       ),
-      "Плейлисти: "+(model.playlists.state==="unknown"?"Невідомо":model.playlists.state)
+      "Плейлисти: "+(model.playlists.state==="unknown"?"ще не завантажено":model.playlists.state)
     ],
-    "Невідомо"
+    "Дані бібліотеки ще не завантажені."
   );
 
-  appendDetailRows(article,"YouTube / YouTube Music",[
-    {label:"YouTube videoId",value:model.externalMedia.youtube.videoId,mono:true},
-    {label:"YouTube URL",value:model.externalMedia.youtube.url,mono:true},
-    {label:"YTM itemId",value:model.externalMedia.youtubeMusic.itemId,mono:true},
-    {label:"YTM URL",value:model.externalMedia.youtubeMusic.url,mono:true}
+  const mediaSection=document.createElement("section");
+  mediaSection.className="track-detail-group";
+  const mediaHeading=document.createElement("h3");
+  mediaHeading.textContent="YouTube / YouTube Music";
+  const mediaText=document.createElement("p");
+  mediaText.className="track-detail-empty";
+  const mediaKnown=Boolean(
+    model.externalMedia.youtube.videoId||
+    model.externalMedia.youtube.url||
+    model.externalMedia.youtubeMusic.itemId||
+    model.externalMedia.youtubeMusic.url
+  );
+  mediaText.textContent=mediaKnown
+    ?"Для треку є зовнішні медіадані."
+    :"Посилання та media ID ще не завантажені.";
+  mediaSection.append(mediaHeading,mediaText);
+  article.append(mediaSection);
+
+  const dataSection=document.createElement("section");
+  dataSection.className="track-detail-group track-detail-data-state";
+  const dataHeading=document.createElement("h3");
+  dataHeading.textContent="Стан даних";
+  const dataText=document.createElement("p");
+  dataText.className="track-detail-empty";
+  dataText.textContent=
+    "Каталог поки прототипний: точні YouTube/YTM дані, тривалість і зв’язки версій ще перевіряються.";
+  dataSection.append(dataHeading,dataText);
+  article.append(dataSection);
+
+  const technical=document.createElement("details");
+  technical.className="track-detail-technical";
+  const summary=document.createElement("summary");
+  summary.textContent="Технічні дані";
+  const technicalBody=document.createElement("div");
+  technicalBody.className="track-detail-technical-body";
+
+  appendDetailRows(technicalBody,"Ідентичність",[
+    {label:"Canonical ID",value:model.identity.canonicalId,mono:true},
+    {label:"Projection ID",value:model.identity.projectionId,mono:true}
   ]);
 
-  appendDetailRows(article,"Доступність / тривалість",[
+  appendDetailRows(technicalBody,"Версія / перевірка",[
+    {label:"TrackVersion",value:model.version.state==="unmodeled"?"Ще не змодельовано":model.version.state},
+    {label:"Version relationships",value:model.version.relationships.length||"Невідомо"},
+    {label:"Verification",value:model.version.verification},
     {label:"Availability",value:model.availability.state},
     {
       label:"Duration",
       value:model.availability.durationSeconds==null
         ?"Невідомо"
         :model.availability.durationSeconds+" s"
-    }
-  ]);
-
-  appendDetailRows(article,"Походження / перевірка",[
-    {label:"Prototype only",value:model.provenance.prototypeOnly?"Так":"Ні"},
+    },
     {label:"Assignment status",value:model.provenance.assignmentStatus,mono:true},
     {
       label:"Live account inventory",
@@ -721,12 +734,18 @@ function renderTrackDetails(container,model){
     {label:"Duplicate/mismatch review",value:model.review.status}
   ]);
 
+  appendDetailRows(technicalBody,"Зовнішні ID",[
+    {label:"YouTube videoId",value:model.externalMedia.youtube.videoId,mono:true},
+    {label:"YouTube URL",value:model.externalMedia.youtube.url,mono:true},
+    {label:"YTM itemId",value:model.externalMedia.youtubeMusic.itemId,mono:true},
+    {label:"YTM URL",value:model.externalMedia.youtubeMusic.url,mono:true}
+  ]);
+
   const warningSection=document.createElement("section");
   warningSection.className="track-detail-group";
   const warningHeading=document.createElement("h3");
   warningHeading.textContent="Попередження";
   warningSection.append(warningHeading);
-
   const warnings=document.createElement("ul");
   warnings.className="track-detail-list track-detail-warnings";
   for(const warning of model.warnings){
@@ -737,8 +756,10 @@ function renderTrackDetails(container,model){
     warnings.append(item);
   }
   warningSection.append(warnings);
-  article.append(warningSection);
+  technicalBody.append(warningSection);
 
+  technical.append(summary,technicalBody);
+  article.append(technical);
   container.append(article);
 }
 
@@ -780,7 +801,7 @@ function renderInspectorState(){
   renderInspectorNode(node);
 }
 
-function showNode(n){
+function selectNode(n){
   state.selectedId=n.id;
   let next=G.reducer(graphSession,{
     type:G.COMMANDS.SELECT_NODE,
@@ -801,6 +822,39 @@ function showNode(n){
 
   setGraphSession(next);
   rebuild();
+}
+
+function nodeCanDrill(n){
+  if(!n||n.kind==="track")return false;
+  if(graphSession.currentScope&&n.id===graphSession.currentScope.id)return false;
+  return state.fullEdges.some(([source])=>source===n.id);
+}
+
+function activateNode(n){
+  if(!n)return;
+  if(n.kind==="track"||!nodeCanDrill(n)){
+    selectNode(n);
+    return;
+  }
+
+  const semanticNode={id:n.id,kind:n.kind,label:n.label};
+  let next=G.reducer(graphSession,{
+    type:G.COMMANDS.SELECT_NODE,
+    node:semanticNode
+  });
+  next=G.reducer(next,{type:G.COMMANDS.CLOSE_INSPECTOR});
+  next=G.reducer(next,{
+    type:G.COMMANDS.ENTER_NODE,
+    node:semanticNode,
+    defaultFilters:F.defaultFilters()
+  });
+
+  setGraphSession(next);
+  state.selectedId=null;
+  syncDraftControls();
+  setNodeControlsOpen(false);
+  rebuild();
+  fitView();
 }
 
 function hitTest(p){
@@ -843,6 +897,8 @@ function fitView(){
   const r=canvas.getBoundingClientRect();
   if(state.view==="sphere"){
     state.sphereZoom=1;
+    state.spherePanX=0;
+    state.spherePanY=0;
     state.yaw=-.45;
     state.pitch=.22;
     draw();
@@ -871,6 +927,7 @@ function startGesture(){
     state.gesture={
       multi:false,
       moved:0,
+      startedAt:performance.now(),
       last:{...points[0]}
     };
   }else if(points.length>=2){
@@ -934,9 +991,12 @@ canvas.addEventListener("pointermove",e=>{
     if(state.view==="map"){
       state.ox+=dx;
       state.oy+=dy;
-    }else{
+    }else if(state.orbitHold){
       state.yaw+=dx*.009;
       state.pitch=clamp(state.pitch+dy*.009,-1.42,1.42);
+    }else{
+      state.spherePanX+=dx;
+      state.spherePanY+=dy;
     }
     draw();
   }
@@ -950,7 +1010,11 @@ function endPointer(e){
     const g=state.gesture;
     if(g&&!g.multi&&g.moved<8){
       const node=hitTest(end);
-      if(node)showNode(node);
+      if(node){
+        const heldFor=performance.now()-(g.startedAt||performance.now());
+        if(heldFor>=450)selectNode(node);
+        else activateNode(node);
+      }
     }
     state.gesture=null;
   }else{
@@ -969,6 +1033,30 @@ canvas.addEventListener("wheel",e=>{
 
 $("#zoomIn").onclick=()=>zoomBy(1.22);
 $("#zoomOut").onclick=()=>zoomBy(.82);
+
+function setOrbitHold(active){
+  state.orbitHold=Boolean(active)&&state.view==="sphere";
+  if(!orbitUi)return;
+  orbitUi.classList.toggle("active",state.orbitHold);
+  orbitUi.setAttribute("aria-pressed",String(state.orbitHold));
+}
+
+function syncOrbitControl(){
+  if(!orbitUi)return;
+  orbitUi.hidden=state.view!=="sphere";
+  if(orbitUi.hidden)setOrbitHold(false);
+}
+
+if(orbitUi){
+  orbitUi.addEventListener("pointerdown",e=>{
+    e.preventDefault();
+    try{orbitUi.setPointerCapture(e.pointerId)}catch(_){}
+    setOrbitHold(true);
+  });
+  orbitUi.addEventListener("pointerup",()=>setOrbitHold(false));
+  orbitUi.addEventListener("pointercancel",()=>setOrbitHold(false));
+}
+addEventListener("blur",()=>setOrbitHold(false));
 
 function setNodeControlsOpen(open){
   if(!nodeUi.root||!nodeUi.toggle)return;
@@ -1187,6 +1275,7 @@ filterUi.releaseType.onchange=e=>setDraftFilter("releaseType",e.target.value);
 
 $("#view").onchange=e=>{
   state.view=e.target.value;
+  syncOrbitControl();
   dispatchGraph({
     type:G.COMMANDS.SET_RENDERER_MODE,
     mode:e.target.value
