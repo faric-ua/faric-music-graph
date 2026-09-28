@@ -139,9 +139,11 @@
         continue;
       }
 
-      const actual=Object.prototype.hasOwnProperty.call(node.facets,key)
-        ?node.facets[key]
-        :node[key];
+      const hasFacet=Object.prototype.hasOwnProperty.call(node.facets,key);
+      const hasField=Object.prototype.hasOwnProperty.call(node,key);
+      if(!hasFacet&&!hasField)continue;
+
+      const actual=hasFacet?node.facets[key]:node[key];
 
       if(expected&&typeof expected==="object"&&!Array.isArray(expected)&&("min" in expected||"max" in expected)){
         if(!matchesRange(actual,expected))return false;
@@ -260,7 +262,13 @@
     }
 
     const nodes=[...outputNodes.values()]
-      .sort((a,b)=>a.depth-b.depth||sortNodes([a.node,b.node])[0].id===a.node.id?-1:1)
+      .sort((a,b)=>{
+        const depthDelta=a.depth-b.depth;
+        if(depthDelta!==0)return depthDelta;
+        const sorted=sortNodes([a.node,b.node]);
+        if(sorted[0].id===sorted[1].id)return 0;
+        return sorted[0].id===a.node.id?-1:1;
+      })
       .map(entry=>projectionNode(entry,state,graph));
     const visibleIds=new Set(nodes.map(n=>n.id));
     const edges=[...outputEdges.values()].filter(e=>visibleIds.has(e.source)&&visibleIds.has(e.target));
