@@ -121,5 +121,9 @@ assert(app.includes("T.buildTrackDetails"),"app must build structured track deta
 assert(app.includes("G.COMMANDS.OPEN_INSPECTOR"),"opening inspector must be represented in GraphSessionState");
 assert(app.includes("G.COMMANDS.CLOSE_INSPECTOR"),"closing inspector must be represented in GraphSessionState");
 assert(app.includes('"track-terminal"'),"Track inspector mode must be explicit");
+assert(app.includes('"Де ви зараз"'),"Track surface must lead with user-facing context");
+assert(app.includes('"Технічні дані"'),"technical metadata must remain available on demand");
+assert(css.includes(".track-detail-technical{"),"technical metadata must use a collapsible visual surface");
+assert(app.includes('"Посилання та media ID ще не завантажені."'),"unknown external media must be explained in user-facing language");
 
 console.log("PASS: structured Track terminal detail contract tests");
