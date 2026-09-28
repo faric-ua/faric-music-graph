@@ -423,3 +423,23 @@ Boundary:
 - this is implementation/CI evidence only;
 - real-phone acceptance of direct drill, long press, 3D HOLD/ORBIT ergonomics and the revised Track detail hierarchy is still pending;
 - no YouTube/YTM remote mutation is involved.
+
+## Merged direct-drill phone candidate — 2026-09-28
+
+PR:
+`#23 — v0.2.0 — tap-first nested drill and HOLD/ORBIT 3D UX`
+
+Runtime/code baseline:
+`4b89444c795e2a17e34984087ea24065f7abc111`
+
+Fresh validation:
+- PR run `36444841889` — PASS;
+- post-merge `main` run `36444887504` — PASS.
+
+The next evidence gate is real-phone acceptance of:
+- one-tap nested drill;
+- long-press selection-only fallback;
+- simplified Track detail hierarchy;
+- 2D pan/tap ownership;
+- Sphere 3D pan vs HOLD/ORBIT rotation;
+- pinch zoom and control occlusion in portrait/landscape.
