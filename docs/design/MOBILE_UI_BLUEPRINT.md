@@ -15,15 +15,11 @@ Updated: 2026-09-28
 │          ╲           ╱              │
 │            ● selected               │
 │                                     │
-│                          ┌────────┐  │
-│                          │ + all  │  │
-│                          │ - all  │  │
-│                          │ + node │  │
-│                          │ - node │  │
-│                          │ →      │  │
-│                          │ ←      │  │
-│                          │ Fit    │  │
-│                          └────────┘  │
+│                         [−][+][⋮]   │
+│                                     │
+│              tap → enter            │
+│                                     │
+│   [HOLD ORBIT]                      │
 │                                     │
 │ [ Filters • 3 ]                     │
 └─────────────────────────────────────┘
@@ -80,38 +76,53 @@ Visual cues:
 
 Manual Apply is the default until performance measurements justify debounced live mode.
 
-## Floating node controls
+## Graph controls
 
-The panel background is approximately 50% transparent.
+Primary mobile interaction is tap-first. The graph itself is the main navigation surface.
 
-The icons/buttons themselves must remain readable and meet touch target requirements.
+Compact quick row:
+```text
+[ − ] [ + ] [ ⋮ ]
+```
 
-Initial command grouping:
-
+The `⋮` menu exposes advanced commands:
 ```text
 Visibility
 [ Expand all ] [ Collapse all ]
 [ Expand node] [ Collapse node]
 
-Navigation
-[ Back ] [ Enter ]
+Navigation / utility
+[ Back ] [ Enter fallback ]
 [ Home ] [ Fit ]
 ```
 
-On narrow portrait, labels may become icons with accessible labels/tooltips/help.
+The advanced panel keeps an approximately 50% transparent background and 48dp-class touch targets. It is hidden by default on narrow phones so it does not permanently cover the graph.
+
+`Enter` remains a semantic command and accessibility/fallback action, but ordinary drilling should not require the user to press it after every tap.
 
 ## Gesture ownership
 
-Graph:
-- one finger drag = orbit/pan;
+Default graph navigation:
+- short tap on a non-terminal node = enter that nested world;
+- short tap on Track = open Track details;
+- long press on a node = select/focus only, for advanced Expand/Collapse commands;
+- Back/breadcrumb returns to parent scope.
+
+2D Map:
+- one-finger drag = pan;
+- pinch = zoom.
+
+Sphere 3D:
+- one-finger drag without HOLD = move/pan the sphere on screen;
+- hold the bottom `HOLD / ORBIT` control with one finger and drag the graph with another = rotate around the sphere axes;
 - pinch = zoom;
-- tap = select/focus.
+- releasing HOLD immediately returns drag to pan mode.
+
+Tap-vs-drag is movement-thresholded so normal panning/orbiting does not accidentally enter a node.
 
 Panel:
 - interactions inside panel belong to panel;
 - gestures outside panel belong to graph.
-
-Do not make node tap immediately drill into a deeper world. Selection and navigation are separate so the user can rotate/select without accidental entry.
 
 ## Breadcrumb
 
@@ -128,19 +139,18 @@ Rules:
 
 Track is information-heavy, so it may replace the graph with a dedicated detail surface or use an expandable sheet.
 
-Recommended grouping:
+Recommended default grouping:
 
 ```text
-Track identity
-Version / relationship
-Artist + releases
-Accounts + playlists
-YouTube / YTM exact IDs and URLs
-Channel state
-Availability / duration
-Provenance / verification
-Warnings / duplicates / mismatches
+Track title
+Current Account / Year / Genre / Artist / Release
+Library/account occurrences
+YouTube / YTM user-facing state
+Short data-quality note
+[ Technical data ▸ ]
 ```
+
+Canonical/projection IDs, prototype assignment codes, verification internals and raw warning codes belong under the collapsed **Technical data** disclosure by default.
 
 Raw JSON is a debug view only, not the normal product UI.
 
