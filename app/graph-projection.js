@@ -273,6 +273,12 @@
       })
       .map(entry=>projectionNode(entry,state,graph));
     const visibleIds=new Set(nodes.map(n=>n.id));
+    for(const edge of graph.edges){
+      if(edge.navigation)continue;
+      if(visibleIds.has(edge.source)&&visibleIds.has(edge.target)){
+        outputEdges.set(edge.id,edge);
+      }
+    }
     const edges=[...outputEdges.values()].filter(e=>visibleIds.has(e.source)&&visibleIds.has(e.target));
 
     const breadcrumb=(state.drillPath||[]).map((n,depth)=>({
