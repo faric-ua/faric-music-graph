@@ -130,7 +130,7 @@ Merged UX revision evidence:
 - post-merge main validation `36444887504` — PASS.
 
 ## UX-008 — One-level Back must match tap-first drill
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Phone feedback after tap-first drill: moving forward became natural, but moving one level back was not equally obvious.
 
@@ -140,7 +140,7 @@ Adjustment:
 - the edge gesture is distance/vertical-thresholded so ordinary graph pan away from the edge remains available.
 
 ## UX-009 — Empty graph tap dismisses Track details
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 When the Track inspector is open:
 - tapping empty graph space closes it;
@@ -148,7 +148,7 @@ When the Track inspector is open:
 - tapping a Track/node still performs its normal action.
 
 ## UX-010 — Auto-Fit needs viewport breathing room
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Phone feedback: projected graph content felt too close to viewport edges after entering deeper worlds.
 
@@ -156,3 +156,10 @@ Adjustment:
 - 2D auto-Fit targets about 80% of the available canvas width/height;
 - roughly 10% breathing room per side is reserved before renderer-local max/min scale clamps;
 - semantic graph state is unchanged.
+
+
+Merged Back/dismiss/Fit evidence:
+- PR #25;
+- runtime/code baseline `9a88a6e2808c4be4065ee23a1e3cc886f4b14109`;
+- PR validation `36447186710` — PASS;
+- post-merge main validation `36447243829` — PASS.
