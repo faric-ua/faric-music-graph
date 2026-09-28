@@ -103,7 +103,19 @@ assert(css.includes(".orbit-hold.active"),"HOLD control needs an active pressed 
 assert(app.includes("const FIT_OCCUPANCY=.80"),"Fit must reserve about 20% viewport breathing room");
 assert(app.includes("function isEdgeBackGesture(g,end){"),"edge-swipe one-level back gesture is required");
 assert(app.includes("goBackScope();\n      return;"),"edge-swipe must route through semantic BACK_SCOPE");
-assert(app.includes("else if(graphSession.inspector&&graphSession.inspector.open){\n        closeInspector();"),"empty graph tap must dismiss Track inspector");
+assert(app.includes("if(graphSession.inspector&&graphSession.inspector.open){\n          closeInspector();"),"empty graph tap must dismiss Track inspector");
+assert(app.includes('nodeUi.root.classList.contains("mobile-open")'),"empty graph tap must dismiss the advanced node menu");
 assert(html.includes('aria-label="На рівень вище"'),"header Back must be clearly labeled as one level up");
+assert(html.includes('id="nodeHint"'),"transient node feedback hint surface is required");
+assert(css.includes(".node-hint.visible"),"node feedback hint needs visible/fade states");
+assert(app.includes("function showNodeHint(node,point,prefix){"),"tap feedback hint logic is required");
+assert(app.includes('account:"Акаунт"'),"node hints must identify node kind in user-facing language");
+assert(app.includes("focus.sx=0;\n    focus.sy=0;\n    focus.sz=0;"),"current Sphere scope must stay at the 3D center");
+assert(app.includes("goldenAngle=Math.PI*(3-Math.sqrt(5))"),"Sphere children must use deterministic spherical distribution");
+assert(app.includes("function drawScopeTrail(width,height){"),"3D depth trail is required");
+assert(app.includes("navigationTarget=navigationHitTest(end)"),"tapping a 3D parent ghost must support backward navigation");
+assert(app.includes("function startEntryTransition(fromPoint){"),"drill transition feedback is required");
+assert(app.includes("x:scopeBase.x+(base.x-scopeBase.x)*transitionT"),"new child world must expand out from the current focus");
+assert(app.includes('showNodeHint(navigationTarget.node,end,"Назад")'),"back ghost tap must provide visible feedback");
 
-console.log("PASS: direct-drill, back/dismiss, fit and mobile 3D control contract tests");
+console.log("PASS: spatial direct-drill, back/dismiss, fit and mobile 3D interaction contract tests");
