@@ -23,29 +23,21 @@ A docs-only handoff merge may advance `main` after this validated code baseline.
 
 Do not record phone evidence against an older `main`.
 
-## Test 1 — Universe / selection / Enter
+## Test 1 — Universe / direct drill
 
 Expected:
 - Universe loads without a JavaScript/runtime error;
 - both Account fixture nodes are visible;
-- graph can pan/orbit and zoom;
-- tap selects without drilling;
-- **Enter** explicitly enters the selected Account;
-- Back/Home/Enter controls and breadcrumb stay usable.
+- mobile `− / + / ⋮` controls remain compact at the top;
+- short tap on `FARIC UA` enters the Account world immediately without raw JSON and without requiring →;
+- long press on a non-terminal node selects/focuses it without entering, so advanced `+ node / − node` remains possible;
+- Back/Home and breadcrumb stay usable;
+- one-finger pan does not accidentally enter nodes.
+
+The explicit →/Enter control may remain in the advanced/fallback surface, but ordinary browsing must not depend on it.
 
 Important regression check:
 the page must not fail because `currentControlCapabilities`, `renderNavigationState` or `renderNodeControls` is undefined.
-
-## Retest gate after BUG-002
-
-Before continuing Test 2 on a build containing the fix:
-- tap `FARIC UA`;
-- confirm Account selection does not open raw JSON;
-- confirm top →/Enter enables immediately;
-- confirm mobile `− / + / ⋮` controls are in one compact top row;
-- open `⋮` and confirm the node-control palette remains usable without permanently covering the graph.
-
-If any of these fail, stop and record BUG-002/UX-004 as FAIL.
 
 ## Test 2 — Canonical drill
 
@@ -53,34 +45,31 @@ Use:
 
 `Universe → FARIC UA → 1994 → Big Beat → The Prodigy → Music for the Jilted Generation → Voodoo People`
 
-At each level:
-- select is separate from Enter;
+At each non-terminal level:
+- one short tap enters the tapped node directly;
+- no second →/Enter tap is required;
 - breadcrumb matches the current semantic path;
 - Back returns exactly one level;
 - Home returns to Universe;
-- no accidental Enter occurs during drag/orbit.
+- dragging the graph does not accidentally drill.
 
 At Track:
-- Track is terminal;
-- Enter is unavailable;
-- structured details open instead of raw JSON.
+- one short tap opens structured Track details;
+- Track remains terminal;
+- the normal view is user-facing rather than raw JSON.
 
 ## Test 3 — Structured Track details
 
-For **Voodoo People** verify visible groups for:
-- identity;
-- current context;
-- version/relationship;
-- artists/releases;
-- accounts/playlists;
-- YouTube/YTM;
-- availability/duration;
-- provenance/verification;
-- warnings.
+For **Voodoo People** verify the default view leads with:
+- Track title;
+- **Де ви зараз**: Account / Year / Genre / Artist / Release;
+- **У бібліотеці**;
+- plain-language YouTube / YouTube Music state;
+- short **Стан даних** explanation.
 
-Expected truth boundary:
-- prototype-only account assignment is visibly identified;
-- live inventory is not claimed;
+Then open **Технічні дані** and verify:
+- canonical/projection IDs and internal status data remain available there;
+- prototype-only/account verification warnings are not lost;
 - absent TrackVersion/media ID/URL/duration/availability data remains unknown/unmodeled;
 - no invented exact YouTube/YTM ID appears.
 
@@ -146,11 +135,23 @@ For **Expand All**:
 
 Record whether confirmation itself feels responsive and whether expansion causes visible freeze, heat or browser instability.
 
-## Test 8 — Gesture ownership / occlusion
+## Test 8 — Gesture ownership / 3D HOLD-ORBIT / occlusion
 
-In portrait and landscape:
-- one-finger graph drag does not click buttons or Enter nodes;
-- pinch zoom works;
+In 2D portrait and landscape:
+- one-finger drag pans and does not enter nodes;
+- short tap drills;
+- long press selects only;
+- pinch zoom works.
+
+In **Sphere 3D**:
+- without HOLD, one-finger drag moves/pans the sphere on screen;
+- press and keep holding the bottom **HOLD / ORBIT** control with one finger;
+- while HOLD is pressed, drag the graph with another finger and confirm yaw/pitch rotation;
+- releasing HOLD immediately returns drag to pan mode;
+- pinch zoom still works;
+- a normal drag/orbit does not accidentally drill.
+
+For both renderers:
 - controls do not make key nodes permanently unreachable;
 - filter panel owns gestures inside itself;
 - graph owns gestures outside the panel;

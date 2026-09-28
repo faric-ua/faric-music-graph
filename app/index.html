@@ -90,7 +90,7 @@
 
       <div id="stats"></div>
       <p class="note">
-        1 палець: панорама / обертання · 2 пальці: масштаб · tap: деталі
+        Tap: зайти всередину · Track: деталі · long press: вибрати вузол · 2 пальці: масштаб · у 3D HOLD + drag: обертання
       </p>
     </div>
 
@@ -135,6 +135,15 @@
         aria-label="Показати керування вузлами"
       >⋮</button>
     </div>
+
+    <button
+      id="orbitHold"
+      class="orbit-hold"
+      type="button"
+      aria-label="Утримувати для обертання 3D сфери"
+      aria-pressed="false"
+      hidden
+    ><span>HOLD</span><small>ORBIT</small></button>
 
     <section id="inspector" aria-live="polite">
       <button id="close" type="button" aria-label="Закрити">×</button>

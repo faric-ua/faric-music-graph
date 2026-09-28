@@ -80,6 +80,25 @@ the Projection Engine returns:
 
 The renderer receives only this projection.
 
+## Interaction adapter
+
+The renderer/input layer maps gestures into semantic commands without becoming the source of truth.
+
+Primary mobile mapping:
+- short tap on a non-terminal projected node → `SELECT_NODE` + `ENTER_NODE`;
+- short tap on Track → `SELECT_NODE` + open Track inspector;
+- long press → `SELECT_NODE` only, preserving advanced Expand/Collapse-selected workflows;
+- Back/Home/breadcrumb continue to use their semantic commands.
+
+Tap and drag/orbit are separated by a movement threshold before any node command is emitted.
+
+Sphere camera interaction is renderer-local:
+- drag normally changes 2D sphere position on screen;
+- while `HOLD / ORBIT` is pressed, drag changes yaw/pitch;
+- pinch changes sphere zoom.
+
+These camera-only values may remain transient until persistence is justified by phone QA.
+
 ## Command model
 
 Commands should be renderer-independent:
@@ -106,14 +125,14 @@ stateDiagram-v2
   [*] --> Visible
   Visible --> Expanded: Expand selected
   Expanded --> Visible: Collapse selected
-  Visible --> ChildWorld: Enter selected
-  Expanded --> ChildWorld: Enter selected
+  Visible --> ChildWorld: Tap / Enter
+  Expanded --> ChildWorld: Tap / Enter
   ChildWorld --> Visible: Back
 ```
 
 Expand changes visibility inside the same scope.
 
-Enter changes scope and drill path.
+Enter changes scope and drill path. A normal short tap now dispatches that same semantic Enter operation automatically for non-terminal nodes; the explicit Enter control remains a fallback/advanced surface.
 
 ## Account universe
 

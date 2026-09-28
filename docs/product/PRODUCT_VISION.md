@@ -52,22 +52,23 @@ Entering an Account changes the active scope to that account. The 3D renderer th
 
 ## Drill navigation
 
-A node tap selects/focuses a node.
-
-Navigation itself is explicit:
-- **Forward / Enter** — enter the selected node and push it onto the drill stack;
+Primary mobile navigation is **tap-first**:
+- short tap on a non-terminal node — enter that node and push it onto the drill stack;
+- short tap on Track — open the Track detail surface;
+- long press — select/focus only for advanced node commands;
 - **Back** — return one drill level;
 - **Home** — return to Universe;
-- breadcrumb — jump back to any already visited parent level.
+- breadcrumb — jump back to any already visited parent level;
+- **Forward / Enter** remains available as a renderer-independent fallback/accessibility command, but ordinary browsing should not require it after every tap.
 
-This avoids accidental deep navigation while the user rotates or pans the graph.
+The interaction layer distinguishes tap from drag/orbit by movement threshold, so navigation stays direct without making ordinary camera gestures enter nodes accidentally.
 
 Suggested visual transition:
-1. selected node moves/focuses to the center;
+1. tapped node focuses briefly;
 2. unrelated nodes fade;
-3. camera moves into the selected node;
+3. camera/world transitions into the node;
 4. next contextual world appears;
-5. navigation state commits only after the transition is complete.
+5. semantic state commits through the same renderer-independent `ENTER_NODE` command used by fallback controls.
 
 ## Node visibility controls
 
@@ -150,16 +151,18 @@ Initial contextual model:
 
 The filter registry must be data-driven so later levels can add filters without hardcoding a separate screen implementation.
 
-## Floating control palette
+## Graph control surface
 
-The node-control palette is an overlay above the graph.
+On phones, the graph is the primary navigation surface.
+
+A compact quick row exposes zoom and a `⋮` advanced-menu handle. The node-control palette is hidden by default and opened only when advanced Expand/Collapse/Back/Home/Fit/Enter fallback commands are needed.
 
 Design:
-- background approximately 50% transparent;
+- compact quick controls must not permanently cover important graph space;
+- advanced panel background approximately 50% transparent;
 - buttons/icons remain sufficiently opaque and readable;
 - controls use at least ~48dp touch targets;
-- palette may collapse to a compact handle;
-- it must not steal graph gestures outside its own bounds;
+- the panel must not steal graph gestures outside its own bounds;
 - safe insets are respected;
 - portrait and landscape positions are tested independently.
 
@@ -184,9 +187,16 @@ Breadcrumb behavior:
 
 Track is the first required terminal information level.
 
-The Track view should expose every known fact, grouped rather than dumped as raw JSON.
+The default Track surface should lead with understandable music context, while technical identity/provenance remains available under a collapsed technical disclosure. Raw internal codes must not dominate the normal view.
 
-Target fields, when available:
+User-facing first:
+- title;
+- current Account / Year / Genre / Artist / Release;
+- library/account occurrences;
+- YouTube/YTM state in plain language;
+- short data-quality note.
+
+Technical disclosure may then expose the full model, including:
 - canonical track ID;
 - title and normalized/search title;
 - artist(s);
@@ -210,6 +220,16 @@ Target fields, when available:
 - future safe actions such as Open URL / Copy ID.
 
 Missing data is shown as unknown/not available, never invented.
+
+## 3D gesture model
+
+For Sphere 3D, camera translation and orbit are intentionally separate:
+- drag without a modifier pans/moves the sphere on screen;
+- while the user holds a bottom **HOLD / ORBIT** control, drag rotates the sphere around its axes;
+- releasing HOLD immediately returns drag to pan;
+- pinch controls zoom.
+
+This keeps ordinary browsing spatially predictable while still allowing deliberate 3D rotation with two-hand interaction.
 
 ## Read-only first
 

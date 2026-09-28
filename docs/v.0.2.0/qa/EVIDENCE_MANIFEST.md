@@ -391,3 +391,35 @@ Fresh validation:
 - post-merge `main` run `36435075892` — PASS.
 
 This establishes the exact source for real-phone v0.2.0 QA. It does not itself prove portrait/landscape layout, gestures, restoration under rotation/reload, or target-phone performance.
+
+## Real-phone UX revision — tap-first drill + 3D HOLD/ORBIT — 2026-09-28
+
+Phone observation before the revision:
+- the raw non-Track JSON regression was no longer the main blocker;
+- compact top `− / + / ⋮` controls were visible;
+- the current dark graph/card visual direction was accepted;
+- explicit select → Enter browsing was reported as confusing/mechanical for ordinary use;
+- Track details were structurally useful but exposed too much developer terminology by default.
+
+Implementation source:
+`0d93e8af0d130b678bc806929d98b5ee1fd824f1`
+
+Automated CI:
+`36444364055` — PASS.
+
+Implemented and regression-asserted:
+- short tap on non-terminal node routes through semantic `ENTER_NODE` and drills directly;
+- short tap on Track opens the structured Track inspector;
+- long press preserves selection-only behavior for advanced node commands;
+- movement-thresholded drag does not become a tap;
+- Sphere 3D has independent screen-pan state;
+- without HOLD, 3D drag pans the sphere;
+- with `HOLD / ORBIT` pressed, drag changes yaw/pitch;
+- pinch remains sphere zoom;
+- Track details lead with understandable context/library/media state;
+- technical identity/provenance/warnings remain available under collapsed `Технічні дані`.
+
+Boundary:
+- this is implementation/CI evidence only;
+- real-phone acceptance of direct drill, long press, 3D HOLD/ORBIT ergonomics and the revised Track detail hierarchy is still pending;
+- no YouTube/YTM remote mutation is involved.

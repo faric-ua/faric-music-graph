@@ -91,5 +91,14 @@ assert(css.includes(".mobile-graph-controls{top:8px;right:8px;bottom:auto;gap:6p
 assert(!app.includes('"track-terminal":"node-debug"'),"non-track selection must not open the debug inspector");
 assert(app.includes('if(n.kind==="track"){'),"Track remains the only automatic inspector path");
 assert(app.includes("setGraphSession(next);\n  rebuild();"),"selection must rebuild capabilities so Enter becomes available immediately");
+assert(app.includes("function activateNode(n){"),"tap activation helper is required");
+assert(app.includes("else activateNode(node);"),"short tap must activate/drill directly");
+assert(app.includes("heldFor>=450"),"long press must preserve explicit selection for advanced controls");
+assert(app.includes("type:G.COMMANDS.ENTER_NODE"),"direct drill must still use semantic ENTER_NODE");
+assert(html.includes('id="orbitHold"'),"3D hold-to-orbit control is required");
+assert(app.includes("state.orbitHold"),"3D orbit modifier state is required");
+assert(app.includes("state.spherePanX+=dx"),"3D drag without HOLD must pan the sphere");
+assert(app.includes("state.yaw+=dx*.009"),"3D HOLD drag must rotate the sphere");
+assert(css.includes(".orbit-hold.active"),"HOLD control needs an active pressed state");
 
-console.log("PASS: floating node-control palette model/wiring contract tests");
+console.log("PASS: direct-drill, advanced selection and mobile 3D control contract tests");
