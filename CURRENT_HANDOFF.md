@@ -250,7 +250,17 @@ Merged Back/dismiss/Fit refinement checkpoint:
 - PR validation run `36447186710` — PASS;
 - post-merge `main` validation run `36447243829` — PASS.
 
+Spatial-navigation prototype checkpoint:
+- feature branch `feat/v0.2.0-spatial-drill-feedback`;
+- current Sphere scope is centered and visible neighbors use deterministic spherical placement;
+- up to three ancestor scopes appear as faint depth-trail ghost nodes;
+- tapping a parent ghost routes through semantic depth navigation;
+- direct drill has a short entry transition where the next world expands outward from the tapped focus;
+- taps show a brief node-kind + label hint;
+- empty graph tap dismisses both Track details and the mobile `⋮` advanced menu;
+- implementation/static regression CI is PASS on the branch; real-phone acceptance remains pending.
+
 First unchecked step:
-**update the phone to current `main`, record the actual tested HEAD, then continue the revised direct-drill + one-level Back + Track-dismiss + 80%-Fit + Sphere HOLD/ORBIT phone QA contract.**
+**merge the spatial-navigation candidate after final CI, update the phone to current `main`, record the tested HEAD, then continue real-phone QA with special attention to transition feel, parent-ghost Back, hint readability, menu dismissal and Sphere spatial orientation.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
