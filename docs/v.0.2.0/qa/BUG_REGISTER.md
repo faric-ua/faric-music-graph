@@ -165,7 +165,7 @@ Merged Back/dismiss/Fit evidence:
 - post-merge main validation `36447243829` — PASS.
 
 ## UX-011 — Empty graph tap also dismisses advanced menu
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Phone feedback: when the mobile `⋮` node-control palette is open, tapping empty graph space should dismiss it just like an open Track detail sheet.
 
@@ -175,7 +175,7 @@ Adjustment:
 - node taps and panel taps keep their own actions.
 
 ## UX-012 — Spatial drill transition + node-kind feedback
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Requested interaction direction:
 - drilling should feel like entering nested music space, not teleporting between flat screens;
@@ -185,7 +185,7 @@ Requested interaction direction:
 - the hint is feedback only and does not change semantic graph state.
 
 ## UX-013 — Sphere focus + depth trail / tappable parent ghost
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 3D scene model prototype:
 - current scope node is fixed at the center of the Sphere world;
@@ -196,3 +196,10 @@ Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
 - HOLD/ORBIT rotates the current sphere while the semantic drill path remains independent of renderer camera state.
 
 This is a first spatial-navigation prototype, not yet a production renderer decision.
+
+
+Merged spatial-navigation evidence:
+- PR #27;
+- runtime/code baseline `f61ab0b06827fe172043e489732f019ce1ea9331`;
+- PR validation `36449377254` — PASS;
+- post-merge main validation `36449424526` — PASS.
