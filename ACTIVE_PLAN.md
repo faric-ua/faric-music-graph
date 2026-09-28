@@ -21,7 +21,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Define Music Graph-specific APK/signing/artifact contract.
 - [x] Create v0.2.0 release/QA/diagram skeleton before feature code.
 - [x] Implement renderer-independent GraphSessionState + command reducer/state machine.
-- [ ] Implement projection engine for current scope/drill level/filters/expand state.
+- [x] Implement projection engine for current scope/drill level/filters/expand state.
 - [ ] Add Account entity + multi-account fixture without storing auth secrets.
 - [ ] Implement adaptive filter panel: one column, scroll body, sticky footer, draft/applied state.
 - [ ] Implement floating node-control palette and command wiring.

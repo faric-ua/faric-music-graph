@@ -44,3 +44,31 @@ Verified by automated tests:
 - session state serializes/restores with version checking.
 
 This is automated state-machine evidence only. It does not prove renderer, browser touch UX, rotation, or phone behavior.
+
+
+## Projection engine — 2026-09-28
+
+Tested source:
+`8e7f16bf9b80bf9414b424dfa86488a48dba68fc`
+
+CI history:
+- `36362295175` — FAIL: predicted expansion counted a shared graph node through more than one path;
+- `36362342273` — FAIL: filter semantics were corrected but the unique-node count issue remained;
+- implementation updated so performance estimates count unique node IDs;
+- `36362381756` — PASS;
+- PR validation `36362384151` — PASS.
+
+Automated coverage proves:
+- Universe projects Account children;
+- drill scopes project only the next navigation dimension;
+- descendants appear only after explicit expand;
+- collapse hides descendants;
+- draft filters do not affect projection before Apply;
+- applied filters are facet-aware;
+- range/search filters work;
+- visible edges never reference hidden nodes;
+- breadcrumb/action capabilities are derived from session state;
+- Track is terminal;
+- dangling navigation edges are rejected.
+
+This is semantic projection evidence, not renderer or phone evidence.

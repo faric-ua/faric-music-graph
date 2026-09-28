@@ -47,3 +47,14 @@
 - [x] draft filters stay separate until Apply;
 - [x] expand/collapse state semantics tested;
 - [x] serialize/restore round-trip tested;
+
+
+## Automated projection contract
+- [x] current scope projects only the next navigation dimension;
+- [x] expansion reveals descendants without changing scope;
+- [x] collapse hides descendants;
+- [x] only applied filters affect projection;
+- [x] facet-aware filters preserve unrelated deeper dimensions;
+- [x] visible-edge closure tested;
+- [x] Track terminal projection tested;
+- [x] unique-node expansion estimate tested.

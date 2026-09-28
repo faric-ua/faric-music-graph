@@ -73,7 +73,15 @@ Implementation checkpoint:
 - test semantics were corrected without weakening the implementation contract;
 - CI run `36362006903` — PASS.
 
+Projection checkpoint:
+- nested world projection engine implemented on source `8e7f16bf9b80bf9414b424dfa86488a48dba68fc`;
+- it separates canonical/projection data from rendering, obeys current scope, drill level, applied filters and expand/collapse state;
+- facet-aware filters do not erase deeper node types that do not own that facet;
+- predicted full expansion counts unique node IDs rather than duplicate graph paths;
+- CI runs `36362295175` and `36362342273` exposed the initial overcount contract issue;
+- corrected CI run `36362381756` and PR run `36362384151` — PASS.
+
 First unchecked step:
-**implement the projection engine for current scope / drill level / applied filters / expand-collapse state.**
+**add provider-neutral Account entities and a multi-account fixture without auth secrets.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
