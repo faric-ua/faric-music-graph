@@ -163,3 +163,36 @@ Merged Back/dismiss/Fit evidence:
 - runtime/code baseline `9a88a6e2808c4be4065ee23a1e3cc886f4b14109`;
 - PR validation `36447186710` — PASS;
 - post-merge main validation `36447243829` — PASS.
+
+## UX-011 — Empty graph tap also dismisses advanced menu
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+
+Phone feedback: when the mobile `⋮` node-control palette is open, tapping empty graph space should dismiss it just like an open Track detail sheet.
+
+Adjustment:
+- empty graph tap closes Track details when open;
+- the same empty tap also closes the mobile advanced node-control palette;
+- node taps and panel taps keep their own actions.
+
+## UX-012 — Spatial drill transition + node-kind feedback
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+
+Requested interaction direction:
+- drilling should feel like entering nested music space, not teleporting between flat screens;
+- the tapped node visually becomes the next focus;
+- the new world expands outward from that focus over a short renderer-local transition;
+- every node tap shows a short fading hint such as `Рік · 1994`, `Виконавець · The Prodigy`, `Реліз · Experience`;
+- the hint is feedback only and does not change semantic graph state.
+
+## UX-013 — Sphere focus + depth trail / tappable parent ghost
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+
+3D scene model prototype:
+- current scope node is fixed at the center of the Sphere world;
+- other visible nodes use deterministic spherical distribution around it;
+- up to three ancestor scopes are rendered as faint ghost nodes behind the current focus;
+- the nearest/visible ghost trail communicates where the user came from;
+- tapping a ghost jumps back to that semantic ancestor through the existing breadcrumb-depth command path;
+- HOLD/ORBIT rotates the current sphere while the semantic drill path remains independent of renderer camera state.
+
+This is a first spatial-navigation prototype, not yet a production renderer decision.
