@@ -25,7 +25,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Add Account entity + multi-account fixture without storing auth secrets.
 - [x] Implement adaptive filter panel: one column, scroll body, sticky footer, draft/applied state.
 - [x] Implement floating node-control palette and command wiring.
-- [ ] Implement breadcrumb + Enter/Back/Home navigation.
+- [x] Implement breadcrumb + Enter/Back/Home navigation.
 - [ ] Implement Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.
 - [ ] Implement structured Track terminal details.
 - [ ] Add restoration tests for drill path, filters, selected node and open panels.

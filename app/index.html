@@ -12,6 +12,14 @@
       <strong>FARIC Music Graph</strong>
       <span>v0.2.0 Nested 3D Worlds</span>
     </div>
+
+    <nav class="graph-navigation" aria-label="Навігація графом">
+      <button id="navBack" class="nav-icon" type="button" aria-label="Назад" disabled>‹</button>
+      <button id="navHome" class="nav-icon" type="button" aria-label="До Universe" disabled>⌂</button>
+      <div id="breadcrumb" class="breadcrumb" aria-label="Шлях графа"></div>
+      <button id="navEnter" class="nav-enter" type="button" disabled>Увійти →</button>
+    </nav>
+
     <div class="header-actions">
       <button
         id="filterToggle"
@@ -131,6 +139,7 @@
   <script src="graph-state.js"></script>
   <script src="filter-model.js"></script>
   <script src="node-controls.js"></script>
+  <script src="navigation-ui.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

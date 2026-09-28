@@ -118,7 +118,20 @@ Node-control checkpoint:
 - CI run `36368864096` — PASS;
 - browser/phone UX acceptance remains pending.
 
+Breadcrumb/navigation checkpoint:
+- implementation branch: `feat/v0.2.0-breadcrumb-navigation`;
+- source: `c0f95baef1d1110ef2f3ec228605d996fe8eb006`;
+- header now exposes an always-reachable horizontal breadcrumb derived from `GraphSessionState.drillPath`;
+- current scope is visually distinct; ancestor crumbs are tappable and dispatch `JUMP_TO_DEPTH`;
+- breadcrumb scrolls horizontally for deep paths rather than wrapping over the graph;
+- compact header Back/Home/Enter uses the same handlers as the floating node-control palette;
+- Enter is enabled only for a selected node with children; Back/Home follow semantic drill history;
+- mobile header uses compact controls while preserving breadcrumb access;
+- automated breadcrumb/shared-command contract added;
+- CI run `36369197076` — PASS;
+- browser/phone layout and gesture acceptance remain pending.
+
 First unchecked step:
-**implement the breadcrumb and visible Enter/Back/Home navigation surface over GraphSessionState drillPath/history.**
+**replace the temporary Canvas hierarchy with the canonical Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

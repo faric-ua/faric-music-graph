@@ -42,6 +42,7 @@ Live multi-account inventory: **PENDING READ-ONLY IMPLEMENTATION/AUDIT**.
 - provider-neutral Account foundation: implemented + CI PASS;
 - adaptive filter panel: implemented + CI PASS; browser/phone UX acceptance pending;
 - floating node controls: implemented + CI PASS; browser/phone UX acceptance pending;
+- breadcrumb + shared Enter/Back/Home navigation: implemented + CI PASS; browser/phone UX acceptance pending;
 - full seed migration: pending;
 - read-only channel inventory: pending;
 - Android app packaging: planned after graph state/UX stabilization;

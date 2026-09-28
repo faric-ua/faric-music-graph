@@ -157,3 +157,26 @@ Important:
 the temporary Canvas visibility adapter is not the final nested-world projection. The canonical Account → Year → Genre → Artist → Release → Track renderer projection remains a later checklist item.
 
 Next unit: breadcrumb + Enter/Back/Home navigation surface.
+
+
+## Implementation checkpoint — Breadcrumb navigation
+
+Added:
+- always-reachable header breadcrumb derived from `GraphSessionState.drillPath`;
+- horizontally scrollable deep-path behavior;
+- current-scope emphasis;
+- direct ancestor jump through `JUMP_TO_DEPTH`;
+- compact header Back / Home / Enter controls;
+- shared command handlers between header navigation and floating node palette;
+- capability-driven navigation state so terminal/non-child selections cannot Enter.
+
+Tested source:
+`c0f95baef1d1110ef2f3ec228605d996fe8eb006`
+
+CI:
+`36369197076` — PASS.
+
+Evidence level:
+automated/static only. Header fit, touch comfort, portrait/landscape behavior and real-phone acceptance remain pending.
+
+Next unit: canonical Nested 3D drill projection through Account → Year → Genre → Artist → Release → Track.
