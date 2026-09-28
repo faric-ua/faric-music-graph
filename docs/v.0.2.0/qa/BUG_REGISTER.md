@@ -43,7 +43,7 @@ Status: OPEN MEASUREMENT / SAFE GUARD IMPLEMENTED.
 Until real target-phone measurement establishes a safe immediate node budget, non-trivial Expand All requires explicit confirmation. No production threshold is guessed in code or docs.
 
 ## BUG-002 — Non-Track tap opened raw debug JSON and left Enter stale
-Status: FIX IMPLEMENTED / PHONE RETEST PENDING.
+Status: MERGED / CI PASS / PHONE RETEST PENDING.
 
 Found during real-phone v0.2.0 QA on 2026-09-28.
 
@@ -58,6 +58,13 @@ Fix:
 - selection triggers a projection rebuild so Enter/expand capabilities reflect the new selection immediately;
 - legacy non-Track debug inspector rendering is removed from the normal product path.
 
+Merged source:
+`ef0a6029b7593a33933e803477523d6f3355a4e9`
+
+CI:
+- PR run `36441340178` — PASS;
+- post-merge `main` run `36441389775` — PASS.
+
 Phone recheck:
 - select `FARIC UA`;
 - verify no JSON inspector opens;
@@ -65,7 +72,7 @@ Phone recheck:
 - enter Account and continue canonical drill.
 
 ## UX-004 — Compact mobile graph controls
-Status: IMPLEMENTED / PHONE RETEST PENDING.
+Status: MERGED / CI PASS / PHONE RETEST PENDING.
 
 Real-phone feedback: persistent right-side node controls plus bottom-right zoom controls consume too much graph space.
 
