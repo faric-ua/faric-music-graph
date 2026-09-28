@@ -99,6 +99,19 @@ Sphere camera interaction is renderer-local:
 
 These camera-only values may remain transient until persistence is justified by phone QA.
 
+## Spatial world presentation
+
+The semantic drill path remains the source of truth, while the renderer may preserve visual depth cues.
+
+Sphere prototype presentation:
+- `currentScope` is rendered as the center focus node;
+- other visible nodes are distributed deterministically over a sphere around the focus;
+- ancestors from `drillPath` may be rendered as low-opacity ghost nodes behind the current focus;
+- tapping an ancestor ghost dispatches the same semantic depth-jump used by breadcrumb navigation;
+- the renderer may animate entry from the tapped screen position to the new focus and expand the child world outward.
+
+The ghost trail and entry transition are renderer-local presentation state. They do not create new graph entities, edges, scopes or history records.
+
 ## Command model
 
 Commands should be renderer-independent:
