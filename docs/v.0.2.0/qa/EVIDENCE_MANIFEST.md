@@ -464,3 +464,29 @@ Automated regression source includes assertions for all three interaction rules.
 Boundary:
 - phone acceptance remains pending;
 - no graph semantics, account data or remote YouTube/YTM state are mutated by these renderer/input changes.
+
+## Spatial navigation prototype — 2026-09-28
+
+Phone-driven product direction:
+- nested drill should preserve visual depth instead of feeling like flat-page teleportation;
+- current world should be spatially obvious;
+- previous worlds should remain faintly understandable in the background;
+- node taps should provide immediate visible feedback;
+- empty graph tap should dismiss transient overlays.
+
+Implemented on `feat/v0.2.0-spatial-drill-feedback`:
+- current Sphere scope fixed at the center;
+- deterministic spherical distribution for other visible nodes;
+- low-opacity ancestor ghost trail from semantic `drillPath`;
+- ghost tap routes through existing depth navigation;
+- short entry transition expands the new world from the tapped node position;
+- fading user-facing node-kind hints;
+- empty-space dismissal for both Track inspector and mobile advanced menu.
+
+Automated regression source:
+`ba70cc53e7cc21d3de7bd831884ae3d67a334ccf` — CI PASS.
+
+Boundary:
+- this is renderer/input behavior only;
+- no canonical graph identity or remote YouTube/YTM state is changed;
+- real-phone visual/gesture acceptance is still required.
