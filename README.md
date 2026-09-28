@@ -1,87 +1,105 @@
 # FARIC Music Graph
 
-Єдиний репозиторій для музичного каталогу, дослідження виконавців, візуального графа та майбутнього керування YouTube/YouTube Music каналом **@faric_ua**.
+Єдиний репозиторій для музичного каталогу, багаторівневого 3D-графа та майбутнього керування YouTube/YouTube Music акаунтами/каналами.
 
 **Нова assistant-сесія починає з [START_HERE_ASSISTANT.md](START_HERE_ASSISTANT.md).**
 
-## Початковий каталог
+## Кінцевий продукт
 
-- The Prodigy
-- Linkin Park
+Кінцева користувацька форма — **signed Android APK**.
 
-Підготовлений seed: **88 release/list entities** та **863 normalized track-title entities**. Повний seed буде перенесений окремою перевіреною data migration у межах v0.1.0.
+Web/PWA використовується як швидкий development/debug harness для графа, фільтрів і data model, але не є кінцевою ціллю продукту.
 
-## Головна ідея
+## Основна UX-модель
+
+**Nested 3D Worlds**:
 
 ```text
-Рік → Жанр → Виконавець → Реліз → Трек
-                              ↘ Remix / Live / Demo / Edit
-                               ↘ YouTube / YTM item
+Universe
+  → Account
+    → Year
+      → Genre
+        → Artist
+          → Release / Album
+            → Track
+              → complete known details / IDs / URLs / provenance
 ```
 
-Це **не жорстка файлова ієрархія**. Рік, жанр, виконавець, реліз, тип версії та стан каналу — фасети одного графа.
+Це навігаційна проєкція над канонічним графом, а не жорстка папкова структура.
 
-## Канал
+На кожному рівні:
+- 3D world показує лише релевантний контекст;
+- є contextual filters;
+- є floating node-control palette;
+- Expand/Collapse не змінюють scope;
+- Enter/Back змінюють scope;
+- breadcrumb показує точне місце.
 
-Target: `https://music.youtube.com/@faric_ua`
+Повний контракт: `docs/product/PRODUCT_VISION.md`.
 
-Перший етап інтеграції — **read-only audit**. Будь-які майбутні зміни каналу тільки через:
+## Фільтри
 
-`preview → explicit confirmation → write → read-after-write verification → audit`.
+На телефоні фільтри відкриваються окремим adaptive panel:
+- один вертикальний стовпчик;
+- portrait: bottom sheet приблизно 45–55% висоти;
+- landscape/tablet: side sheet приблизно 40–50% ширини;
+- scrollable body;
+- fixed footer `Скинути / Застосувати`.
 
-## Технологічний напрям
+За замовчуванням фільтри редагуються як draft і застосовуються тільки після `Застосувати`. Live/debounced режим можливий пізніше після вимірювання продуктивності.
 
-Спочатку web/PWA:
-- TypeScript;
-- React + Vite;
-- Graphology + Sigma.js;
-- IndexedDB;
-- Playwright + Vitest.
+## Node controls
 
-Версії залежностей перевіряються перед scaffold, а не копіюються зі старих проєктів.
+Постійна напівпрозора floating panel:
+- Expand all;
+- Collapse all;
+- Expand selected;
+- Collapse selected;
+- Enter;
+- Back;
+- Home;
+- Fit.
 
-Android package розглядається після прийняття web/PWA; перший кандидат — Capacitor. Kotlin/Compose — лише якщо з'явиться конкретна native-only вимога.
+Tap по node = select/focus, а не автоматичний drill-in.
 
-## Termux
+## Дані
 
-Music Graph — **окремий** від Renault/YTM repository.
+Підготовлений початковий seed:
+- The Prodigy;
+- Linkin Park;
+- 88 release/list entities;
+- 863 normalized track-title entities.
 
-Live checkout:
+Канонічний graph зберігає many-to-many relationships, Track vs TrackVersion, provenance та external IDs.
 
-`$HOME/faric-music-graph`
+## YouTube / YTM safety
 
-Shared data:
+Remote write не належить до раннього етапу:
 
-`/storage/emulated/0/Documents/FARIC-Music-Graph/`
+`inventory → match → preview → explicit confirmation → write → read-after-write verification → audit`.
 
-Після clone:
+## Android
 
-```bash
-cd "$HOME/faric-music-graph"
-bash tools/install_termux_aliases.sh
-bash tools/install_termux_widget.sh
-source ~/.bashrc 2>/dev/null || true
-music-menu
-```
+APK delivery contract:
+`docs/android/APK_DELIVERY_CONTRACT.md`.
 
-Termux:Widget shortcut називається **Music Graph**. Після installer натиснути Refresh у Widget.
-
-Повна інструкція: `docs/ua/TERMUX_SETUP.md`.
+Music Graph матиме власний signing identity. YTM/Renault signing material не перевикористовується.
 
 ## Документація
 
 - `CURRENT_HANDOFF.md` — точка продовження;
-- `PROJECT_STATUS.md` — поточний стан;
-- `BACKLOG.md` — roadmap;
-- `OPEN_FINDINGS.md` — відкриті findings;
-- `docs/assistant-kit/` — стабільні contracts;
-- `docs/v.*` — release/QA history;
-- `docs/catalog/` — knowledge notes по виконавцях;
-- `docs/WORKFLOW_LESSONS.md` — уроки, які не можна втрачати;
-- `docs/ua/TERMUX_SETUP.md` — setup/menu/widget.
+- `ACTIVE_PLAN.md` — живий TODO;
+- `docs/product/PRODUCT_VISION.md` — канонічний product contract;
+- `docs/architecture/NESTED_3D_WORLDS.md` — state/projection/navigation architecture;
+- `docs/design/MOBILE_UI_BLUEPRINT.md` — mobile UI;
+- `docs/android/APK_DELIVERY_CONTRACT.md` — фінальний APK workflow;
+- `docs/assistant-kit/` — reusable contracts;
+- `docs/v.*` — історія релізів/QA/діаграми.
 
-## Поточний milestone
+## Termux
 
-**v0.1.0 — repository/contracts/graph foundation.**
+Live checkout:
+`$HOME/faric-music-graph`
 
-No remote YouTube write belongs to v0.1.0.
+Shared data/artifacts:
+`/storage/emulated/0/Documents/FARIC-Music-Graph/`

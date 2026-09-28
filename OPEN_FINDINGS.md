@@ -1,55 +1,50 @@
 # Open Findings
 
 ## FINDING-001 — Full seed migration
-Prepared Prodigy + Linkin Park data predates the canonical v0.1.0 data contract.
+Prepared Prodigy + Linkin Park data predates the canonical contract.
 
 Status: OPEN.
 
 Close when the full seed is migrated with canonical IDs, validated edges and provenance.
 
-## FINDING-002 — Channel inventory
-The target URL is known, but a complete live inventory has not yet been stored/verified.
+## FINDING-002 — Account/channel inventory
+Known target `@faric_ua` has not yet been stored as a complete verified live read-only inventory, and the product now needs a provider-neutral multi-account model.
 
 Status: OPEN.
 
-## FINDING-003 — Graph engine
-The static Canvas prototype proves the interaction concept. Production candidate: Graphology + Sigma.js.
+## FINDING-003 — Production graph engine
+The Canvas prototypes prove interaction ideas only.
 
-Status: PROPOSED.
+Status: OPEN / DECISION DEFERRED TO MEASURED EVIDENCE.
 
-Acceptance requires mobile performance/interaction testing.
+Production choice requires full-seed phone and future APK/WebView performance evidence.
 
+## FINDING-004 — Flat mobile graph UX rejected
+Real-phone feedback on 2026-09-28 rejected the earlier flat Canvas UX as a final mobile interaction model.
 
-## FINDING-004 — Mobile graph gestures are not acceptable
+Status: PRODUCT DIRECTION SUPERSEDED.
 
-Real-phone feedback on 2026-09-28: the current Canvas prototype is difficult to control on a phone and has no usable pinch zoom.
+v0.1.1 remains historical prototype evidence. v0.2.0 moves to Nested 3D Worlds.
 
-Status: OPEN / BLOCKING MOBILE GRAPH ACCEPTANCE.
+## FINDING-005 — Spherical / 3D direction
+User requested a sphere-like / 3D nested graph.
 
-Required:
-- real two-finger pinch zoom;
-- one-finger pan that does not fight node selection;
-- tap/select with touch-sized hit targets;
-- fit/reset control;
-- predictable zoom limits;
-- portrait and landscape smoke.
+Status: PRODUCT DIRECTION ACCEPTED; IMPLEMENTATION/PHONE ACCEPTANCE PENDING.
 
-Do not mark the current graph interaction PHONE PASS until these are verified.
+The accepted concept is not “one giant sphere forever”. It is nested contextual 3D worlds with explicit drill navigation.
 
-## FINDING-005 — Spherical / 3D graph mode feasibility
+## FINDING-006 — Filter apply latency
+The user explicitly allows either manual Apply or later live/debounced filtering depending on real processing latency.
 
-The user requested investigation of a sphere-like graph where the network can be rotated and explored spatially.
+Status: OPEN PERFORMANCE DECISION.
 
-Status: RESEARCHED / PROTOTYPE NEEDED.
+Contract:
+- v0.2 default = draft + explicit Apply;
+- live/debounced mode only after measured performance proves it remains responsive.
 
-Research direction:
-- spherical-surface layout: nodes constrained to a sphere, rotatable with pinch/orbit;
-- free 3D force graph as comparison;
-- keep hierarchical 2D view available until phone evidence proves a 3D mode is better.
+## FINDING-007 — Expand All scale risk
+Recursive expansion can defeat the purpose of contextual worlds and overload a phone.
 
-Acceptance:
-- touch orbit/pan and pinch zoom are comfortable on Android;
-- node tap/focus/isolate is reliable;
-- labels remain readable;
-- full seed performance is acceptable;
-- switching view does not change canonical graph data.
+Status: OPEN ENGINEERING GUARD.
+
+Require predicted size/performance guard, progressive expansion or confirmation for large scopes.

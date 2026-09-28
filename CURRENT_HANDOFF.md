@@ -4,35 +4,69 @@ Updated: 2026-09-28
 
 Repository: `faric-ua/faric-music-graph`
 Default branch: `main`
-## Current state
 
-- repository foundation merged to main;
-- project is isolated from YTM/Renault;
-- canonical workflow/contracts/release skeleton exist;
-- mandatory `ACTIVE_PLAN.md` crash-recovery checklist is active;
-- Termux aliases/menu/server tooling exists;
-- canonical phone setup is `docs/ua/TERMUX_SETUP.md`;
-- phone setup and Termux:Widget project-menu smoke PASS;
-- first phone graph feedback: current Canvas controls are poor on mobile and no usable pinch zoom is available;
-- spherical/3D graph mode is an explicit prototype/research track;
-- v0.1.1 release skeleton created before feature code;
-- v0.1.1 2D Map + Sphere 3D prototype implemented on source `742161cd614d02c72a5c1ff85d3e597c611dc7f2`;
-- v0.1.1 merged to `main` as `02da06832a3990d0557d0c3a45cdbaf8d615e7e4`;
-- feature CI Validate `36358246425` PASS;
-- merged-main CI Validate `36358360607` PASS;
-- initial known catalog scope: The Prodigy + Linkin Park;
-- prepared source catalog: 88 release/list entities and 863 normalized track-title entities;
-- channel target: `https://music.youtube.com/@faric_ua`;
-- live channel inventory is not yet repository truth.
+## Stable foundation
+
+- project isolated from YTM/Renault;
+- Termux private checkout + menu + Widget smoke PASS;
+- crash-recovery `ACTIVE_PLAN.md` rule active;
+- release/QA documentation workflow active;
+- initial Prodigy + Linkin Park prepared catalog known;
+- v0.1.1 produced an improved 2D prototype and a simple spherical Canvas prototype;
+- v0.1.1 implementation/CI evidence is preserved as prototype history.
+
+## Product direction accepted 2026-09-28
+
+The flat “one big graph” model is no longer the target UX.
+
+Primary product model:
+**Nested 3D Worlds**.
+
+```text
+Universe → Account → Year → Genre → Artist → Release → Track
+```
+
+At every graph level:
+- contextual filters;
+- breadcrumb;
+- floating node-control palette;
+- Expand/Collapse selected;
+- Expand/Collapse all;
+- explicit Enter/Back/Home;
+- Fit;
+- selection separate from drill navigation.
+
+Filter panel:
+- single-column;
+- portrait bottom sheet about 45–55% height;
+- landscape/tablet side sheet about 40–50% width;
+- scrollable body;
+- Reset/Apply always visible;
+- draft filters do not change graph before Apply by default.
+
+Final product target:
+**signed Android APK**.
+
+Web/PWA is the development/prototyping surface.
+
+Sibling YTM/Renault repositories are read-only engineering references for this project.
 
 ## Current milestone
 
-`v0.1.1 — mobile 2D + Sphere 3D interaction prototype`
+`v0.2.0 — Nested 3D Worlds foundation`
+
+Release/product docs created before feature code:
+- `docs/product/PRODUCT_VISION.md`;
+- `docs/architecture/NESTED_3D_WORLDS.md`;
+- `docs/design/MOBILE_UI_BLUEPRINT.md`;
+- `docs/android/APK_DELIVERY_CONTRACT.md`;
+- `docs/v.0.2.0/`.
 
 ## Next exact work
 
-Use `ACTIVE_PLAN.md` as the ordered execution source.
+Read `ACTIVE_PLAN.md`.
 
-Immediate next step: pull latest `main` on the phone and execute the 2D-vs-Sphere comparison in `docs/v.0.1.1/qa/PHONE_TEST.md`. The first unchecked item in `ACTIVE_PLAN.md` is the phone comparison.
+First unchecked step:
+**implement renderer-independent GraphSessionState + command reducer/state machine.**
 
-Do not add YouTube write actions before read-only audit has browser/phone PASS.
+Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

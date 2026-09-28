@@ -1,0 +1,13 @@
+{
+  "versionName": "0.2.0",
+  "phase": "planned",
+  "feature": "Nested 3D Worlds navigation and mobile control architecture",
+  "branch": "planned-after-product-contract",
+  "testedSourceSha": null,
+  "ciRun": null,
+  "browserQaStatus": "NOT_RUN",
+  "phoneQaStatus": "NOT_RUN",
+  "apkStatus": "NOT_BUILT",
+  "channelReadAuditStatus": "PENDING",
+  "channelWriteAuditStatus": "NOT_ENABLED"
+}

@@ -4,6 +4,12 @@ PROJECT_STATUS.md
 BACKLOG.md
 OPEN_FINDINGS.md
 MUSIC_GRAPH_ASSISTANT_WORKFLOW.md
+docs/product/PRODUCT_VISION.md
+docs/architecture/NESTED_3D_WORLDS.md
+docs/design/MOBILE_UI_BLUEPRINT.md
+docs/android/APK_DELIVERY_CONTRACT.md
+docs/assistant-kit/DOCUMENTATION_DISCIPLINE.md
+docs/assistant-kit/SIBLING_PROJECT_REFERENCE_RULE.md
 TERMUX_COMMANDS.md
 docs/architecture.md
 docs/WORKFLOW_LESSONS.md

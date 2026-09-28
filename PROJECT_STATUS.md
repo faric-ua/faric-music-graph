@@ -1,8 +1,20 @@
 # Project Status
 
+Updated: 2026-09-28
+
 ## Product
 
-**FARIC Music Graph** is a music catalog, research graph, playlist workspace, and future YouTube/YouTube Music channel management tool.
+**FARIC Music Graph** is a mobile-first nested 3D music catalog, research graph, multi-account/channel workspace and future controlled YouTube/YouTube Music management tool.
+
+Final product target: **signed Android APK**.
+
+## Accepted primary UX
+
+Nested 3D Worlds:
+
+`Universe → Account → Year → Genre → Artist → Release → Track`.
+
+The canonical graph remains many-to-many. Drill hierarchy is a projection.
 
 ## Prepared seed
 
@@ -10,27 +22,30 @@
 - 88 release/list entities;
 - 863 track-title entities;
 - years represented from 1991 through 2026;
-- categories include studio, live, expanded/compilation, remix/collaboration, EP/special, singles/promos, Best Of, Mixes, Originals for Mixes, Exclusive.
+- studio/live/expanded/remix/EP/singles/special categories represented.
 
-These counts describe the prepared seed, not the future complete universe of both artists.
+These are prepared-source counts, not yet the final canonical migrated dataset.
 
-## Channel
+## Channel/account model
 
-Target: `@faric_ua`.
+Current known target includes `@faric_ua`, but the product model now supports multiple provider/account nodes.
 
-Inventory: **PENDING LIVE READ-ONLY AUDIT**.
+Live multi-account inventory: **PENDING READ-ONLY IMPLEMENTATION/AUDIT**.
 
 ## Engineering
 
-- repository: initialized;
-- canonical assistant/recovery docs: bootstrap;
-- data contract: bootstrap;
-- graph prototype: bootstrap;
-- CI validation: bootstrap;
-- Termux menu: bootstrap;
-- YouTube write layer: disabled/not implemented;
-- Android app: not started.
+- repository + recovery docs: established;
+- v0.1.1 interaction prototype: implemented/CI PASS, historical prototype;
+- product/UX contract: v0.2.0 Nested 3D Worlds accepted;
+- renderer-independent session state: pending;
+- projection engine: pending;
+- filter drawer contract: accepted, implementation pending;
+- floating node controls: accepted, implementation pending;
+- full seed migration: pending;
+- read-only channel inventory: pending;
+- Android app packaging: planned after graph state/UX stabilization;
+- YouTube write layer: disabled/not implemented.
 
 Quality rule:
 
-`build PASS != browser PASS != phone PASS != channel mutation PASS`.
+`contract != implementation != CI PASS != browser PASS != phone PASS != APK PASS != channel mutation PASS`.
