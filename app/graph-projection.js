@@ -207,8 +207,10 @@
     if(!node)return 0;
     const kind=nextKind(node.kind);
     const children=directChildren(graph,nodeId,kind,filters||{});
-    let total=children.length;
+    let total=0;
     for(const child of children){
+      if(visited.has(child.id))continue;
+      total+=1;
       total+=countReachable(graph,child.id,filters,visited);
     }
     return total;
