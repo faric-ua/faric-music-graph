@@ -232,11 +232,13 @@ Real-phone UX revision checkpoint:
 - phone screenshots confirmed the raw non-Track JSON regression is no longer the main blocker and compact top controls are visible;
 - user accepted the current visual skin/cards and the `⋮` popout for now;
 - explicit select → Enter browsing was rejected as too mechanical for normal use;
-- feature branch `feat/v0.2.0-direct-drill-orbit-hold` implements tap-first drill, long-press selection, simplified Track details and HOLD/ORBIT 3D gesture semantics;
-- branch CI is PASS for the implementation and regression assertions;
+- PR #23 merged tap-first drill, long-press selection, simplified Track details and HOLD/ORBIT 3D gesture semantics;
+- runtime/code baseline: `4b89444c795e2a17e34984087ea24065f7abc111`;
+- PR validation run `36444841889` — PASS;
+- post-merge `main` validation run `36444887504` — PASS;
 - formal real-phone acceptance of this revised interaction is still pending.
 
 First unchecked step:
-**merge the revised interaction candidate through PR after final CI, update the phone, record exact HEAD, and run the new direct-drill + Track-detail + Sphere HOLD/ORBIT phone QA contract.**
+**update the phone to current `main`, record the actual tested HEAD, then run the revised direct-drill + Track-detail + Sphere HOLD/ORBIT phone QA contract.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
