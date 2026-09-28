@@ -213,12 +213,13 @@ Final static/unit/schema validation checkpoint:
 
 Merged phone-QA candidate checkpoint:
 - PRs #15–#19 were merged through the established PR workflow;
-- exact merged `main` phone-QA candidate: `f25cb380fe7b95a76abc56426bbdc8174ef04e27`;
+- validated runtime/code baseline: `f25cb380fe7b95a76abc56426bbdc8174ef04e27`;
 - PR #19 validation run `36435030701` — PASS;
 - post-merge `main` validation run `36435075892` — PASS;
-- do not record v0.2.0 phone evidence against any older checkout.
+- a later docs-only handoff merge may advance `main` without changing app/runtime code;
+- phone QA must update to current `main`, record its exact HEAD, and must not use a checkout older than the validated baseline.
 
 First unchecked step:
-**run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA on exact `main` `f25cb380fe7b95a76abc56426bbdc8174ef04e27`.**
+**run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA on current `main`, with `f25cb380fe7b95a76abc56426bbdc8174ef04e27` as the validated runtime/code baseline, and record the actual tested HEAD.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
