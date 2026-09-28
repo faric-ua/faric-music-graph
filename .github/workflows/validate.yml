@@ -21,5 +21,9 @@ jobs:
         run: |
           node --check app/app.js
           node --check app/sample-data.js
+          node --check app/graph-state.js
+          node --check scripts/test_graph_state.js
+      - name: Graph state tests
+        run: node scripts/test_graph_state.js
       - name: Git whitespace check
         run: git diff --check HEAD^ HEAD || git diff --check
