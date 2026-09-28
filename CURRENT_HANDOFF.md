@@ -211,11 +211,15 @@ Final static/unit/schema validation checkpoint:
 - Git whitespace check PASS;
 - Account schema test verifies the canonical fixture and negative required/type/const/additionalProperties cases.
 
-Phone-QA delivery note:
-- `main` is still behind this candidate until the pending PR chain is merged;
-- do not phone-test an older `main` checkout and record it as v0.2.0 evidence.
+Merged phone-QA candidate checkpoint:
+- PRs #15–#19 were merged through the established PR workflow;
+- validated runtime/code baseline: `f25cb380fe7b95a76abc56426bbdc8174ef04e27`;
+- PR #19 validation run `36435030701` — PASS;
+- post-merge `main` validation run `36435075892` — PASS;
+- a later docs-only handoff merge may advance `main` without changing app/runtime code;
+- phone QA must update to current `main`, record its exact HEAD, and must not use a checkout older than the validated baseline.
 
 First unchecked step:
-**merge the validated candidate to main through the established PR workflow, then run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA on the exact merged candidate.**
+**run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA on current `main`, with `f25cb380fe7b95a76abc56426bbdc8174ef04e27` as the validated runtime/code baseline, and record the actual tested HEAD.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

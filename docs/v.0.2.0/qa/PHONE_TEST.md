@@ -2,13 +2,15 @@
 
 Status: READY / NOT RUN.
 
-Validated source before merge:
-`acb642f40bb9bf6f3567dd15aa4050e0e9c7a713`
+Validated runtime/code baseline:
+`f25cb380fe7b95a76abc56426bbdc8174ef04e27`
 
-Validation CI:
-`36376536482` — PASS.
+Validation evidence:
+- pre-merge validation source `acb642f40bb9bf6f3567dd15aa4050e0e9c7a713`, CI `36376536482` — PASS;
+- PR #19 validation run `36435030701` — PASS;
+- post-merge `main` run `36435075892` — PASS.
 
-Phone QA must run only after the validated candidate is merged to `main` and the phone checkout is updated to that merged candidate.
+A docs-only handoff merge may advance `main` after this validated code baseline. Phone QA must first update to current `main`, record the actual HEAD in step 6, and must not use a checkout older than `f25cb380fe7b95a76abc56426bbdc8174ef04e27`.
 
 ## Start on phone
 
