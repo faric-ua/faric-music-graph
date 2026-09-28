@@ -1,6 +1,6 @@
 # v0.2.0 Evidence Manifest
 
-No implementation/phone evidence yet.
+Automated implementation evidence exists. Browser/phone evidence is still pending.
 
 ## Existing product evidence
 
@@ -132,3 +132,38 @@ Not proven by this checkpoint:
 - Android/WebView behavior.
 
 Those remain later QA gates.
+
+
+## Floating node-control palette — 2026-09-28
+
+Implementation source:
+`fd4e13c1e88f0573cd67ccf0e728de5ed4ff9730`
+
+CI:
+`36374847098` — PASS.
+
+Automated evidence:
+- repository validation PASS;
+- JavaScript syntax PASS;
+- existing GraphSessionState / projection / Account / adaptive-filter tests remain PASS;
+- dedicated node-control palette contract tests PASS;
+- Git whitespace check PASS.
+
+Implemented contract:
+- persistent floating two-column palette with approximately 50% transparent background;
+- Expand All / Collapse All;
+- Expand Node / Collapse Node;
+- Back / Enter;
+- Home / Fit;
+- selected-node state is sourced from `GraphSessionState`, not an independent navigation action;
+- renderer context provides visible/expandable/enterable IDs to the command adapter;
+- `FIT_VIEW` is consumed as a transient renderer command and leaves serialized GraphSessionState unchanged;
+- unsupported Enter is disabled until the canonical projection marks a selected node as enterable.
+
+Not proven by this checkpoint:
+- real nested drill rendering;
+- breadcrumb interaction;
+- phone portrait/landscape ergonomics;
+- gesture/palette overlap behavior.
+
+Those remain later implementation/QA gates.

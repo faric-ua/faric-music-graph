@@ -128,3 +128,28 @@ Evidence level:
 automated/static only. Browser portrait/landscape and real-phone gesture/filter acceptance remain pending.
 
 Next unit: floating node-control palette and command wiring.
+
+
+## Implementation checkpoint — Floating node-control palette
+
+Added:
+- persistent translucent floating palette;
+- Expand All / Collapse All;
+- Expand Node / Collapse Node;
+- Back / Enter;
+- Home / Fit;
+- renderer-independent command adapter driven by GraphSessionState plus renderer capability context;
+- safe Enter gating through explicit enterable node IDs;
+- transient `FIT_VIEW` command that does not enter serialized session state;
+- dedicated automated command/layout contract checks.
+
+Tested source:
+`fd4e13c1e88f0573cd67ccf0e728de5ed4ff9730`
+
+CI:
+`36374847098` — PASS.
+
+Evidence level:
+automated/static only. Browser and real-phone ergonomics remain pending.
+
+Next unit: breadcrumb + Enter/Back/Home navigation.

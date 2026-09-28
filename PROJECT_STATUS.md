@@ -41,7 +41,7 @@ Live multi-account inventory: **PENDING READ-ONLY IMPLEMENTATION/AUDIT**.
 - projection engine: implemented + CI PASS;
 - provider-neutral Account foundation: implemented + CI PASS;
 - adaptive filter panel: implemented + CI PASS; browser/phone UX acceptance pending;
-- floating node controls: accepted, implementation pending;
+- floating node controls: implemented + CI PASS; browser/phone UX acceptance pending;
 - full seed migration: pending;
 - read-only channel inventory: pending;
 - Android app packaging: planned after graph state/UX stabilization;

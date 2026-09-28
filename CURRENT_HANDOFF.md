@@ -104,7 +104,18 @@ Adaptive filter checkpoint:
 - CI run `36368444005` — PASS;
 - browser/phone UX acceptance is still pending and must not be inferred from CI.
 
+Node-control palette checkpoint:
+- implementation source: `fd4e13c1e88f0573cd67ccf0e728de5ed4ff9730`;
+- persistent approximately 50%-transparent two-column floating palette added;
+- commands exposed: Expand All, Collapse All, Expand Node, Collapse Node, Back, Enter, Home and Fit;
+- node selection is wired into `GraphSessionState`;
+- `FIT_VIEW` is a renderer-independent transient command and does not pollute serialized session state;
+- current legacy renderer supplies visible/expandable command context, while Enter remains safely disabled until canonical nested projection marks a node enterable;
+- dedicated command/palette contract tests added;
+- CI run `36374847098` — PASS;
+- browser/phone ergonomics remain unaccepted until later QA.
+
 First unchecked step:
-**implement the floating node-control palette and wire renderer-independent Expand/Collapse/Enter/Back/Home/Fit commands.**
+**implement breadcrumb + Enter/Back/Home navigation on top of the canonical drill-path contract.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

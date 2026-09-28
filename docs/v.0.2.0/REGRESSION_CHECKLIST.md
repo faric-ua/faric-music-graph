@@ -81,3 +81,13 @@
 - [x] one-column scrollable filter body is structurally asserted;
 - [x] fixed Reset/Apply footer is structurally asserted;
 - [x] portrait bottom-sheet and wider side-sheet breakpoints are asserted.
+
+
+## Automated node-control contract
+- [x] floating palette exposes all 8 required commands;
+- [x] approximately 50% transparent palette background is structurally asserted;
+- [x] selected expand/collapse capability derives from GraphSessionState + renderer context;
+- [x] bulk expand/collapse uses renderer-supplied expandable node IDs;
+- [x] Enter is gated by renderer-supplied enterable node IDs;
+- [x] Back/Home capability derives from drill path depth;
+- [x] FIT_VIEW invokes the renderer callback without mutating durable session state;
