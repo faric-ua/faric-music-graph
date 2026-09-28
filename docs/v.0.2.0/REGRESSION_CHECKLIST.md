@@ -58,3 +58,13 @@
 - [x] visible-edge closure tested;
 - [x] Track terminal projection tested;
 - [x] unique-node expansion estimate tested.
+
+
+## Automated Account contract
+- [x] provider-neutral Account normalization;
+- [x] duplicate/dangling Account relationship checks;
+- [x] auth-data declaration must be false;
+- [x] secret-like key guard;
+- [x] known public target keeps unverified external ID null;
+- [x] synthetic account is fixture-only;
+- [x] visible account-to-account non-navigation edge tested.
