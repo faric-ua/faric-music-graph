@@ -298,3 +298,21 @@ Merged 50% history-zoom evidence:
 - runtime/code baseline `12915ae2b325ab17e8efaf57526cd2088574f225`;
 - PR validation `36517894886` — PASS;
 - post-merge main validation `36517918698` — PASS.
+
+## UX-018 — HOLD / ORBIT pin / unpin state
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+
+Phone feedback: a movable HOLD control is useful, but once it is placed comfortably it is too easy to move accidentally.
+
+Revised control contract:
+- ordinary stationary press = HOLD / ORBIT;
+- drag while unpinned = reposition the control;
+- long press for about 1.5 seconds, with no HOLD movement and no Sphere camera change, opens a small pin menu;
+- the menu offers `📌 Закріпити` or `📌 Відкріпити` depending on current state;
+- pinned HOLD still works normally as the ORBIT modifier;
+- pinned HOLD cannot be repositioned accidentally;
+- long-press menu remains available while pinned so the user can unlock it;
+- pin state persists independently from position in local browser storage;
+- a visible pin badge marks the pinned state.
+
+The long-press menu must not appear while the user is actively orbiting/zooming the Sphere.

@@ -146,7 +146,11 @@
       title="HOLD: тримай для ORBIT · перетягни кнопку, щоб переставити"
       aria-pressed="false"
       hidden
-    ><span>HOLD</span><small>ORBIT</small></button>
+    ><span>HOLD</span><small>ORBIT</small><span id="orbitPinMark" class="orbit-pin-mark" aria-hidden="true">📌</span></button>
+
+    <div id="orbitPinMenu" class="orbit-pin-menu" role="dialog" aria-label="Налаштування HOLD / ORBIT" hidden>
+      <button id="orbitPinToggle" type="button">📌 Закріпити</button>
+    </div>
 
     <section id="inspector" aria-live="polite">
       <button id="close" type="button" aria-label="Закрити">×</button>

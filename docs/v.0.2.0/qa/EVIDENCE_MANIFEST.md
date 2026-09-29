@@ -612,3 +612,27 @@ Validation:
 Boundary:
 - 50% remains a phone-feel tuning value and may still change after direct acceptance;
 - no semantic graph or remote YouTube/YTM state is affected.
+
+## HOLD pin / unpin candidate — 2026-09-29
+
+Phone feedback:
+- movable HOLD position is useful;
+- after placement, accidental button movement is inconvenient;
+- the control needs an explicit placement lock without sacrificing normal HOLD / ORBIT.
+
+Implementation:
+- persistent pin state stored under `faric.musicGraph.orbitHoldPinned.v1`;
+- approximately 1.5 second stationary long-press opens a contextual pin menu;
+- menu is suppressed if the HOLD pointer crosses the drag threshold or the Sphere camera changes during the hold;
+- `📌 Закріпити` disables reposition drag but preserves HOLD / ORBIT;
+- `📌 Відкріпити` restores reposition drag;
+- pin state and normalized button position persist independently;
+- pinned state has a visible badge.
+
+Automated regression:
+- runtime/test source `2e13ffa4de5dea9a70b872c94db02812a5968a8c`;
+- CI `36518600090` — PASS.
+
+Boundary:
+- real-phone ergonomics, long-press timing and persistence still require acceptance;
+- the 1.5 second threshold is a UX value and may be tuned after phone feel-testing.

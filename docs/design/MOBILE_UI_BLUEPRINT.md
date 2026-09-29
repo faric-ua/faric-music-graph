@@ -281,3 +281,28 @@ Therefore:
 The same coupling factor must scale both the history world's layout radius and its visible node circles. Scaling only spacing makes the layer look stretched instead of zoomed.
 
 This gives the depth stack a stronger breathing/parallax feel without collapsing it back into one shared-camera scene.
+
+## HOLD / ORBIT pinning
+
+The movable HOLD control has two placement states.
+
+### Unpinned
+- stationary press = HOLD / ORBIT;
+- pointer movement beyond the drag threshold = reposition;
+- release after reposition persists the normalized position.
+
+### Pinned
+- stationary press = HOLD / ORBIT;
+- reposition drag is disabled;
+- a small pin badge indicates the locked placement.
+
+### Pin menu
+A deliberate long press of approximately 1.5 seconds opens a small contextual menu beside HOLD only when:
+- the HOLD pointer itself has not crossed the drag threshold; and
+- the Sphere camera has not changed during the hold.
+
+Menu action:
+- unpinned → `📌 Закріпити`;
+- pinned → `📌 Відкріпити`.
+
+Pin state and position persist separately. This lets the user place HOLD for their preferred thumb reach, lock it, and keep that layout after refresh/reopen.

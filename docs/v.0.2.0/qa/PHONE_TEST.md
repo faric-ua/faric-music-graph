@@ -246,3 +246,34 @@ Expected:
 - node circles in prior worlds grow/shrink together with their spacing; the layer must not merely spread apart;
 - prior worlds do not pan or rotate with the active world;
 - their saved orientations remain unchanged.
+
+## Test 12 — HOLD pin / unpin
+
+Sphere 3D only.
+
+Pin:
+1. Place HOLD in a comfortable position.
+2. Press and hold HOLD without moving it and without moving/zooming the Sphere for about 1.5 seconds.
+3. Confirm the small contextual menu appears.
+4. Choose `📌 Закріпити`.
+5. Try to drag HOLD.
+
+Expected:
+- pin menu does not appear during active ORBIT/zoom;
+- after pinning, a visible pin marker appears;
+- HOLD still works as the ORBIT modifier;
+- dragging no longer repositions the pinned button.
+
+Persistence:
+1. Refresh/reopen the page.
+2. Confirm HOLD returns at the same position and remains pinned.
+
+Unpin:
+1. Long-press pinned HOLD again without changing the Sphere.
+2. Choose `📌 Відкріпити`.
+3. Drag HOLD to a new position.
+
+Expected:
+- pin marker disappears;
+- dragging works again;
+- new position persists.
