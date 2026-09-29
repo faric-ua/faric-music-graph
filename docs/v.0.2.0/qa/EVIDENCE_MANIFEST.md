@@ -583,3 +583,32 @@ Automated regression:
 Boundary:
 - real-phone ergonomics and persistence across the user's actual browser/app lifecycle remain to be accepted;
 - the 30% coupling is a UX-tuning value and may be adjusted after phone feel-testing.
+
+## Merged 50% history zoom with node scaling — 2026-09-29
+
+Phone feedback on the merged 30% candidate:
+- background zoom response was too weak;
+- node spacing changed, but the history node circles themselves stayed nearly the same size.
+
+PR:
+`#35 — v0.2.0 — 50% history zoom with node scaling`
+
+Runtime/code baseline:
+`12915ae2b325ab17e8efaf57526cd2088574f225`
+
+Implemented:
+- `HISTORY_ZOOM_COUPLING` raised from `0.30` to `0.50`;
+- history layout radius uses the 50% coupling;
+- history focus-node radius uses the same coupling;
+- history non-focus node radius uses the same coupling;
+- background pan/yaw/pitch remain frozen.
+
+Validation:
+- runtime + regression source `1c0087d026a53fa7e5675131e0f750bbfb2fb95f`, CI `36517819907` — PASS;
+- latest branch `7944cc5fc62835f6720e915a5b4581c89bf94cc8`, CI `36517862632` — PASS;
+- PR validation `36517894886` — PASS;
+- post-merge `main` validation `36517918698` — PASS.
+
+Boundary:
+- 50% remains a phone-feel tuning value and may still change after direct acceptance;
+- no semantic graph or remote YouTube/YTM state is affected.
