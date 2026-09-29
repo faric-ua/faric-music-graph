@@ -217,3 +217,31 @@ Expected:
 - parent restores the same camera/orientation it had when it was left;
 - after becoming active again, the parent may once again be panned / zoomed / rotated;
 - older background layers remain frozen.
+
+## Test 11 — Movable HOLD + partial background zoom
+
+Sphere 3D only.
+
+HOLD position:
+1. Press HOLD and drag the HOLD finger itself to another comfortable screen position.
+2. Release.
+3. Refresh the page.
+4. If practical, close/reopen the browser page.
+
+Expected:
+- dragging the HOLD pointer moves the control instead of rotating the Sphere;
+- the control stays within the graph viewport;
+- the saved position returns after refresh/reopen;
+- ordinary stationary HOLD still enables second-finger ORBIT;
+- position remains sensible after portrait/landscape resize.
+
+Zoom coupling:
+1. Build at least two frozen prior worlds.
+2. Note their positions/orientations.
+3. Zoom the active Sphere strongly in and out.
+
+Expected:
+- active world zooms at full strength;
+- prior worlds zoom visibly but much less — approximately 30% of the active zoom delta;
+- prior worlds do not pan or rotate with the active world;
+- their saved orientations remain unchanged.
