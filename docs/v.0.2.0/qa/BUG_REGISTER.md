@@ -185,7 +185,7 @@ Requested interaction direction:
 - the hint is feedback only and does not change semantic graph state.
 
 ## UX-013 — Sphere focus + depth trail / tappable parent ghost
-Status: MERGED / CI PASS / PHONE QA PENDING.
+Status: SUPERSEDED BY UX-014 AFTER REAL-PHONE FEEDBACK.
 
 3D scene model prototype:
 - current scope node is fixed at the center of the Sphere world;
@@ -205,7 +205,7 @@ Merged spatial-navigation evidence:
 - post-merge main validation `36449424526` — PASS.
 
 ## UX-014 — Prior worlds must remain as real background depth
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Real-phone feedback: the first “ghost trail” implementation did not match the intended spatial model. Parent nodes appeared to disappear, and Back via the tiny ghost representation was not discoverable/reliable enough.
 
@@ -219,3 +219,10 @@ Revised Sphere contract:
 - history worlds are reconstructed from persisted `GraphSessionState.history`, so the spatial depth can survive a page refresh/session restore.
 
 The background layers remain renderer-local presentation; canonical graph identity and drill semantics remain unchanged.
+
+
+Merged history-starfield evidence:
+- PR #29;
+- runtime/code baseline `af4bf577018ccebfb6df63667c60a6a8a1f8ade5`;
+- PR validation `36512072699` — PASS;
+- post-merge main validation `36512101160` — PASS.
