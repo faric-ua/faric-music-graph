@@ -242,6 +242,7 @@ Zoom coupling:
 
 Expected:
 - active world zooms at full strength;
-- prior worlds zoom visibly but much less — approximately 30% of the active zoom delta;
+- prior worlds zoom visibly but much less — approximately 50% of the active zoom delta;
+- node circles in prior worlds grow/shrink together with their spacing; the layer must not merely spread apart;
 - prior worlds do not pan or rotate with the active world;
 - their saved orientations remain unchanged.
