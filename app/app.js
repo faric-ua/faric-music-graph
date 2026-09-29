@@ -60,6 +60,7 @@ const state={
     .filter(edge=>edge.navigation)
     .map(edge=>[edge.source,edge.target]),
   currentWorld:null,
+  historyLayers:[],
   hit:[],
   navigationHit:[],
   selectedId:null,
@@ -85,6 +86,9 @@ const FIT_OCCUPANCY=.80;
 const EDGE_BACK_START_PX=28;
 const EDGE_BACK_DISTANCE_PX=64;
 const EDGE_BACK_MAX_VERTICAL_PX=56;
+const HISTORY_LAYER_LIMIT=5;
+const HISTORY_LAYER_SCALE=.58;
+const HISTORY_LAYER_ALPHA=.34;
 
 // Deliberately null until a real target-phone benchmark establishes a safe
 // immediate expansion budget. Null means explicit confirmation is required.
@@ -378,9 +382,9 @@ function layoutMap(nodes){
   });
 }
 
-function layoutSphere(nodes){
-  const scopeId=graphSession.currentScope&&graphSession.currentScope.id;
-  const focus=nodes.find(n=>n.id===scopeId)||null;
+function layoutSphere(nodes,scopeId){
+  const focusId=scopeId||(graphSession.currentScope&&graphSession.currentScope.id);
+  const focus=nodes.find(n=>n.id===focusId)||null;
   if(focus){
     focus.sx=0;
     focus.sy=0;
@@ -405,15 +409,8 @@ function layoutSphere(nodes){
   });
 }
 
-function rebuild(){
-  const world=P.projectWorld(
-    canonicalPrototype,
-    graphSession,
-    {rendererHint:state.view}
-  );
-  state.currentWorld=world;
-
-  state.nodes=world.nodes.map(node=>({
+function visualNodesFromWorld(world){
+  return world.nodes.map(node=>({
     ...node,
     l:node.projection.depth,
     meta:{
@@ -428,10 +425,60 @@ function rebuild(){
       prototypeOnly:Boolean(node.meta&&node.meta.prototypeOnly)
     }
   }));
+}
+
+function buildHistoryLayers(){
+  const path=Array.isArray(graphSession.drillPath)?graphSession.drillPath:[];
+  const snapshots=Array.isArray(graphSession.history)?graphSession.history:[];
+  const layers=[];
+
+  snapshots.forEach((snapshot,depth)=>{
+    const scope=path[depth]||snapshot.currentScope;
+    if(!scope)return;
+
+    const session=G.normalizeState({
+      ...graphSession,
+      ...snapshot,
+      drillPath:path.slice(0,depth+1),
+      currentScope:scope,
+      selectedNode:null,
+      inspector:{open:false,nodeId:null,mode:null},
+      history:snapshots.slice(0,depth)
+    });
+
+    const world=P.projectWorld(
+      canonicalPrototype,
+      session,
+      {rendererHint:"sphere"}
+    );
+    const nodes=visualNodesFromWorld(world);
+    layoutSphere(nodes,scope.id);
+
+    layers.push({
+      depth,
+      scope,
+      nodes,
+      edges:world.edges.map(edge=>[edge.source,edge.target])
+    });
+  });
+
+  return layers.slice(-HISTORY_LAYER_LIMIT);
+}
+
+function rebuild(){
+  const world=P.projectWorld(
+    canonicalPrototype,
+    graphSession,
+    {rendererHint:state.view}
+  );
+  state.currentWorld=world;
+
+  state.nodes=visualNodesFromWorld(world);
   state.edges=world.edges.map(edge=>[edge.source,edge.target]);
 
   layoutMap(state.nodes);
-  layoutSphere(state.nodes);
+  layoutSphere(state.nodes,graphSession.currentScope&&graphSession.currentScope.id);
+  state.historyLayers=buildHistoryLayers();
 
   const visibleIds=new Set(state.nodes.map(n=>n.id));
   if(graphSession.selectedNode&&!visibleIds.has(graphSession.selectedNode.id)){
@@ -554,53 +601,110 @@ function entryTransitionProgress(){
   return 1-Math.pow(1-raw,3);
 }
 
-function drawScopeTrail(width,height){
+function rotatedSphereCoords(node){
+  const cy=Math.cos(state.yaw);
+  const sy=Math.sin(state.yaw);
+  const cp=Math.cos(state.pitch);
+  const sp=Math.sin(state.pitch);
+
+  const x1=node.sx*cy+node.sz*sy;
+  const z1=-node.sx*sy+node.sz*cy;
+  const y2=node.sy*cp-z1*sp;
+  const z2=node.sy*sp+z1*cp;
+
+  return {x:x1,y:y2,z:z2};
+}
+
+function drawHistoryField(width,height){
   state.navigationHit=[];
-  if(state.view!=="sphere")return;
+  if(state.view!=="sphere"||!state.historyLayers.length)return;
 
-  const path=Array.isArray(graphSession.drillPath)?graphSession.drillPath:[];
-  if(path.length<=1)return;
-
+  const currentDepth=Math.max(0,(graphSession.drillPath||[]).length-1);
   const cx=width/2+state.spherePanX;
   const cy=height/2+state.spherePanY;
-  const ancestors=path.slice(0,-1).slice(-3).reverse();
+  const baseRadius=Math.min(width,height)*0.37*state.sphereZoom;
+  const transitionT=entryTransitionProgress();
 
-  ancestors.forEach((node,index)=>{
-    const distance=index+1;
-    const x=cx-26*distance;
-    const y=cy+20*distance;
-    const radius=Math.max(7,13-distance*1.5);
-    const alpha=Math.max(.08,.30-distance*.065);
+  const layers=[...state.historyLayers].reverse();
 
-    ctx.save();
-    ctx.globalAlpha=alpha;
-    ctx.strokeStyle=colors[node.kind]||"#8b6cff";
-    ctx.fillStyle="rgba(139,108,255,.16)";
-    ctx.lineWidth=1.2;
-    ctx.beginPath();
-    ctx.moveTo(x,y);
-    ctx.lineTo(cx,cy);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(x,y,radius,0,Math.PI*2);
-    ctx.fill();
-    ctx.stroke();
+  layers.forEach((layer,index)=>{
+    const distance=Math.max(1,currentDepth-layer.depth);
+    let layerScale=Math.pow(HISTORY_LAYER_SCALE,distance);
+    let layerAlpha=HISTORY_LAYER_ALPHA*Math.pow(.58,distance-1);
 
-    if(index===0){
-      ctx.globalAlpha=.54;
-      ctx.fillStyle="#cbd3e6";
-      ctx.font="11px system-ui";
-      ctx.fillText("← "+node.label,x+radius+6,y+4);
+    if(index===0&&state.entryTransition){
+      layerScale=1-(1-layerScale)*transitionT;
+      layerAlpha=.76-(.76-layerAlpha)*transitionT;
     }
-    ctx.restore();
 
-    state.navigationHit.push({
-      depth:path.length-2-index,
-      node,
-      x,
-      y,
-      r:Math.max(22,radius+7)
-    });
+    const centerX=cx-34*distance;
+    const centerY=cy+22*distance;
+    const radius=baseRadius*layerScale;
+    const byId=new Map(layer.nodes.map(n=>[n.id,n]));
+
+    for(const [a,b] of layer.edges){
+      const A=byId.get(a);
+      const B=byId.get(b);
+      if(!A||!B)continue;
+      const ar=rotatedSphereCoords(A);
+      const br=rotatedSphereCoords(B);
+      const ax=centerX+ar.x*radius;
+      const ay=centerY-ar.y*radius;
+      const bx=centerX+br.x*radius;
+      const by=centerY-br.y*radius;
+
+      ctx.save();
+      ctx.globalAlpha=layerAlpha*.42;
+      ctx.strokeStyle="#596176";
+      ctx.lineWidth=Math.max(.45,1-distance*.12);
+      ctx.beginPath();
+      ctx.moveTo(ax,ay);
+      ctx.lineTo(bx,by);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    for(const node of layer.nodes){
+      const rotated=rotatedSphereCoords(node);
+      const x=centerX+rotated.x*radius;
+      const y=centerY-rotated.y*radius;
+      const isFocus=node.id===layer.scope.id;
+      const starRadius=isFocus
+        ?Math.max(5,10*layerScale)
+        :Math.max(1.15,3.8*layerScale*(.72+(rotated.z+1)*.18));
+
+      ctx.save();
+      ctx.globalAlpha=isFocus?Math.min(.74,layerAlpha*1.9):layerAlpha;
+      ctx.fillStyle=isFocus?(colors[node.kind]||"#8b6cff"):"#d7deef";
+      ctx.beginPath();
+      ctx.arc(x,y,starRadius,0,Math.PI*2);
+      ctx.fill();
+
+      if(!isFocus&&starRadius>1.7){
+        ctx.globalAlpha*=.34;
+        ctx.beginPath();
+        ctx.arc(x,y,starRadius*2.1,0,Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      if(index===0&&isFocus){
+        ctx.save();
+        ctx.globalAlpha=.82;
+        ctx.fillStyle="#dce2f0";
+        ctx.font="12px system-ui";
+        ctx.fillText("← "+layer.scope.label,x+starRadius+7,y+4);
+        ctx.restore();
+
+        state.navigationHit.push({
+          depth:layer.depth,
+          node:layer.scope,
+          x,
+          y,
+          r:Math.max(30,starRadius+18)
+        });
+      }
+    }
   });
 }
 
@@ -637,8 +741,8 @@ function draw(){
   if(!state.nodes.length)return;
 
   if(state.view==="sphere"){
+    drawHistoryField(r.width,r.height);
     drawSphereGuide(r.width,r.height);
-    drawScopeTrail(r.width,r.height);
   }else{
     state.navigationHit=[];
   }
