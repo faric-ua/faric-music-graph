@@ -252,3 +252,30 @@ Merged frozen-history evidence:
 - runtime/code baseline `68f228625012c1dfa379f3d6130bfc4669cb829f`;
 - PR validation `36515005067` — PASS;
 - post-merge main validation `36515026683` — PASS.
+
+## UX-016 — Draggable persistent HOLD / ORBIT control
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+
+Phone feedback: the HOLD / ORBIT modifier should be movable to the thumb position that is most comfortable for the user.
+
+Contract:
+- press and keep the HOLD control mostly stationary = enable ORBIT for the active Sphere;
+- moving the HOLD finger beyond a drag threshold switches from ORBIT-hold to control repositioning;
+- dragged position is clamped to the graph viewport;
+- position is stored as normalized viewport coordinates in local browser storage;
+- refresh / browser reopen restores the saved position;
+- normalized storage allows the position to adapt across viewport/orientation changes.
+
+## UX-017 — Background worlds receive partial zoom coupling
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+
+Refinement to the frozen-world contract:
+- pan and HOLD / ORBIT still affect only the active foreground world;
+- pinch / +/- zoom changes the active world at full strength;
+- prior frozen worlds receive 30% of the active zoom delta;
+- saved prior-world pan/yaw/pitch stay frozen;
+- partial zoom is renderer-only depth feedback and does not change semantic history.
+
+Example:
+- active zoom 1.0 → 2.0;
+- background scale coupling is approximately 1.0 → 1.3, not 2.0.
