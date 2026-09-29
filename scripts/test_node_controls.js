@@ -141,6 +141,10 @@ assert(app.includes("HISTORY_LAYER_LIMIT=5"),"history starfield must keep a boun
 assert(app.includes("layerScale=1-(1-layerScale)*transitionT"),"the outgoing world must recede into depth during drill transition");
 assert(app.includes("camera:snapshot.camera||{}"),"each prior world must retain its own frozen camera");
 assert(app.includes("const HISTORY_ZOOM_COUPLING=.50"),"background history zoom coupling must stay at 50 percent");
+assert(app.includes("const ACTIVE_NODE_ZOOM_COUPLING=.80"),"active Sphere node-size zoom coupling must stay at 80 percent");
+assert(app.includes("1+(state.sphereZoom-1)*ACTIVE_NODE_ZOOM_COUPLING"),"active Sphere node radius must receive 80 percent of zoom delta");
+assert(app.includes("(.62+(p.z+1)*.26)*activeNodeZoomCoupling"),"active node depth scale must include the node zoom coupling");
+assert(app.includes("const radius=Math.min(r.width,r.height)*0.37*state.sphereZoom"),"active Sphere geometry/paths must keep full 100 percent zoom");
 assert(app.includes("1+(state.sphereZoom-1)*HISTORY_ZOOM_COUPLING"),"background worlds must receive partial active zoom coupling");
 assert(app.includes("frozenZoom*layerScale*backgroundZoomCoupling"),"partial zoom coupling must affect history layer radius");
 assert(app.includes("10*layerScale*backgroundZoomCoupling"),"history focus-node radius must scale with partial background zoom");
