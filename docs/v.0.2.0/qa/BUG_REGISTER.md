@@ -228,7 +228,7 @@ Merged history-starfield evidence:
 - post-merge main validation `36512101160` — PASS.
 
 ## UX-015 — Prior worlds are frozen depth frames, not part of the active camera
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Real-phone clarification from Sphere screenshots:
 - the active world is the only world that should respond to pan / zoom / HOLD-ORBIT;
@@ -245,3 +245,10 @@ Implementation:
 - Back / Home / breadcrumb-depth navigation restores the saved parent camera;
 - Back uses a short reverse transition: parent advances from depth while the child frame fades;
 - no new canonical graph entities or remote state are introduced.
+
+
+Merged frozen-history evidence:
+- PR #31;
+- runtime/code baseline `68f228625012c1dfa379f3d6130bfc4669cb829f`;
+- PR validation `36515005067` — PASS;
+- post-merge main validation `36515026683` — PASS.
