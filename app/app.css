@@ -160,6 +160,43 @@ pre{white-space:pre-wrap;color:#bac4d9;word-break:break-word}
 .orbit-hold.active{border-color:var(--accent);background:rgba(139,108,255,.32);transform:scale(.96)}
 .orbit-hold.dragging{cursor:grabbing;border-color:#d7deef;background:rgba(139,108,255,.22);transform:scale(1.03)}
 .orbit-hold:not(.dragging){cursor:grab}
+.orbit-hold.pinned{border-color:rgba(215,222,239,.52)}
+.orbit-hold.pinned:not(.dragging){cursor:default}
+.orbit-pin-mark{
+  position:absolute;
+  right:-3px;
+  top:-5px;
+  display:none;
+  width:20px;
+  height:20px;
+  place-items:center;
+  border:1px solid var(--border);
+  border-radius:50%;
+  background:#11141c;
+  font-size:11px;
+  line-height:1;
+  box-shadow:0 4px 12px rgba(0,0,0,.28)
+}
+.orbit-hold.pinned .orbit-pin-mark{display:grid}
+.orbit-pin-menu[hidden]{display:none}
+.orbit-pin-menu{
+  position:absolute;
+  z-index:18;
+  min-width:150px;
+  padding:6px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(17,20,28,.96);
+  box-shadow:0 14px 36px rgba(0,0,0,.42);
+  backdrop-filter:blur(8px)
+}
+.orbit-pin-menu button{
+  width:100%;
+  min-height:44px;
+  padding:8px 12px;
+  text-align:left;
+  white-space:nowrap
+}
 
 .expand-guard[hidden]{display:none}
 .expand-guard{position:fixed;z-index:80;inset:0;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.64);backdrop-filter:blur(5px)}
