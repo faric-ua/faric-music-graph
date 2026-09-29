@@ -226,3 +226,22 @@ Merged history-starfield evidence:
 - runtime/code baseline `af4bf577018ccebfb6df63667c60a6a8a1f8ade5`;
 - PR validation `36512072699` — PASS;
 - post-merge main validation `36512101160` — PASS.
+
+## UX-015 — Prior worlds are frozen depth frames, not part of the active camera
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+
+Real-phone clarification from Sphere screenshots:
+- the active world is the only world that should respond to pan / zoom / HOLD-ORBIT;
+- worlds already traversed must remain spatially frozen in the background;
+- a prior world should preserve the camera/orientation it had when the user left it;
+- selecting a child pushes the complete current world backward as a frozen depth frame;
+- returning Back should bring the saved parent world forward again with its saved camera, while the child world fades away.
+
+Implementation:
+- renderer camera state is snapshotted immediately before semantic ENTER;
+- that camera is stored in the existing GraphSessionState history snapshot;
+- each reconstructed prior-world layer renders from its own saved camera;
+- current Sphere pan/zoom/yaw/pitch no longer transforms background worlds;
+- Back / Home / breadcrumb-depth navigation restores the saved parent camera;
+- Back uses a short reverse transition: parent advances from depth while the child frame fades;
+- no new canonical graph entities or remote state are introduced.
