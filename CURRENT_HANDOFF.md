@@ -250,20 +250,22 @@ Merged Back/dismiss/Fit refinement checkpoint:
 - PR validation run `36447186710` — PASS;
 - post-merge `main` validation run `36447243829` — PASS.
 
-Spatial-navigation prototype checkpoint:
-- PR #27 merged to `main`;
-- runtime/code baseline `f61ab0b06827fe172043e489732f019ce1ea9331`;
-- current Sphere scope is centered and visible neighbors use deterministic spherical placement;
-- up to three ancestor scopes appear as faint depth-trail ghost nodes;
-- tapping a parent ghost routes through semantic depth navigation;
-- direct drill has a short entry transition where the next world expands outward from the tapped focus;
-- taps show a brief node-kind + label hint;
-- empty graph tap dismisses both Track details and the mobile `⋮` advanced menu;
-- PR validation run `36449377254` — PASS;
-- post-merge `main` run `36449424526` — PASS;
+Spatial-navigation checkpoint:
+- PR #27 introduced centered Sphere focus, direct-drill transition, node hints and the first tiny ancestor ghost prototype;
+- real-phone feedback rejected that ghost representation: prior worlds still appeared to disappear and Back through the background was not usable enough;
+- PR #29 supersedes the tiny ghost trail with reconstructed prior-world history layers;
+- runtime/code baseline `af4bf577018ccebfb6df63667c60a6a8a1f8ade5`;
+- every persisted semantic history snapshot is re-projected with its own visible nodes and links;
+- up to five prior worlds recede behind the active sphere as progressively smaller/fainter starfield layers;
+- the newest prior world visibly moves into depth during forward drill;
+- the nearest parent world's focus node is a larger tappable `← parent` Back target;
+- background history layers share the Sphere orientation so HOLD/ORBIT rotates the spatial composition consistently;
+- history depth is reconstructed from `GraphSessionState.history`, including after session restore;
+- PR #29 validation run `36512072699` — PASS;
+- post-merge `main` validation run `36512101160` — PASS;
 - real-phone acceptance remains pending.
 
 First unchecked step:
-**update the phone to current `main`, record the tested HEAD, then continue real-phone QA with special attention to transition feel, parent-ghost Back, hint readability, menu dismissal and Sphere spatial orientation.**
+**update the phone to current `main`, record the tested HEAD, then verify the actual prior-world starfield depth and parent-world Back before continuing the rest of Sphere/HOLD/ORBIT QA.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
