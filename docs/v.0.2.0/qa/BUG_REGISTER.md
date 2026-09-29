@@ -300,7 +300,7 @@ Merged 50% history-zoom evidence:
 - post-merge main validation `36517918698` — PASS.
 
 ## UX-018 — HOLD / ORBIT pin / unpin state
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Phone feedback: a movable HOLD control is useful, but once it is placed comfortably it is too easy to move accidentally.
 
@@ -316,3 +316,10 @@ Revised control contract:
 - a visible pin badge marks the pinned state.
 
 The long-press menu must not appear while the user is actively orbiting/zooming the Sphere.
+
+
+Merged HOLD pin evidence:
+- PR #37;
+- runtime/code baseline `d9a4baaf9f070c114b256e09c98969f1f268d1c8`;
+- PR validation `36518720143` — PASS;
+- post-merge main validation `36518757439` — PASS.

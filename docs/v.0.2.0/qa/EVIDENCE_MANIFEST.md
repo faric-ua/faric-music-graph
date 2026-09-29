@@ -636,3 +636,23 @@ Automated regression:
 Boundary:
 - real-phone ergonomics, long-press timing and persistence still require acceptance;
 - the 1.5 second threshold is a UX value and may be tuned after phone feel-testing.
+
+## Merged HOLD pin / unpin candidate — 2026-09-29
+
+PR:
+`#37 — v0.2.0 — pin / unpin HOLD control`
+
+Runtime/code baseline:
+`d9a4baaf9f070c114b256e09c98969f1f268d1c8`
+
+Validation:
+- runtime/test source `2e13ffa4de5dea9a70b872c94db02812a5968a8c`, CI `36518600090` — PASS;
+- latest feature source `932d44cd08c5cc20fd9b617a767fe198cc160b5f`, CI `36518683990` — PASS;
+- PR validation `36518720143` — PASS;
+- post-merge `main` validation `36518757439` — PASS.
+
+Next evidence gate:
+- real-phone confirmation that long-press timing feels natural;
+- menu does not appear during real ORBIT/zoom;
+- pin blocks reposition but preserves HOLD behavior;
+- pin state and button position survive refresh/reopen.
