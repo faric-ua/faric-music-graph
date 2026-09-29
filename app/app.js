@@ -79,6 +79,8 @@ const state={
   yaw:-0.45,
   pitch:0.22,
   orbitHold:false,
+  orbitPinned:false,
+  cameraInteractionSerial:0,
   nodes:[],
   edges:[],
   fullNodes:canonicalPrototype.nodes,
@@ -118,7 +120,9 @@ const HISTORY_LAYER_SCALE=.58;
 const HISTORY_LAYER_ALPHA=.34;
 const HISTORY_ZOOM_COUPLING=.50;
 const ORBIT_HOLD_POSITION_KEY="faric.musicGraph.orbitHoldPosition.v1";
+const ORBIT_HOLD_PIN_KEY="faric.musicGraph.orbitHoldPinned.v1";
 const ORBIT_HOLD_DRAG_THRESHOLD=10;
+const ORBIT_HOLD_LONG_PRESS_MS=1500;
 
 // Deliberately null until a real target-phone benchmark establishes a safe
 // immediate expansion budget. Null means explicit confirmation is required.
@@ -132,6 +136,9 @@ const navUi={
 };
 
 const orbitUi=$("#orbitHold");
+const orbitPinMenuUi=$("#orbitPinMenu");
+const orbitPinToggleUi=$("#orbitPinToggle");
+const orbitPinMarkUi=$("#orbitPinMark");
 const nodeHintUi=$("#nodeHint");
 
 const nodeKindLabels=Object.freeze({
@@ -414,6 +421,105 @@ function saveOrbitHoldPosition(position){
   }
 }
 
+function readOrbitHoldPinned(){
+  if(!semanticStorage)return false;
+  try{
+    return semanticStorage.getItem(ORBIT_HOLD_PIN_KEY)==="1";
+  }catch(_){
+    return false;
+  }
+}
+
+function saveOrbitHoldPinned(pinned){
+  if(!semanticStorage)return false;
+  try{
+    semanticStorage.setItem(ORBIT_HOLD_PIN_KEY,pinned?"1":"0");
+    return true;
+  }catch(_){
+    return false;
+  }
+}
+
+function setOrbitPinned(pinned,options){
+  const opts=options||{};
+  state.orbitPinned=Boolean(pinned);
+
+  if(orbitUi){
+    orbitUi.classList.toggle("pinned",state.orbitPinned);
+    orbitUi.setAttribute("data-pinned",String(state.orbitPinned));
+    orbitUi.setAttribute(
+      "aria-label",
+      state.orbitPinned
+        ?"HOLD / ORBIT закріплено; утримувати для обертання; довге утримання відкриває меню"
+        :"Утримувати для обертання 3D сфери; перетягнути, щоб змінити позицію; довге утримання відкриває меню"
+    );
+    orbitUi.title=state.orbitPinned
+      ?"HOLD закріплено · тримай для ORBIT · довге утримання: відкріпити"
+      :"HOLD: тримай для ORBIT · перетягни кнопку · довге утримання: закріпити";
+  }
+
+  if(orbitPinMarkUi){
+    orbitPinMarkUi.hidden=!state.orbitPinned;
+  }
+
+  if(orbitPinToggleUi){
+    orbitPinToggleUi.textContent=state.orbitPinned
+      ?"📌 Відкріпити"
+      :"📌 Закріпити";
+  }
+
+  if(opts.persist!==false){
+    saveOrbitHoldPinned(state.orbitPinned);
+    if(state.orbitPinned){
+      saveOrbitHoldPosition(currentOrbitHoldPosition());
+    }
+  }
+}
+
+function positionOrbitPinMenu(){
+  if(!orbitPinMenuUi||orbitPinMenuUi.hidden||!orbitUi||!orbitUi.parentElement)return;
+
+  const mainBounds=orbitUi.parentElement.getBoundingClientRect();
+  const buttonBounds=orbitUi.getBoundingClientRect();
+  const menuBounds=orbitPinMenuUi.getBoundingClientRect();
+  const margin=8;
+
+  const buttonCenterX=buttonBounds.left-mainBounds.left+buttonBounds.width/2;
+  const buttonTop=buttonBounds.top-mainBounds.top;
+  const buttonBottom=buttonBounds.bottom-mainBounds.top;
+
+  const left=clamp(
+    buttonCenterX-menuBounds.width/2,
+    margin,
+    Math.max(margin,mainBounds.width-menuBounds.width-margin)
+  );
+
+  const enoughAbove=buttonTop-menuBounds.height-10>=margin;
+  const top=enoughAbove
+    ?buttonTop-menuBounds.height-10
+    :clamp(
+      buttonBottom+10,
+      margin,
+      Math.max(margin,mainBounds.height-menuBounds.height-margin)
+    );
+
+  orbitPinMenuUi.style.left=left+"px";
+  orbitPinMenuUi.style.top=top+"px";
+}
+
+function closeOrbitPinMenu(){
+  if(!orbitPinMenuUi)return;
+  orbitPinMenuUi.hidden=true;
+}
+
+function openOrbitPinMenu(){
+  if(!orbitPinMenuUi||state.view!=="sphere")return;
+  setOrbitHold(false);
+  setOrbitPinned(state.orbitPinned,{persist:false});
+  orbitPinMenuUi.hidden=false;
+  requestAnimationFrame(positionOrbitPinMenu);
+}
+
 function applyOrbitHoldPosition(position){
   if(!orbitUi||!position)return;
   const main=orbitUi.parentElement;
@@ -461,6 +567,7 @@ function resize(){
   canvas.height=Math.max(1,Math.round(r.height*d));
   ctx.setTransform(d,0,0,d,0,0);
   if(savedOrbitPosition)applyOrbitHoldPosition(savedOrbitPosition);
+  if(orbitPinMenuUi&&!orbitPinMenuUi.hidden)positionOrbitPinMenu();
   draw();
 }
 
@@ -1385,6 +1492,7 @@ function zoomBy(factor,at){
     zoomMapAt(factor,p.x,p.y);
   }else{
     state.sphereZoom=clamp(state.sphereZoom*factor,.55,3.4);
+    state.cameraInteractionSerial+=1;
   }
   draw();
 }
@@ -1474,6 +1582,7 @@ canvas.addEventListener("pointermove",e=>{
       state.oy=mid.y-gy*next;
     }else{
       state.sphereZoom=clamp(g.startSphereZoom*factor,.55,3.4);
+      state.cameraInteractionSerial+=1;
     }
     draw();
     return;
@@ -1492,9 +1601,11 @@ canvas.addEventListener("pointermove",e=>{
     }else if(state.orbitHold){
       state.yaw+=dx*.009;
       state.pitch=clamp(state.pitch+dy*.009,-1.42,1.42);
+      state.cameraInteractionSerial+=1;
     }else{
       state.spherePanX+=dx;
       state.spherePanY+=dy;
+      state.cameraInteractionSerial+=1;
     }
     draw();
   }
@@ -1541,6 +1652,7 @@ function endPointer(e){
         if(heldFor>=450)selectNode(node);
         else activateNode(node);
       }else{
+        closeOrbitPinMenu();
         if(graphSession.inspector&&graphSession.inspector.open){
           closeInspector();
         }
@@ -1582,6 +1694,7 @@ function syncOrbitControl(){
     return;
   }
 
+  setOrbitPinned(readOrbitHoldPinned(),{persist:false});
   const saved=readOrbitHoldPosition();
   if(saved)applyOrbitHoldPosition(saved);
 }
@@ -1589,8 +1702,17 @@ function syncOrbitControl(){
 if(orbitUi){
   let orbitPointer=null;
 
+  function clearOrbitLongPress(pointer){
+    if(pointer&&pointer.longPressTimer){
+      clearTimeout(pointer.longPressTimer);
+      pointer.longPressTimer=null;
+    }
+  }
+
   orbitUi.addEventListener("pointerdown",e=>{
     e.preventDefault();
+    closeOrbitPinMenu();
+
     const main=orbitUi.parentElement;
     const buttonBounds=orbitUi.getBoundingClientRect();
     const mainBounds=main&&main.getBoundingClientRect();
@@ -1601,8 +1723,23 @@ if(orbitUi){
       startClientY:e.clientY,
       startLeft:mainBounds?buttonBounds.left-mainBounds.left:0,
       startTop:mainBounds?buttonBounds.top-mainBounds.top:0,
-      dragging:false
+      dragging:false,
+      menuOpened:false,
+      cameraSerial:state.cameraInteractionSerial,
+      longPressTimer:null
     };
+
+    const pointer=orbitPointer;
+    pointer.longPressTimer=setTimeout(()=>{
+      if(
+        orbitPointer!==pointer||
+        pointer.dragging||
+        state.cameraInteractionSerial!==pointer.cameraSerial
+      )return;
+
+      pointer.menuOpened=true;
+      openOrbitPinMenu();
+    },ORBIT_HOLD_LONG_PRESS_MS);
 
     try{orbitUi.setPointerCapture(e.pointerId)}catch(_){}
     setOrbitHold(true);
@@ -1615,7 +1752,16 @@ if(orbitUi){
     const dy=e.clientY-orbitPointer.startClientY;
     const distance=Math.hypot(dx,dy);
 
-    if(!orbitPointer.dragging&&distance>=ORBIT_HOLD_DRAG_THRESHOLD){
+    if(distance>=ORBIT_HOLD_DRAG_THRESHOLD){
+      clearOrbitLongPress(orbitPointer);
+    }
+
+    if(
+      !state.orbitPinned&&
+      !orbitPointer.menuOpened&&
+      !orbitPointer.dragging&&
+      distance>=ORBIT_HOLD_DRAG_THRESHOLD
+    ){
       orbitPointer.dragging=true;
       setOrbitHold(false);
       orbitUi.classList.add("dragging");
@@ -1649,7 +1795,10 @@ if(orbitUi){
 
   function finishOrbitPointer(e){
     if(!orbitPointer||e.pointerId!==orbitPointer.id)return;
-    const dragged=orbitPointer.dragging;
+    const pointer=orbitPointer;
+    clearOrbitLongPress(pointer);
+
+    const dragged=pointer.dragging;
     orbitPointer=null;
     orbitUi.classList.remove("dragging");
     setOrbitHold(false);
@@ -1662,7 +1811,18 @@ if(orbitUi){
   orbitUi.addEventListener("pointerup",finishOrbitPointer);
   orbitUi.addEventListener("pointercancel",finishOrbitPointer);
 }
-addEventListener("blur",()=>setOrbitHold(false));
+
+if(orbitPinToggleUi){
+  orbitPinToggleUi.onclick=()=>{
+    setOrbitPinned(!state.orbitPinned);
+    closeOrbitPinMenu();
+  };
+}
+
+addEventListener("blur",()=>{
+  setOrbitHold(false);
+  closeOrbitPinMenu();
+});
 
 function setNodeControlsOpen(open){
   if(!nodeUi.root||!nodeUi.toggle)return;
