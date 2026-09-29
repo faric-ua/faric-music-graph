@@ -302,13 +302,16 @@ HOLD placement-lock refinement checkpoint:
 - real-phone acceptance remains pending.
 
 Active-node zoom refinement checkpoint:
-- feature branch `feat/v0.2.0-active-node-zoom-80`;
+- PR #39 merged to `main`;
+- runtime/code baseline `f020d0d10e20c9e0309260fb58f9ffaf0e104468`;
 - active Sphere positions/link lengths keep 100% zoom;
 - active node circles and labels use 80% of the active zoom delta;
 - frozen history worlds keep their current 50% spacing + node-radius zoom coupling;
-- branch regression CI is passing so far; real-phone acceptance remains pending.
+- PR validation `36519099811` — PASS;
+- post-merge `main` validation `36519129592` — PASS;
+- real-phone acceptance remains pending.
 
 First unchecked step:
-**merge the active-node zoom candidate after final CI, update the phone to current `main`, record the tested HEAD, then run Test 13 and confirm that active node circles grow at ~80% while link geometry keeps 100% zoom. Continue HOLD pin and frozen-history checks afterward.**
+**update the phone to current `main`, record the tested HEAD, then run Test 13 and confirm that active node circles grow at ~80% while link geometry keeps 100% zoom. Continue HOLD pin and frozen-history checks afterward.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
