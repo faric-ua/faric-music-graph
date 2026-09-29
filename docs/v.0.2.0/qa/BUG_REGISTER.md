@@ -267,18 +267,23 @@ Contract:
 - normalized storage allows the position to adapt across viewport/orientation changes.
 
 ## UX-017 — Background worlds receive partial zoom coupling
-Status: MERGED / CI PASS / PHONE QA PENDING.
+Status: REVISED AFTER PHONE QA / 50% CANDIDATE IMPLEMENTED / CI PENDING.
 
-Refinement to the frozen-world contract:
+Phone feedback on the merged 30% candidate:
+- 30% background response was too weak;
+- only inter-node spacing visibly scaled because history node radii did not use the coupling factor.
+
+Revised contract:
 - pan and HOLD / ORBIT still affect only the active foreground world;
 - pinch / +/- zoom changes the active world at full strength;
-- prior frozen worlds receive 30% of the active zoom delta;
+- prior frozen worlds receive 50% of the active zoom delta;
+- both history-world spacing/radius and the history node circles scale with that same 50% coupling;
 - saved prior-world pan/yaw/pitch stay frozen;
-- partial zoom is renderer-only depth feedback and does not change semantic history.
+- partial zoom remains renderer-only depth feedback and does not change semantic history.
 
 Example:
 - active zoom 1.0 → 2.0;
-- background scale coupling is approximately 1.0 → 1.3, not 2.0.
+- background geometry and node radii couple approximately 1.0 → 1.5, not 2.0.
 
 
 Merged movable-HOLD / depth-zoom evidence:
