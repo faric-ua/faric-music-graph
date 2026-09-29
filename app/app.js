@@ -454,7 +454,7 @@ function currentOrbitHoldPosition(){
 }
 
 function resize(){
-  const savedOrbitPosition=currentOrbitHoldPosition()||readOrbitHoldPosition();
+  const savedOrbitPosition=readOrbitHoldPosition()||currentOrbitHoldPosition();
   const r=canvas.getBoundingClientRect();
   const d=Math.min(2,window.devicePixelRatio||1);
   canvas.width=Math.max(1,Math.round(r.width*d));
