@@ -158,6 +158,8 @@ pre{white-space:pre-wrap;color:#bac4d9;word-break:break-word}
 .orbit-hold span{font-size:12px;font-weight:800;letter-spacing:.06em}
 .orbit-hold small{font-size:9px;color:var(--muted);letter-spacing:.08em}
 .orbit-hold.active{border-color:var(--accent);background:rgba(139,108,255,.32);transform:scale(.96)}
+.orbit-hold.dragging{cursor:grabbing;border-color:#d7deef;background:rgba(139,108,255,.22);transform:scale(1.03)}
+.orbit-hold:not(.dragging){cursor:grab}
 
 .expand-guard[hidden]{display:none}
 .expand-guard{position:fixed;z-index:80;inset:0;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.64);backdrop-filter:blur(5px)}
