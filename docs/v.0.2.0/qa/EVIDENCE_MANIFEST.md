@@ -543,3 +543,20 @@ Automated regression:
 Boundary:
 - phone acceptance of perceived depth, camera freezing and reverse Back transition is still pending;
 - no remote YouTube/YTM mutation is involved.
+
+## Merged frozen-history candidate — 2026-09-29
+
+PR:
+`#31 — v0.2.0 — freeze prior worlds and restore parent camera on Back`
+
+Runtime/code baseline:
+`68f228625012c1dfa379f3d6130bfc4669cb829f`
+
+Fresh validation:
+- PR run `36515005067` — PASS;
+- post-merge `main` run `36515026683` — PASS.
+
+Next evidence gate:
+- real-phone verification that background worlds remain fixed while the active Sphere is panned / zoomed / orbited;
+- parent Back restores the saved parent camera and brings that world forward;
+- child world fades away during the reverse transition.
