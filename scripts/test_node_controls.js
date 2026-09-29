@@ -112,8 +112,13 @@ assert(app.includes("function showNodeHint(node,point,prefix){"),"tap feedback h
 assert(app.includes('account:"Акаунт"'),"node hints must identify node kind in user-facing language");
 assert(app.includes("focus.sx=0;\n    focus.sy=0;\n    focus.sz=0;"),"current Sphere scope must stay at the 3D center");
 assert(app.includes("goldenAngle=Math.PI*(3-Math.sqrt(5))"),"Sphere children must use deterministic spherical distribution");
-assert(app.includes("function drawScopeTrail(width,height){"),"3D depth trail is required");
-assert(app.includes("navigationTarget=navigationHitTest(end)"),"tapping a 3D parent ghost must support backward navigation");
+assert(app.includes("function buildHistoryLayers(){"),"semantic history worlds must be reconstructed for 3D background depth");
+assert(app.includes("function drawHistoryField(width,height){"),"3D history starfield renderer is required");
+assert(app.includes("G.normalizeState({"),"history layers must reconstruct from semantic GraphSessionState snapshots");
+assert(app.includes("HISTORY_LAYER_LIMIT=5"),"history starfield must keep a bounded background depth");
+assert(app.includes("layerScale=1-(1-layerScale)*transitionT"),"the outgoing world must recede into depth during drill transition");
+assert(app.includes("navigationTarget=navigationHitTest(end)"),"tapping the nearest parent history world must support backward navigation");
+assert(app.includes('ctx.fillText("← "+layer.scope.label'),"nearest parent world must expose a visible Back target");
 assert(app.includes("function startEntryTransition(fromPoint){"),"drill transition feedback is required");
 assert(app.includes("x:scopeBase.x+(base.x-scopeBase.x)*transitionT"),"new child world must expand out from the current focus");
 assert(app.includes('showNodeHint(navigationTarget.node,end,"Назад")'),"back ghost tap must provide visible feedback");
