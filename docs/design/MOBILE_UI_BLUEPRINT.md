@@ -271,11 +271,13 @@ The control must remain clamped inside the graph viewport and preserve a usable 
 Frozen prior worlds remain frozen for pan and orientation, but zoom intentionally has a small shared depth response.
 
 Renderer rule:
-`historyZoom = 1 + (activeZoom - 1) × 0.30`
+`historyZoom = 1 + (activeZoom - 1) × 0.50`
 
 Therefore:
 - active Sphere receives 100% zoom;
-- prior-world radii receive ~30% of the active zoom delta;
+- prior-world geometry and node radii receive ~50% of the active zoom delta;
 - prior-world centers, saved pan and saved yaw/pitch do not follow the active camera.
 
-This gives the depth stack a subtle breathing/parallax feel without collapsing it back into one shared-camera scene.
+The same coupling factor must scale both the history world's layout radius and its visible node circles. Scaling only spacing makes the layer look stretched instead of zoomed.
+
+This gives the depth stack a stronger breathing/parallax feel without collapsing it back into one shared-camera scene.
