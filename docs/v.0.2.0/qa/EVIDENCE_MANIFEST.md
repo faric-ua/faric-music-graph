@@ -676,3 +676,24 @@ Automated regression:
 Boundary:
 - 80% is a phone-feel tuning value and still requires real-phone acceptance;
 - semantic graph state and remote YouTube/YTM data are unaffected.
+
+## Merged active Sphere node-size zoom — 2026-09-29
+
+PR:
+`#39 — v0.2.0 — active Sphere node zoom at 80%`
+
+Runtime/code baseline:
+`f020d0d10e20c9e0309260fb58f9ffaf0e104468`
+
+Validation:
+- runtime source `0b7c26c7259b82ce6fff2d6dff55c6a445577565` — PASS;
+- regression source `6984dda06ddbdbe6ac7e0693c0502fa070c86ed2` — PASS;
+- PR run `36519099811` — PASS;
+- post-merge `main` run `36519129592` — PASS.
+
+Current Sphere zoom contract:
+- active positions/link lengths: 100%;
+- active node circles/labels: 80% of zoom delta;
+- frozen history geometry + node circles: 50% of zoom delta.
+
+Phone feel acceptance is still pending.
