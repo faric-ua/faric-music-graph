@@ -277,3 +277,19 @@ Expected:
 - pin marker disappears;
 - dragging works again;
 - new position persists.
+
+## Test 13 — Active Sphere node-size zoom
+
+Sphere 3D only.
+
+1. Enter a world with several visible active nodes.
+2. Note the active node-circle sizes and spacing.
+3. Zoom strongly in, for example roughly from 1× toward 2×.
+4. Zoom back out.
+
+Expected:
+- active node positions / link lengths scale at full zoom strength;
+- active node circles also grow/shrink, at roughly 80% of the active zoom delta;
+- active labels remain visually proportional to the node circles;
+- the active world must not look like only the spacing increased;
+- existing background-history rule remains: frozen prior worlds react at roughly 50% for both spacing and node-circle size.

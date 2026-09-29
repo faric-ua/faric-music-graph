@@ -323,3 +323,24 @@ Merged HOLD pin evidence:
 - runtime/code baseline `d9a4baaf9f070c114b256e09c98969f1f268d1c8`;
 - PR validation `36518720143` — PASS;
 - post-merge main validation `36518757439` — PASS.
+
+## UX-019 — Active Sphere node circles scale at 80% of zoom
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+
+Phone feedback:
+- active Sphere geometry/spacing zoomed correctly;
+- active node circles themselves stayed nearly the same size;
+- this made the active world feel stretched rather than zoomed.
+
+Revised active-layer contract:
+- active Sphere geometry / node positions / link lengths receive 100% of `sphereZoom`;
+- active node-circle radii receive 80% of the zoom delta;
+- active node labels follow the same 80%-coupled depth scale so labels stay visually attached to their nodes;
+- history worlds keep the existing 50% geometry + node-radius zoom coupling;
+- pan/orbit history-freezing rules are unchanged.
+
+Example:
+- active zoom 1.0 → 2.0;
+- active link geometry / spacing → 2.0;
+- active node-circle scale → approximately 1.8;
+- history geometry + node circles → approximately 1.5.

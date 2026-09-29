@@ -119,6 +119,7 @@ const HISTORY_LAYER_LIMIT=5;
 const HISTORY_LAYER_SCALE=.58;
 const HISTORY_LAYER_ALPHA=.34;
 const HISTORY_ZOOM_COUPLING=.50;
+const ACTIVE_NODE_ZOOM_COUPLING=.80;
 const ORBIT_HOLD_POSITION_KEY="faric.musicGraph.orbitHoldPosition.v1";
 const ORBIT_HOLD_PIN_KEY="faric.musicGraph.orbitHoldPinned.v1";
 const ORBIT_HOLD_DRAG_THRESHOLD=10;
@@ -1138,8 +1139,15 @@ function draw(){
     const n=item.n;
     const p=item.p;
     const base=n.r||8;
-    const depthScale=(state.view==="sphere"?(.62+(p.z+1)*.26):state.scale)*item.scale;
-    const rr=clamp(base*depthScale,4,30);
+    const activeNodeZoomCoupling=state.view==="sphere"
+      ?clamp(1+(state.sphereZoom-1)*ACTIVE_NODE_ZOOM_COUPLING,.64,2.92)
+      :1;
+    const depthScale=(
+      state.view==="sphere"
+        ?(.62+(p.z+1)*.26)*activeNodeZoomCoupling
+        :state.scale
+    )*item.scale;
+    const rr=clamp(base*depthScale,4,42);
     const selected=n.id===state.selectedId;
 
     ctx.save();

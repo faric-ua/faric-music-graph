@@ -306,3 +306,14 @@ Menu action:
 - pinned → `📌 Відкріпити`.
 
 Pin state and position persist separately. This lets the user place HOLD for their preferred thumb reach, lock it, and keep that layout after refresh/reopen.
+
+## Active Sphere node-size zoom
+
+The active Sphere uses different zoom strengths for geometry and node-circle size:
+
+- active node positions and link lengths use 100% of `sphereZoom`;
+- active node-circle radii use `1 + (sphereZoom - 1) × 0.80`;
+- active labels follow that same node-size/depth scale;
+- frozen history worlds keep their separate 50% geometry + node-size coupling.
+
+This keeps the active graph spacious at full zoom while making the node circles visibly grow with the scene instead of remaining visually static.

@@ -656,3 +656,23 @@ Next evidence gate:
 - menu does not appear during real ORBIT/zoom;
 - pin blocks reposition but preserves HOLD behavior;
 - pin state and button position survive refresh/reopen.
+
+## Active Sphere node-size zoom — 2026-09-29
+
+Phone feedback:
+- active Sphere spacing/link geometry zoomed correctly;
+- active node circles stayed too visually static.
+
+Implementation:
+- active geometry/positions keep full `sphereZoom`;
+- active node-circle/label depth scale applies `1 + (sphereZoom - 1) × 0.80`;
+- background-history zoom remains unchanged at 50% for both geometry and node radii.
+
+Automated regression:
+- runtime source `0b7c26c7259b82ce6fff2d6dff55c6a445577565`;
+- test source `6984dda06ddbdbe6ac7e0693c0502fa070c86ed2`;
+- branch CI for both sources — PASS.
+
+Boundary:
+- 80% is a phone-feel tuning value and still requires real-phone acceptance;
+- semantic graph state and remote YouTube/YTM data are unaffected.
