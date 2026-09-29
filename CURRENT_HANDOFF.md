@@ -270,7 +270,7 @@ Frozen-history clarification checkpoint:
 - PR #31 merged the frozen-history implementation to `main`;
 - runtime/code baseline `68f228625012c1dfa379f3d6130bfc4669cb829f`;
 - each prior world renders from its own saved camera/orientation;
-- active pan / HOLD-ORBIT do not transform background history worlds; pinch/+/- zoom now gives background worlds a deliberate 30% scale response while preserving their saved pan/yaw/pitch;
+- active pan / HOLD-ORBIT do not transform background history worlds; pinch/+/- zoom now gives background worlds a deliberate 50% scale response while preserving their saved pan/yaw/pitch;
 - Back restores the saved parent camera and animates the parent forward while the child fades;
 - PR validation run `36515005067` — PASS;
 - post-merge `main` validation run `36515026683` — PASS;
@@ -282,13 +282,13 @@ Movable-control / depth-zoom refinement checkpoint:
 - HOLD / ORBIT can be dragged to a comfortable thumb location;
 - moving the HOLD pointer beyond threshold switches from ORBIT-hold to repositioning;
 - normalized HOLD position persists in local storage and is restored after refresh/reopen/resize;
-- active Sphere receives full zoom while frozen history worlds receive 30% of the active zoom delta;
+- active Sphere receives full zoom while frozen history worlds receive 50% of the active zoom delta, including node-circle sizes;
 - background pan and yaw/pitch remain frozen;
 - PR validation run `36516280631` — PASS;
 - post-merge `main` validation run `36516314234` — PASS;
 - real-phone acceptance remains pending.
 
 First unchecked step:
-**update the phone to current `main`, record the tested HEAD, then run Test 11 for draggable HOLD persistence and 30% background zoom coupling, followed by the remaining frozen-history Back checks.**
+**update the phone to current `main`, record the tested HEAD, then run Test 11 for draggable HOLD persistence and 50% background zoom coupling with node-radius scaling, followed by the remaining frozen-history Back checks.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
