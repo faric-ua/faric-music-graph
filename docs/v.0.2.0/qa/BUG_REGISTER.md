@@ -325,7 +325,7 @@ Merged HOLD pin evidence:
 - post-merge main validation `36518757439` — PASS.
 
 ## UX-019 — Active Sphere node circles scale at 80% of zoom
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Phone feedback:
 - active Sphere geometry/spacing zoomed correctly;
@@ -344,3 +344,10 @@ Example:
 - active link geometry / spacing → 2.0;
 - active node-circle scale → approximately 1.8;
 - history geometry + node circles → approximately 1.5.
+
+
+Merged active-node zoom evidence:
+- PR #39;
+- runtime/code baseline `f020d0d10e20c9e0309260fb58f9ffaf0e104468`;
+- PR validation `36519099811` — PASS;
+- post-merge main validation `36519129592` — PASS.
