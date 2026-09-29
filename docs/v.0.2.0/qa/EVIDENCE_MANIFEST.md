@@ -490,3 +490,33 @@ Boundary:
 - this is renderer/input behavior only;
 - no canonical graph identity or remote YouTube/YTM state is changed;
 - real-phone visual/gesture acceptance is still required.
+
+## Merged prior-world history starfield — 2026-09-29
+
+Phone feedback on the first ghost prototype:
+- previous worlds still appeared to disappear;
+- the small ancestor ghost representation did not create the intended depth/starfield effect;
+- Back through the background was not sufficiently usable.
+
+PR:
+`#29 — v0.2.0 — depth-history starfield worlds`
+
+Runtime/code baseline:
+`af4bf577018ccebfb6df63667c60a6a8a1f8ade5`
+
+Validation:
+- branch `03228ebdbda02cc2c8f604ebb8dd9b4643e7fdb0`, CI `36512041432` — PASS;
+- PR run `36512072699` — PASS;
+- post-merge `main` run `36512101160` — PASS.
+
+Implemented:
+- semantic history snapshots are re-projected into prior-world layers;
+- each layer retains its own visible nodes and links;
+- up to five worlds recede with decreasing scale/opacity, producing a starfield-like depth history;
+- newest prior world animates backward during direct drill;
+- nearest parent focus is a larger tappable Back target;
+- prior-world depth can be reconstructed after session restore.
+
+Boundary:
+- this is automated implementation evidence only;
+- actual phone readability, perceived depth and parent Back accuracy still require real-phone acceptance.
