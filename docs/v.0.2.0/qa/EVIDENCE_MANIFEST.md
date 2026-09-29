@@ -520,3 +520,26 @@ Implemented:
 Boundary:
 - this is automated implementation evidence only;
 - actual phone readability, perceived depth and parent Back accuracy still require real-phone acceptance.
+
+## Frozen prior-world cameras — 2026-09-29
+
+Phone clarification from the three Sphere screenshots:
+- traversed worlds should remain behind as frozen spatial frames;
+- active camera manipulation must not transform already-traversed worlds;
+- Back should restore the exact parent scene orientation rather than rebuilding it under the child's current camera.
+
+Implementation:
+- camera snapshot captured through `SET_CAMERA` immediately before `ENTER_NODE`;
+- camera persists inside existing semantic history snapshots;
+- history layers render using their own saved zoom/pan/yaw/pitch;
+- current active Sphere camera is independent from background history cameras;
+- Back/Home/depth jump restore the target scope camera;
+- reverse transition advances the restored parent from depth while the child frame fades.
+
+Automated regression:
+- source `6a2c0866a75b92ced6207a2fe920968135634b8e`;
+- CI `36514903035` — PASS.
+
+Boundary:
+- phone acceptance of perceived depth, camera freezing and reverse Back transition is still pending;
+- no remote YouTube/YTM mutation is involved.

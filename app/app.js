@@ -28,6 +28,32 @@ const canonicalPrototype=P.createProjectionGraph(
   )
 );
 
+function rendererCameraSnapshot(){
+  return {
+    rendererMode:state.view,
+    scale:state.scale,
+    ox:state.ox,
+    oy:state.oy,
+    sphereZoom:state.sphereZoom,
+    spherePanX:state.spherePanX,
+    spherePanY:state.spherePanY,
+    yaw:state.yaw,
+    pitch:state.pitch
+  };
+}
+
+function applyRendererCamera(camera){
+  const src=camera||{};
+  if(Number.isFinite(src.scale))state.scale=src.scale;
+  if(Number.isFinite(src.ox))state.ox=src.ox;
+  if(Number.isFinite(src.oy))state.oy=src.oy;
+  if(Number.isFinite(src.sphereZoom))state.sphereZoom=src.sphereZoom;
+  if(Number.isFinite(src.spherePanX))state.spherePanX=src.spherePanX;
+  if(Number.isFinite(src.spherePanY))state.spherePanY=src.spherePanY;
+  if(Number.isFinite(src.yaw))state.yaw=src.yaw;
+  if(Number.isFinite(src.pitch))state.pitch=src.pitch;
+}
+
 function browserSemanticStorage(){
   try{return window.localStorage;}catch(_){return null;}
 }
@@ -67,6 +93,7 @@ const state={
   pointers:new Map(),
   gesture:null,
   entryTransition:null,
+  returnTransition:null,
   hintTimer:null
 };
 
@@ -458,7 +485,8 @@ function buildHistoryLayers(){
       depth,
       scope,
       nodes,
-      edges:world.edges.map(edge=>[edge.source,edge.target])
+      edges:world.edges.map(edge=>[edge.source,edge.target]),
+      camera:snapshot.camera||{}
     });
   });
 
@@ -601,11 +629,13 @@ function entryTransitionProgress(){
   return 1-Math.pow(1-raw,3);
 }
 
-function rotatedSphereCoords(node){
-  const cy=Math.cos(state.yaw);
-  const sy=Math.sin(state.yaw);
-  const cp=Math.cos(state.pitch);
-  const sp=Math.sin(state.pitch);
+function rotatedSphereCoordsAt(node,camera){
+  const yaw=Number.isFinite(camera&&camera.yaw)?camera.yaw:-.45;
+  const pitch=Number.isFinite(camera&&camera.pitch)?camera.pitch:.22;
+  const cy=Math.cos(yaw);
+  const sy=Math.sin(yaw);
+  const cp=Math.cos(pitch);
+  const sp=Math.sin(pitch);
 
   const x1=node.sx*cy+node.sz*sy;
   const z1=-node.sx*sy+node.sz*cy;
@@ -620,11 +650,7 @@ function drawHistoryField(width,height){
   if(state.view!=="sphere"||!state.historyLayers.length)return;
 
   const currentDepth=Math.max(0,(graphSession.drillPath||[]).length-1);
-  const cx=width/2+state.spherePanX;
-  const cy=height/2+state.spherePanY;
-  const baseRadius=Math.min(width,height)*0.37*state.sphereZoom;
   const transitionT=entryTransitionProgress();
-
   const layers=[...state.historyLayers].reverse();
 
   layers.forEach((layer,index)=>{
@@ -637,17 +663,21 @@ function drawHistoryField(width,height){
       layerAlpha=.76-(.76-layerAlpha)*transitionT;
     }
 
-    const centerX=cx-34*distance;
-    const centerY=cy+22*distance;
-    const radius=baseRadius*layerScale;
+    const camera=layer.camera||{};
+    const frozenZoom=Number.isFinite(camera.sphereZoom)?camera.sphereZoom:1;
+    const frozenPanX=Number.isFinite(camera.spherePanX)?camera.spherePanX:0;
+    const frozenPanY=Number.isFinite(camera.spherePanY)?camera.spherePanY:0;
+    const centerX=width/2+frozenPanX*layerScale-34*distance;
+    const centerY=height/2+frozenPanY*layerScale+22*distance;
+    const radius=Math.min(width,height)*0.37*frozenZoom*layerScale;
     const byId=new Map(layer.nodes.map(n=>[n.id,n]));
 
     for(const [a,b] of layer.edges){
       const A=byId.get(a);
       const B=byId.get(b);
       if(!A||!B)continue;
-      const ar=rotatedSphereCoords(A);
-      const br=rotatedSphereCoords(B);
+      const ar=rotatedSphereCoordsAt(A,camera);
+      const br=rotatedSphereCoordsAt(B,camera);
       const ax=centerX+ar.x*radius;
       const ay=centerY-ar.y*radius;
       const bx=centerX+br.x*radius;
@@ -665,7 +695,7 @@ function drawHistoryField(width,height){
     }
 
     for(const node of layer.nodes){
-      const rotated=rotatedSphereCoords(node);
+      const rotated=rotatedSphereCoordsAt(node,camera);
       const x=centerX+rotated.x*radius;
       const y=centerY-rotated.y*radius;
       const isFocus=node.id===layer.scope.id;
@@ -716,6 +746,93 @@ function navigationHitTest(point){
   return candidates.length?candidates[0]:null;
 }
 
+function startReturnTransition(childFrame){
+  if(!state.returnTransition){
+    state.returnTransition={
+      childFrame,
+      startedAt:performance.now(),
+      duration:320
+    };
+  }
+
+  function tick(now){
+    const tr=state.returnTransition;
+    if(!tr)return;
+    if(now-tr.startedAt>=tr.duration){
+      state.returnTransition=null;
+      draw();
+      return;
+    }
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+function returnTransitionProgress(){
+  const tr=state.returnTransition;
+  if(!tr)return 1;
+  const raw=clamp((performance.now()-tr.startedAt)/tr.duration,0,1);
+  return 1-Math.pow(1-raw,3);
+}
+
+function captureCurrentSphereFrame(){
+  if(state.view!=="sphere"||!state.currentWorld)return null;
+  return {
+    scope:graphSession.currentScope,
+    nodes:state.nodes.map(node=>({...node})),
+    edges:state.edges.map(edge=>[edge[0],edge[1]]),
+    camera:rendererCameraSnapshot()
+  };
+}
+
+function drawTransientChildFrame(frame,width,height){
+  if(!frame||!state.returnTransition)return;
+  const t=returnTransitionProgress();
+  const camera=frame.camera||{};
+  const zoom=Number.isFinite(camera.sphereZoom)?camera.sphereZoom:1;
+  const panX=Number.isFinite(camera.spherePanX)?camera.spherePanX:0;
+  const panY=Number.isFinite(camera.spherePanY)?camera.spherePanY:0;
+  const scale=1-.34*t;
+  const alpha=1-t;
+  const centerX=width/2+panX*scale+30*t;
+  const centerY=height/2+panY*scale-18*t;
+  const radius=Math.min(width,height)*.37*zoom*scale;
+  const byId=new Map(frame.nodes.map(node=>[node.id,node]));
+
+  for(const [a,b] of frame.edges){
+    const A=byId.get(a);
+    const B=byId.get(b);
+    if(!A||!B)continue;
+    const ar=rotatedSphereCoordsAt(A,camera);
+    const br=rotatedSphereCoordsAt(B,camera);
+    ctx.save();
+    ctx.globalAlpha=.42*alpha;
+    ctx.strokeStyle="#596176";
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(centerX+ar.x*radius,centerY-ar.y*radius);
+    ctx.lineTo(centerX+br.x*radius,centerY-br.y*radius);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  for(const node of frame.nodes){
+    const rotated=rotatedSphereCoordsAt(node,camera);
+    const x=centerX+rotated.x*radius;
+    const y=centerY-rotated.y*radius;
+    const isFocus=node.id===frame.scope.id;
+    ctx.save();
+    ctx.globalAlpha=(isFocus?.82:.48)*alpha;
+    ctx.fillStyle=colors[node.kind]||"#d7deef";
+    ctx.beginPath();
+    ctx.arc(x,y,isFocus?10:4,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
 function drawSphereGuide(width,height){
   const radius=Math.min(width,height)*0.37*state.sphereZoom;
   const cx=width/2+state.spherePanX;
@@ -754,6 +871,23 @@ function draw(){
 
   function visualFor(n){
     const base=position(n);
+
+    if(state.returnTransition){
+      const t=returnTransitionProgress();
+      const cx=r.width/2;
+      const cy=r.height/2;
+      const startScale=HISTORY_LAYER_SCALE;
+      return {
+        p:{
+          ...base,
+          x:(cx+(base.x-cx)*startScale-34)*(1-t)+base.x*t,
+          y:(cy+(base.y-cy)*startScale+22)*(1-t)+base.y*t
+        },
+        alpha:.42+.58*t,
+        scale:startScale+(1-startScale)*t
+      };
+    }
+
     if(!state.entryTransition)return {p:base,alpha:1,scale:1};
 
     if(n.id===scopeId){
@@ -799,6 +933,10 @@ function draw(){
     ctx.lineTo(pb.x,pb.y);
     ctx.stroke();
     ctx.restore();
+  }
+
+  if(state.view==="sphere"&&state.returnTransition&&state.returnTransition.childFrame){
+    drawTransientChildFrame(state.returnTransition.childFrame,r.width,r.height);
   }
 
   const ordered=[...visualById.values()];
@@ -1103,6 +1241,10 @@ function activateNode(n){
   const fromPoint=position(n);
   const semanticNode={id:n.id,kind:n.kind,label:n.label};
   let next=G.reducer(graphSession,{
+    type:G.COMMANDS.SET_CAMERA,
+    camera:rendererCameraSnapshot()
+  });
+  next=G.reducer(next,{
     type:G.COMMANDS.SELECT_NODE,
     node:semanticNode
   });
@@ -1499,38 +1641,62 @@ function enterSelectedScope(){
   if(!capabilities.canEnter)return;
 
   const selected=graphSession.selectedNode;
-  dispatchGraph({
+  let next=G.reducer(graphSession,{
+    type:G.COMMANDS.SET_CAMERA,
+    camera:rendererCameraSnapshot()
+  });
+  next=G.reducer(next,{
     type:G.COMMANDS.ENTER_NODE,
     node:selected,
     defaultFilters:F.defaultFilters()
   });
+  setGraphSession(next);
   state.selectedId=null;
   refreshAfterNodeCommand({syncFilters:true});
+}
+
+function restoreScopeFromHistory(action){
+  const childFrame=captureCurrentSphereFrame();
+  dispatchGraph(action);
+  applyRendererCamera(graphSession.camera);
+  state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
+  syncDraftControls();
+
+  if(state.view==="sphere"&&childFrame){
+    state.returnTransition={
+      childFrame,
+      startedAt:performance.now(),
+      duration:320
+    };
+  }else{
+    state.returnTransition=null;
+  }
+
+  rebuild();
+
+  if(state.returnTransition){
+    startReturnTransition(childFrame);
+  }
 }
 
 function goBackScope(){
   if(graphSession.drillPath.length<=1)return;
-  dispatchGraph({type:G.COMMANDS.BACK_SCOPE});
-  state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
-  refreshAfterNodeCommand({syncFilters:true});
+  restoreScopeFromHistory({type:G.COMMANDS.BACK_SCOPE});
 }
 
 function goHomeScope(){
   if(graphSession.currentScope.id==="universe")return;
-  dispatchGraph({type:G.COMMANDS.HOME_SCOPE});
+  restoreScopeFromHistory({type:G.COMMANDS.HOME_SCOPE});
   state.selectedId=null;
-  refreshAfterNodeCommand({syncFilters:true});
 }
 
 function jumpToDepth(depth){
   const currentDepth=graphSession.drillPath.length-1;
   if(!Number.isInteger(depth)||depth<0||depth>=currentDepth)return;
-  dispatchGraph({
+  restoreScopeFromHistory({
     type:G.COMMANDS.JUMP_TO_DEPTH,
     depth
   });
-  state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
-  refreshAfterNodeCommand({syncFilters:true});
 }
 
 nodeUi.enter.onclick=enterSelectedScope;

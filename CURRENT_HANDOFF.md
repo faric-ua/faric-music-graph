@@ -265,7 +265,15 @@ Spatial-navigation checkpoint:
 - post-merge `main` validation run `36512101160` — PASS;
 - real-phone acceptance remains pending.
 
+Frozen-history clarification checkpoint:
+- phone screenshots clarified that prior worlds must be frozen depth frames, not part of the active Sphere camera;
+- feature branch `feat/v0.2.0-frozen-history-frames` snapshots renderer camera state immediately before ENTER;
+- each prior world renders from its own saved camera/orientation;
+- active pan / pinch / HOLD-ORBIT no longer transforms background history worlds;
+- Back restores the saved parent camera and animates the parent forward while the child fades;
+- branch regression CI is PASS; phone acceptance is still pending.
+
 First unchecked step:
-**update the phone to current `main`, record the tested HEAD, then verify the actual prior-world starfield depth and parent-world Back before continuing the rest of Sphere/HOLD/ORBIT QA.**
+**merge the frozen-history candidate after final CI, update the phone to current `main`, record the tested HEAD, then run Test 10: verify that prior worlds remain visually fixed while the active world moves, and that Back brings the saved parent world forward with its prior camera.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.

@@ -189,3 +189,31 @@ For each test record:
 - exact Git HEAD.
 
 Any FAIL becomes a finding before the renderer decision.
+
+
+## Test 10 — Frozen prior-world camera / reverse Back
+
+Sphere 3D only.
+
+Forward:
+1. Start at Universe and deliberately rotate / pan / zoom it.
+2. Enter FARIC UA.
+3. Move / rotate / zoom the active FARIC UA world.
+4. Enter a Year, then a Genre.
+
+Expected:
+- each prior world remains visible behind the active world;
+- moving / zooming / HOLD-ORBIT on the active world does not move, zoom or rotate prior worlds;
+- prior worlds preserve their last saved orientation;
+- the newest prior world is the clearest/largest background layer and older worlds fade deeper.
+
+Back:
+1. Tap the visible `← parent` center of the nearest prior world, or use normal Back.
+2. Observe the reverse transition.
+
+Expected:
+- current child world fades/recedes;
+- parent world comes forward from its background position;
+- parent restores the same camera/orientation it had when it was left;
+- after becoming active again, the parent may once again be panned / zoomed / rotated;
+- older background layers remain frozen.

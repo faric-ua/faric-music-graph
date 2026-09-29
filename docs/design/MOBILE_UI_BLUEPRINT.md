@@ -228,3 +228,28 @@ Sphere 3D should preserve prior nested worlds as actual visual background layers
 - renderer depth history is reconstructed from semantic session history after reload where possible.
 
 The effect should communicate “I travelled deeper into the graph” rather than “the previous page disappeared.”
+
+## Frozen depth frames
+
+History worlds are not a shared camera scene.
+
+When the user drills into a child:
+1. capture the current world's renderer camera;
+2. commit semantic ENTER;
+3. move the complete outgoing world into background depth;
+4. freeze that world in the camera/orientation it had when it was left;
+5. create the child world as the new active foreground world.
+
+While a child world is active:
+- pan affects only the active world;
+- pinch zoom affects only the active world;
+- HOLD / ORBIT affects only the active world;
+- prior worlds remain visually fixed in screen-space depth.
+
+When navigating Back:
+- the current child world fades/recedes;
+- the nearest saved parent world moves forward;
+- the parent's saved camera is restored;
+- once foreground again, that parent world becomes interactive and may be moved/rotated/zoomed normally.
+
+This is intentionally closer to a stack of nested spatial scenes than one giant camera containing every historical world.
