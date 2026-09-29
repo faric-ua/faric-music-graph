@@ -1691,6 +1691,7 @@ function syncOrbitControl(){
   orbitUi.hidden=state.view!=="sphere";
   if(orbitUi.hidden){
     setOrbitHold(false);
+    closeOrbitPinMenu();
     return;
   }
 
