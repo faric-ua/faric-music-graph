@@ -117,10 +117,18 @@ assert(app.includes("function drawHistoryField(width,height){"),"3D history star
 assert(app.includes("G.normalizeState({"),"history layers must reconstruct from semantic GraphSessionState snapshots");
 assert(app.includes("HISTORY_LAYER_LIMIT=5"),"history starfield must keep a bounded background depth");
 assert(app.includes("layerScale=1-(1-layerScale)*transitionT"),"the outgoing world must recede into depth during drill transition");
+assert(app.includes("camera:snapshot.camera||{}"),"each prior world must retain its own frozen camera");
+assert(app.includes("rotatedSphereCoordsAt(node,camera)"),"history worlds must render from their saved camera rather than active Sphere camera");
+assert(app.includes("function rendererCameraSnapshot(){"),"active renderer camera snapshot is required before drill");
+assert(app.includes("type:G.COMMANDS.SET_CAMERA"),"drill must persist the current renderer camera into semantic history");
+assert(app.includes("function applyRendererCamera(camera){"),"Back must be able to restore the parent camera");
+assert(app.includes("applyRendererCamera(graphSession.camera)"),"Back/depth jump must restore the saved parent camera");
+assert(app.includes("function startReturnTransition(childFrame){"),"parent world must animate forward on Back");
+assert(app.includes("function drawTransientChildFrame(frame,width,height){"),"child world must fade away during Back transition");
 assert(app.includes("navigationTarget=navigationHitTest(end)"),"tapping the nearest parent history world must support backward navigation");
 assert(app.includes('ctx.fillText("← "+layer.scope.label'),"nearest parent world must expose a visible Back target");
 assert(app.includes("function startEntryTransition(fromPoint){"),"drill transition feedback is required");
 assert(app.includes("x:scopeBase.x+(base.x-scopeBase.x)*transitionT"),"new child world must expand out from the current focus");
 assert(app.includes('showNodeHint(navigationTarget.node,end,"Назад")'),"back ghost tap must provide visible feedback");
 
-console.log("PASS: spatial direct-drill, back/dismiss, fit and mobile 3D interaction contract tests");
+console.log("PASS: frozen-history spatial drill, Back restore, dismiss, fit and mobile 3D interaction contract tests");
