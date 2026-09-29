@@ -254,7 +254,7 @@ Merged frozen-history evidence:
 - post-merge main validation `36515026683` — PASS.
 
 ## UX-016 — Draggable persistent HOLD / ORBIT control
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Phone feedback: the HOLD / ORBIT modifier should be movable to the thumb position that is most comfortable for the user.
 
@@ -267,7 +267,7 @@ Contract:
 - normalized storage allows the position to adapt across viewport/orientation changes.
 
 ## UX-017 — Background worlds receive partial zoom coupling
-Status: IMPLEMENTED ON FEATURE BRANCH / CI PASS / PHONE QA PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Refinement to the frozen-world contract:
 - pan and HOLD / ORBIT still affect only the active foreground world;
@@ -279,3 +279,10 @@ Refinement to the frozen-world contract:
 Example:
 - active zoom 1.0 → 2.0;
 - background scale coupling is approximately 1.0 → 1.3, not 2.0.
+
+
+Merged movable-HOLD / depth-zoom evidence:
+- PR #33;
+- runtime/code baseline `d7dbf6768594d1816ef0f5050e84fc4f6d8130b9`;
+- PR validation `36516280631` — PASS;
+- post-merge main validation `36516314234` — PASS.
