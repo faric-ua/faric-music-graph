@@ -267,7 +267,7 @@ Contract:
 - normalized storage allows the position to adapt across viewport/orientation changes.
 
 ## UX-017 — Background worlds receive partial zoom coupling
-Status: REVISED AFTER PHONE QA / 50% CANDIDATE IMPLEMENTED / CI PENDING.
+Status: MERGED / CI PASS / PHONE QA PENDING.
 
 Phone feedback on the merged 30% candidate:
 - 30% background response was too weak;
@@ -291,3 +291,10 @@ Merged movable-HOLD / depth-zoom evidence:
 - runtime/code baseline `d7dbf6768594d1816ef0f5050e84fc4f6d8130b9`;
 - PR validation `36516280631` — PASS;
 - post-merge main validation `36516314234` — PASS.
+
+
+Merged 50% history-zoom evidence:
+- PR #35;
+- runtime/code baseline `12915ae2b325ab17e8efaf57526cd2088574f225`;
+- PR validation `36517894886` — PASS;
+- post-merge main validation `36517918698` — PASS.

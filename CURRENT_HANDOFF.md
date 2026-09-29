@@ -277,18 +277,19 @@ Frozen-history clarification checkpoint:
 - phone acceptance is still pending.
 
 Movable-control / depth-zoom refinement checkpoint:
-- PR #33 merged to `main`;
-- runtime/code baseline `d7dbf6768594d1816ef0f5050e84fc4f6d8130b9`;
-- HOLD / ORBIT can be dragged to a comfortable thumb location;
-- moving the HOLD pointer beyond threshold switches from ORBIT-hold to repositioning;
-- normalized HOLD position persists in local storage and is restored after refresh/reopen/resize;
-- active Sphere receives full zoom while frozen history worlds receive 50% of the active zoom delta, including node-circle sizes;
+- PR #33 merged movable persistent HOLD / ORBIT;
+- phone QA then found the 30% history zoom response too weak and exposed that node circles themselves were not scaling;
+- PR #35 merged the revised 50% history zoom with node-radius scaling;
+- runtime/code baseline `12915ae2b325ab17e8efaf57526cd2088574f225`;
+- HOLD / ORBIT can be dragged to a comfortable thumb location and persists across refresh/reopen/resize;
+- active Sphere receives full zoom while frozen history worlds receive 50% of the active zoom delta;
+- that same 50% coupling scales both history-world spacing and the visible history node circles;
 - background pan and yaw/pitch remain frozen;
-- PR validation run `36516280631` — PASS;
-- post-merge `main` validation run `36516314234` — PASS;
+- PR #35 validation run `36517894886` — PASS;
+- post-merge `main` validation run `36517918698` — PASS;
 - real-phone acceptance remains pending.
 
 First unchecked step:
-**update the phone to current `main`, record the tested HEAD, then run Test 11 for draggable HOLD persistence and 50% background zoom coupling with node-radius scaling, followed by the remaining frozen-history Back checks.**
+**update the phone to current `main`, record the tested HEAD, then verify that 50% history zoom feels right and that both spacing and node sizes scale together; after that continue the remaining frozen-history Back checks.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
