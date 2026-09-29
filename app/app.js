@@ -116,6 +116,9 @@ const EDGE_BACK_MAX_VERTICAL_PX=56;
 const HISTORY_LAYER_LIMIT=5;
 const HISTORY_LAYER_SCALE=.58;
 const HISTORY_LAYER_ALPHA=.34;
+const HISTORY_ZOOM_COUPLING=.30;
+const ORBIT_HOLD_POSITION_KEY="faric.musicGraph.orbitHoldPosition.v1";
+const ORBIT_HOLD_DRAG_THRESHOLD=10;
 
 // Deliberately null until a real target-phone benchmark establishes a safe
 // immediate expansion budget. Null means explicit confirmation is required.
@@ -379,12 +382,85 @@ function pointFromEvent(e){
   return {x:e.clientX-r.left,y:e.clientY-r.top};
 }
 
+function readOrbitHoldPosition(){
+  if(!semanticStorage)return null;
+  try{
+    const raw=semanticStorage.getItem(ORBIT_HOLD_POSITION_KEY);
+    if(!raw)return null;
+    const parsed=JSON.parse(raw);
+    if(!Number.isFinite(parsed.x)||!Number.isFinite(parsed.y))return null;
+    return {
+      x:clamp(parsed.x,0,1),
+      y:clamp(parsed.y,0,1)
+    };
+  }catch(_){
+    return null;
+  }
+}
+
+function saveOrbitHoldPosition(position){
+  if(!semanticStorage||!position)return false;
+  try{
+    semanticStorage.setItem(
+      ORBIT_HOLD_POSITION_KEY,
+      JSON.stringify({
+        x:clamp(position.x,0,1),
+        y:clamp(position.y,0,1)
+      })
+    );
+    return true;
+  }catch(_){
+    return false;
+  }
+}
+
+function applyOrbitHoldPosition(position){
+  if(!orbitUi||!position)return;
+  const main=orbitUi.parentElement;
+  if(!main)return;
+
+  const bounds=main.getBoundingClientRect();
+  const width=orbitUi.offsetWidth||58;
+  const height=orbitUi.offsetHeight||58;
+  const margin=8;
+
+  const cx=clamp(position.x*bounds.width,margin+width/2,bounds.width-margin-width/2);
+  const cy=clamp(position.y*bounds.height,margin+height/2,bounds.height-margin-height/2);
+
+  orbitUi.style.left=(cx-width/2)+"px";
+  orbitUi.style.top=(cy-height/2)+"px";
+  orbitUi.style.right="auto";
+  orbitUi.style.bottom="auto";
+}
+
+function currentOrbitHoldPosition(){
+  if(!orbitUi||!orbitUi.parentElement)return null;
+  const mainBounds=orbitUi.parentElement.getBoundingClientRect();
+  const buttonBounds=orbitUi.getBoundingClientRect();
+  if(mainBounds.width<=0||mainBounds.height<=0)return null;
+
+  return {
+    x:clamp(
+      (buttonBounds.left-mainBounds.left+buttonBounds.width/2)/mainBounds.width,
+      0,
+      1
+    ),
+    y:clamp(
+      (buttonBounds.top-mainBounds.top+buttonBounds.height/2)/mainBounds.height,
+      0,
+      1
+    )
+  };
+}
+
 function resize(){
+  const savedOrbitPosition=readOrbitHoldPosition()||currentOrbitHoldPosition();
   const r=canvas.getBoundingClientRect();
   const d=Math.min(2,window.devicePixelRatio||1);
   canvas.width=Math.max(1,Math.round(r.width*d));
   canvas.height=Math.max(1,Math.round(r.height*d));
   ctx.setTransform(d,0,0,d,0,0);
+  if(savedOrbitPosition)applyOrbitHoldPosition(savedOrbitPosition);
   draw();
 }
 
@@ -665,11 +741,16 @@ function drawHistoryField(width,height){
 
     const camera=layer.camera||{};
     const frozenZoom=Number.isFinite(camera.sphereZoom)?camera.sphereZoom:1;
+    const backgroundZoomCoupling=clamp(
+      1+(state.sphereZoom-1)*HISTORY_ZOOM_COUPLING,
+      .72,
+      1.78
+    );
     const frozenPanX=Number.isFinite(camera.spherePanX)?camera.spherePanX:0;
     const frozenPanY=Number.isFinite(camera.spherePanY)?camera.spherePanY:0;
     const centerX=width/2+frozenPanX*layerScale-34*distance;
     const centerY=height/2+frozenPanY*layerScale+22*distance;
-    const radius=Math.min(width,height)*0.37*frozenZoom*layerScale;
+    const radius=Math.min(width,height)*0.37*frozenZoom*layerScale*backgroundZoomCoupling;
     const byId=new Map(layer.nodes.map(n=>[n.id,n]));
 
     for(const [a,b] of layer.edges){
@@ -1493,17 +1574,90 @@ function setOrbitHold(active){
 function syncOrbitControl(){
   if(!orbitUi)return;
   orbitUi.hidden=state.view!=="sphere";
-  if(orbitUi.hidden)setOrbitHold(false);
+  if(orbitUi.hidden){
+    setOrbitHold(false);
+    return;
+  }
+
+  const saved=readOrbitHoldPosition();
+  if(saved)applyOrbitHoldPosition(saved);
 }
 
 if(orbitUi){
+  let orbitPointer=null;
+
   orbitUi.addEventListener("pointerdown",e=>{
     e.preventDefault();
+    const main=orbitUi.parentElement;
+    const buttonBounds=orbitUi.getBoundingClientRect();
+    const mainBounds=main&&main.getBoundingClientRect();
+
+    orbitPointer={
+      id:e.pointerId,
+      startClientX:e.clientX,
+      startClientY:e.clientY,
+      startLeft:mainBounds?buttonBounds.left-mainBounds.left:0,
+      startTop:mainBounds?buttonBounds.top-mainBounds.top:0,
+      dragging:false
+    };
+
     try{orbitUi.setPointerCapture(e.pointerId)}catch(_){}
     setOrbitHold(true);
   });
-  orbitUi.addEventListener("pointerup",()=>setOrbitHold(false));
-  orbitUi.addEventListener("pointercancel",()=>setOrbitHold(false));
+
+  orbitUi.addEventListener("pointermove",e=>{
+    if(!orbitPointer||e.pointerId!==orbitPointer.id)return;
+
+    const dx=e.clientX-orbitPointer.startClientX;
+    const dy=e.clientY-orbitPointer.startClientY;
+    const distance=Math.hypot(dx,dy);
+
+    if(!orbitPointer.dragging&&distance>=ORBIT_HOLD_DRAG_THRESHOLD){
+      orbitPointer.dragging=true;
+      setOrbitHold(false);
+      orbitUi.classList.add("dragging");
+    }
+
+    if(!orbitPointer.dragging)return;
+
+    const main=orbitUi.parentElement;
+    if(!main)return;
+    const bounds=main.getBoundingClientRect();
+    const width=orbitUi.offsetWidth||58;
+    const height=orbitUi.offsetHeight||58;
+    const margin=8;
+
+    const nextLeft=clamp(
+      orbitPointer.startLeft+dx,
+      margin,
+      Math.max(margin,bounds.width-width-margin)
+    );
+    const nextTop=clamp(
+      orbitPointer.startTop+dy,
+      margin,
+      Math.max(margin,bounds.height-height-margin)
+    );
+
+    orbitUi.style.left=nextLeft+"px";
+    orbitUi.style.top=nextTop+"px";
+    orbitUi.style.right="auto";
+    orbitUi.style.bottom="auto";
+  });
+
+  function finishOrbitPointer(e){
+    if(!orbitPointer||e.pointerId!==orbitPointer.id)return;
+    const dragged=orbitPointer.dragging;
+    orbitPointer=null;
+    orbitUi.classList.remove("dragging");
+    setOrbitHold(false);
+
+    if(dragged){
+      saveOrbitHoldPosition(currentOrbitHoldPosition());
+    }
+  }
+
+  orbitUi.addEventListener("pointerup",finishOrbitPointer);
+  orbitUi.addEventListener("pointercancel",finishOrbitPointer);
 }
 addEventListener("blur",()=>setOrbitHold(false));
 

@@ -560,3 +560,26 @@ Next evidence gate:
 - real-phone verification that background worlds remain fixed while the active Sphere is panned / zoomed / orbited;
 - parent Back restores the saved parent camera and brings that world forward;
 - child world fades away during the reverse transition.
+
+## Movable HOLD + partial history zoom — 2026-09-29
+
+Phone-driven refinement:
+- HOLD / ORBIT should be placeable where the user's thumb is most comfortable;
+- already-traversed worlds should remain frozen for pan/orientation;
+- zoom should give background depth a small shared response instead of leaving it completely rigid.
+
+Implementation:
+- HOLD pointer movement beyond a 10px threshold switches to control repositioning and disables ORBIT during that drag;
+- normalized HOLD center coordinates persist under `faric.musicGraph.orbitHoldPosition.v1`;
+- position is clamped inside the graph viewport and restored after refresh/reopen/resize;
+- active Sphere zoom remains full-strength;
+- history layer radius applies `1 + (activeZoom - 1) × 0.30`;
+- saved background pan/yaw/pitch remain independent from the active camera.
+
+Automated regression:
+- runtime/test source `0086cc834948b41ed81dcadf96f547d5f54d4318`;
+- CI `36516158319` — PASS.
+
+Boundary:
+- real-phone ergonomics and persistence across the user's actual browser/app lifecycle remain to be accepted;
+- the 30% coupling is a UX-tuning value and may be adjusted after phone feel-testing.
