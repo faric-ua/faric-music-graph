@@ -290,15 +290,18 @@ Movable-control / depth-zoom refinement checkpoint:
 - real-phone acceptance remains pending.
 
 HOLD placement-lock refinement checkpoint:
-- feature branch `feat/v0.2.0-orbit-pin-menu`;
+- PR #37 merged to `main`;
+- runtime/code baseline `d9a4baaf9f070c114b256e09c98969f1f268d1c8`;
 - ~1.5 s stationary long-press opens a contextual HOLD pin menu only if the Sphere camera did not change during the hold;
 - menu toggles `📌 Закріпити / 📌 Відкріпити`;
 - pinned HOLD keeps ORBIT behavior but blocks accidental reposition drag;
 - pin state persists separately from saved HOLD position;
 - pinned state has a visible pin badge;
+- PR validation run `36518720143` — PASS;
+- post-merge `main` validation run `36518757439` — PASS;
 - real-phone acceptance remains pending.
 
 First unchecked step:
-**merge the HOLD pin candidate after final CI, update the phone to current `main`, record the tested HEAD, then run Test 12 for pin/unpin behavior and persistence; continue 50% history-zoom / frozen-history checks afterward.**
+**update the phone to current `main`, record the tested HEAD, then run Test 12 for pin/unpin behavior and persistence; continue 50% history-zoom / frozen-history checks afterward.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
