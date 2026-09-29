@@ -277,15 +277,18 @@ Frozen-history clarification checkpoint:
 - phone acceptance is still pending.
 
 Movable-control / depth-zoom refinement checkpoint:
-- feature branch `feat/v0.2.0-orbit-position-depth-zoom`;
+- PR #33 merged to `main`;
+- runtime/code baseline `d7dbf6768594d1816ef0f5050e84fc4f6d8130b9`;
 - HOLD / ORBIT can be dragged to a comfortable thumb location;
 - moving the HOLD pointer beyond threshold switches from ORBIT-hold to repositioning;
 - normalized HOLD position persists in local storage and is restored after refresh/reopen/resize;
 - active Sphere receives full zoom while frozen history worlds receive 30% of the active zoom delta;
 - background pan and yaw/pitch remain frozen;
-- branch regression CI is PASS; real-phone acceptance remains pending.
+- PR validation run `36516280631` — PASS;
+- post-merge `main` validation run `36516314234` — PASS;
+- real-phone acceptance remains pending.
 
 First unchecked step:
-**merge this refinement after final CI, update the phone to current `main`, record the tested HEAD, then run Test 11 for draggable HOLD persistence and 30% background zoom coupling, followed by the remaining frozen-history Back checks.**
+**update the phone to current `main`, record the tested HEAD, then run Test 11 for draggable HOLD persistence and 30% background zoom coupling, followed by the remaining frozen-history Back checks.**
 
 Do not start YouTube write actions. Do not start Android packaging before the graph state/navigation contracts are implemented and phone-testable.
