@@ -213,3 +213,18 @@ On phone, a short tap on empty graph space dismisses transient overlays in this 
 - the `⋮` advanced node-control palette closes if open.
 
 The explicit × / menu controls remain available.
+
+## History starfield depth
+
+The earlier “few ghost dots behind the focus” prototype is superseded.
+
+Sphere 3D should preserve prior nested worlds as actual visual background layers:
+- each prior semantic scope is re-projected with its visible nodes and links;
+- the nearest prior world is visibly larger/brighter than older worlds;
+- deeper history layers progressively shrink and fade toward a starfield-like background;
+- the active world remains the foreground interaction layer;
+- the nearest parent focus gets a clearly tappable `← parent` Back target;
+- HOLD/ORBIT rotates the spatial composition consistently, including background history structures;
+- renderer depth history is reconstructed from semantic session history after reload where possible.
+
+The effect should communicate “I travelled deeper into the graph” rather than “the previous page disappeared.”

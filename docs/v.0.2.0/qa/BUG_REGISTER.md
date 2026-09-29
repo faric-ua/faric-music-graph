@@ -203,3 +203,19 @@ Merged spatial-navigation evidence:
 - runtime/code baseline `f61ab0b06827fe172043e489732f019ce1ea9331`;
 - PR validation `36449377254` — PASS;
 - post-merge main validation `36449424526` — PASS.
+
+## UX-014 — Prior worlds must remain as real background depth
+Status: IMPLEMENTED ON FEATURE BRANCH / CI PENDING / PHONE QA PENDING.
+
+Real-phone feedback: the first “ghost trail” implementation did not match the intended spatial model. Parent nodes appeared to disappear, and Back via the tiny ghost representation was not discoverable/reliable enough.
+
+Revised Sphere contract:
+- every semantic navigation history snapshot is re-projected into its own prior-world visual layer;
+- prior worlds keep their own visible nodes and links instead of collapsing into one decorative dot;
+- layers recede behind the active world with progressively smaller scale and lower opacity, creating a starfield/depth-history effect;
+- the nearest parent world exposes its focus node as a larger tappable `← parent` Back target;
+- tapping that target uses existing semantic depth navigation;
+- up to five prior worlds are rendered to keep the background bounded;
+- history worlds are reconstructed from persisted `GraphSessionState.history`, so the spatial depth can survive a page refresh/session restore.
+
+The background layers remain renderer-local presentation; canonical graph identity and drill semantics remain unchanged.
