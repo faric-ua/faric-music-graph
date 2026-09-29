@@ -253,3 +253,29 @@ When navigating Back:
 - once foreground again, that parent world becomes interactive and may be moved/rotated/zoomed normally.
 
 This is intentionally closer to a stack of nested spatial scenes than one giant camera containing every historical world.
+
+## Movable HOLD / ORBIT control
+
+The Sphere modifier should adapt to the user's hand rather than force one fixed thumb location.
+
+Interaction:
+- stationary press = HOLD / ORBIT modifier;
+- moving that same pointer beyond the drag threshold = reposition the control instead of orbiting;
+- release after a drag saves the new location;
+- stored location uses normalized graph-viewport coordinates so it can be restored after reopen and adapted after resize/orientation change.
+
+The control must remain clamped inside the graph viewport and preserve a usable touch target.
+
+## Partial history zoom coupling
+
+Frozen prior worlds remain frozen for pan and orientation, but zoom intentionally has a small shared depth response.
+
+Renderer rule:
+`historyZoom = 1 + (activeZoom - 1) × 0.30`
+
+Therefore:
+- active Sphere receives 100% zoom;
+- prior-world radii receive ~30% of the active zoom delta;
+- prior-world centers, saved pan and saved yaw/pitch do not follow the active camera.
+
+This gives the depth stack a subtle breathing/parallax feel without collapsing it back into one shared-camera scene.
