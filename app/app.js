@@ -747,11 +747,13 @@ function navigationHitTest(point){
 }
 
 function startReturnTransition(childFrame){
-  state.returnTransition={
-    childFrame,
-    startedAt:performance.now(),
-    duration:320
-  };
+  if(!state.returnTransition){
+    state.returnTransition={
+      childFrame,
+      startedAt:performance.now(),
+      duration:320
+    };
+  }
 
   function tick(now){
     const tr=state.returnTransition;
@@ -1659,11 +1661,21 @@ function restoreScopeFromHistory(action){
   applyRendererCamera(graphSession.camera);
   state.selectedId=graphSession.selectedNode?graphSession.selectedNode.id:null;
   syncDraftControls();
-  rebuild();
+
   if(state.view==="sphere"&&childFrame){
-    startReturnTransition(childFrame);
+    state.returnTransition={
+      childFrame,
+      startedAt:performance.now(),
+      duration:320
+    };
   }else{
-    draw();
+    state.returnTransition=null;
+  }
+
+  rebuild();
+
+  if(state.returnTransition){
+    startReturnTransition(childFrame);
   }
 }
 
