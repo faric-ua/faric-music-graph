@@ -116,7 +116,7 @@ const EDGE_BACK_MAX_VERTICAL_PX=56;
 const HISTORY_LAYER_LIMIT=5;
 const HISTORY_LAYER_SCALE=.58;
 const HISTORY_LAYER_ALPHA=.34;
-const HISTORY_ZOOM_COUPLING=.30;
+const HISTORY_ZOOM_COUPLING=.50;
 const ORBIT_HOLD_POSITION_KEY="faric.musicGraph.orbitHoldPosition.v1";
 const ORBIT_HOLD_DRAG_THRESHOLD=10;
 
@@ -743,8 +743,8 @@ function drawHistoryField(width,height){
     const frozenZoom=Number.isFinite(camera.sphereZoom)?camera.sphereZoom:1;
     const backgroundZoomCoupling=clamp(
       1+(state.sphereZoom-1)*HISTORY_ZOOM_COUPLING,
-      .72,
-      1.78
+      .76,
+      2.20
     );
     const frozenPanX=Number.isFinite(camera.spherePanX)?camera.spherePanX:0;
     const frozenPanY=Number.isFinite(camera.spherePanY)?camera.spherePanY:0;
@@ -781,8 +781,11 @@ function drawHistoryField(width,height){
       const y=centerY-rotated.y*radius;
       const isFocus=node.id===layer.scope.id;
       const starRadius=isFocus
-        ?Math.max(5,10*layerScale)
-        :Math.max(1.15,3.8*layerScale*(.72+(rotated.z+1)*.18));
+        ?Math.max(5,10*layerScale*backgroundZoomCoupling)
+        :Math.max(
+          1.15,
+          3.8*layerScale*backgroundZoomCoupling*(.72+(rotated.z+1)*.18)
+        );
 
       ctx.save();
       ctx.globalAlpha=isFocus?Math.min(.74,layerAlpha*1.9):layerAlpha;

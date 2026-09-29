@@ -32,7 +32,7 @@ Purpose: live crash-recovery checklist. Read immediately after `CURRENT_HANDOFF.
 - [x] Add performance guard for Expand All.
 - [x] Run static/unit/schema tests and CI.
 - [x] Implement real-phone UX revision: tap-first nested drill, long-press advanced selection, simplified Track details, compact mobile controls, and 3D HOLD/ORBIT gesture prototype.
-- [x] Implement spatial-navigation prototype: centered Sphere scope, spherical neighbors, entry transition, fading node-kind hints, empty-space menu dismissal, reconstructed prior-world starfield depth, frozen prior-world cameras with reverse Back restoration, movable persistent HOLD control, and 30% background zoom coupling.
+- [x] Implement spatial-navigation prototype: centered Sphere scope, spherical neighbors, entry transition, fading node-kind hints, empty-space menu dismissal, reconstructed prior-world starfield depth, frozen prior-world cameras with reverse Back restoration, movable persistent HOLD control, and 50% background zoom coupling including history node-radius scaling.
 - [ ] Run real-phone v0.2.0 portrait/landscape/gesture/filter/drill QA against the revised spatial interaction contract.
 - [ ] Decide production renderer from measured phone/full-seed evidence.
 - [ ] Migrate full The Prodigy + Linkin Park seed through the canonical graph.

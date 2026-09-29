@@ -126,9 +126,11 @@ assert(app.includes("G.normalizeState({"),"history layers must reconstruct from 
 assert(app.includes("HISTORY_LAYER_LIMIT=5"),"history starfield must keep a bounded background depth");
 assert(app.includes("layerScale=1-(1-layerScale)*transitionT"),"the outgoing world must recede into depth during drill transition");
 assert(app.includes("camera:snapshot.camera||{}"),"each prior world must retain its own frozen camera");
-assert(app.includes("const HISTORY_ZOOM_COUPLING=.30"),"background history zoom coupling must stay at 30 percent");
+assert(app.includes("const HISTORY_ZOOM_COUPLING=.50"),"background history zoom coupling must stay at 50 percent");
 assert(app.includes("1+(state.sphereZoom-1)*HISTORY_ZOOM_COUPLING"),"background worlds must receive partial active zoom coupling");
-assert(app.includes("frozenZoom*layerScale*backgroundZoomCoupling"),"partial zoom coupling must affect history layer radius only");
+assert(app.includes("frozenZoom*layerScale*backgroundZoomCoupling"),"partial zoom coupling must affect history layer radius");
+assert(app.includes("10*layerScale*backgroundZoomCoupling"),"history focus-node radius must scale with partial background zoom");
+assert(app.includes("3.8*layerScale*backgroundZoomCoupling"),"history non-focus node radius must scale with partial background zoom");
 assert(app.includes("rotatedSphereCoordsAt(node,camera)"),"history worlds must render from their saved camera rather than active Sphere camera");
 assert(app.includes("function rendererCameraSnapshot(){"),"active renderer camera snapshot is required before drill");
 assert(app.includes("type:G.COMMANDS.SET_CAMERA"),"drill must persist the current renderer camera into semantic history");
